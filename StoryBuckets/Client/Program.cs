@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using StoryBuckets.Client.Components.Counter;
+using StoryBuckets.Client.Components.Bucket;
 
 namespace StoryBuckets.Client
 {
@@ -26,6 +27,7 @@ namespace StoryBuckets.Client
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ICounterViewModel, CounterViewModel>();
+            services.AddScoped<IBucketViewModel, BucketViewModel>();
         }
     }
 }

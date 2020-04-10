@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Server", "StoryBuckets\Server\StoryBuckets.Server.csproj", "{FFC32906-603F-4C15-9EFD-5832C41B3E38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Server", "StoryBuckets\Server\StoryBuckets.Server.csproj", "{FFC32906-603F-4C15-9EFD-5832C41B3E38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Client", "StoryBuckets\Client\StoryBuckets.Client.csproj", "{3CE3D25C-0100-45FD-B965-EE17E1850BE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Client", "StoryBuckets\Client\StoryBuckets.Client.csproj", "{3CE3D25C-0100-45FD-B965-EE17E1850BE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Shared", "StoryBuckets\Shared\StoryBuckets.Shared.csproj", "{0D430DAA-2ECE-417C-874B-C037EBA27541}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Shared", "StoryBuckets\Shared\StoryBuckets.Shared.csproj", "{0D430DAA-2ECE-417C-874B-C037EBA27541}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.ClientTests", "StoryBuckets\ClientTests\StoryBuckets.ClientTests.csproj", "{25B5F93C-DC3D-457B-9718-AF2F3715AABF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.ClientTests", "StoryBuckets\ClientTests\StoryBuckets.ClientTests.csproj", "{25B5F93C-DC3D-457B-9718-AF2F3715AABF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.SharedTests", "StoryBuckets\StoryBuckets.SharedTests\StoryBuckets.SharedTests.csproj", "{F7873B6D-7C37-4165-B474-8E24ED3ECE01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{25B5F93C-DC3D-457B-9718-AF2F3715AABF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25B5F93C-DC3D-457B-9718-AF2F3715AABF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25B5F93C-DC3D-457B-9718-AF2F3715AABF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7873B6D-7C37-4165-B474-8E24ED3ECE01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7873B6D-7C37-4165-B474-8E24ED3ECE01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7873B6D-7C37-4165-B474-8E24ED3ECE01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7873B6D-7C37-4165-B474-8E24ED3ECE01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
