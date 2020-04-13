@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using StoryBuckets.Client.Components.Counter;
 using StoryBuckets.Client.Components.Bucket;
+using StoryBuckets.Client.Components.SortingBuckets;
 
 namespace StoryBuckets.Client
 {
@@ -14,7 +15,7 @@ namespace StoryBuckets.Client
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            ConfigureServices(builder.Services);
+            AddViewModelInjection(builder.Services);
 
             builder.RootComponents.Add<App>("app");
 
@@ -24,10 +25,11 @@ namespace StoryBuckets.Client
             await builder.Build().RunAsync();
         }
 
-        private static void ConfigureServices(IServiceCollection services)
+        private static void AddViewModelInjection(IServiceCollection services)
         {
             services.AddScoped<ICounterViewModel, CounterViewModel>();
             services.AddScoped<IBucketViewModel, BucketViewModel>();
+            services.AddScoped<ISortingBucketsViewModel, SortingBucketsViewModel>();
         }
     }
 }
