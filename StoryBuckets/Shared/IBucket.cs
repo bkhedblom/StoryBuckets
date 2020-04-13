@@ -2,9 +2,8 @@
 
 namespace StoryBuckets.Shared
 {
-    public interface IBucket:IModel
+    public interface IBucket:IData
     {
         IReadOnlyCollection<IStory> Stories { get; }
-        void Add(IStory story);
     }
 }

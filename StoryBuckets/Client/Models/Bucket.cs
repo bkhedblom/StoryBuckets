@@ -1,15 +1,17 @@
-﻿using System;
+﻿using StoryBuckets.Client.ServerSync;
+using StoryBuckets.Shared;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace StoryBuckets.Shared
+namespace StoryBuckets.Client.Models
 {
-    public class Bucket : IBucket
+    public class Bucket : IBucketModel
     {
         private readonly Collection<IStory> _stories = new Collection<IStory>();
-        private readonly IDataPersister<IBucket> _persister;
+        private readonly IServerSync<IBucketModel> _persister;
 
-        public Bucket(IDataPersister<IBucket> persister)
+        public Bucket(IServerSync<IBucketModel> persister)
         {
             _persister = persister;
         }

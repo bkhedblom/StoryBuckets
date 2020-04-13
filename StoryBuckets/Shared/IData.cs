@@ -1,6 +1,6 @@
 ﻿namespace StoryBuckets.Shared
 {
-    public interface IModel
+    public interface IData
     {
     }
 }
