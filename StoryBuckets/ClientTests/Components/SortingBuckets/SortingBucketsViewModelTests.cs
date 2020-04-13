@@ -1,11 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using StoryBuckets.Client.Components.SortingBuckets;
 using StoryBuckets.Client.Models;
 using StoryBuckets.Shared;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 {
@@ -68,37 +64,106 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
         }
 
         [TestMethod()]
-        public void When_NextUnbucketedStory_exists_show_it_and_hide_the_AllDone_message()
+        public void When_DataIsReady_and_NumberOfUnbucketedStories_is_more_than_0_show_story()
         {
             //Arrange
             var storylist = new Mock<IStorylist>();
             storylist
-                .SetupGet(fake => fake.NextUnbucketedStory)
-                .Returns(new Mock<IStory>().Object);
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(true);
+            storylist
+                .SetupGet(fake => fake.NumberOfUnbucketedStories)
+                .Returns(3);
+
 
             var vm = new SortingBucketsViewModel(storylist.Object);
 
             //Act
             //Assert
             Assert.IsFalse(vm.HideStory);
-            Assert.IsTrue(vm.HideAllDone);
         }
 
         [TestMethod()]
-        public void When_NextUnbucketedStory_is_null_hide_the_story_and_show_the_AllDone_message()
+        public void When_DataIsReady_and_NumberOfUnbucketedStories_is_more_than_0_hide_alldone_message()
         {
             //Arrange
             var storylist = new Mock<IStorylist>();
             storylist
-                .SetupGet(fake => fake.NextUnbucketedStory)
-                .Returns((IStory)null);
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(true);
+            storylist
+                .SetupGet(fake => fake.NumberOfUnbucketedStories)
+                .Returns(3);
+
+            var vm = new SortingBucketsViewModel(storylist.Object);
+
+            //Act
+            //Assert
+            Assert.IsTrue(vm.HideAllDone);
+        }
+
+        [TestMethod()]
+        public void When_DataIsReady_hide_loader()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(true);
+
+            var vm = new SortingBucketsViewModel(storylist.Object);
+
+            //Act
+            //Assert
+            Assert.IsTrue(vm.HideLoader);
+        }
+
+        [TestMethod()]
+        public void When_not_DataIsReady_show_loader()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(false);
+
+            var vm = new SortingBucketsViewModel(storylist.Object);
+
+            //Act
+            //Assert
+            Assert.IsFalse(vm.HideLoader);
+        }
+
+        [TestMethod()]
+        public void When_not_DataIsReady_hide_story()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(false);
 
             var vm = new SortingBucketsViewModel(storylist.Object);
 
             //Act
             //Assert
             Assert.IsTrue(vm.HideStory);
-            Assert.IsFalse(vm.HideAllDone);
+        }
+
+        [TestMethod()]
+        public void When_not_DataIsReady_hide_AllDone_message()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(false);
+
+            var vm = new SortingBucketsViewModel(storylist.Object);
+
+            //Act
+            //Assert
+            Assert.IsTrue(vm.HideAllDone);
         }
     }
 }

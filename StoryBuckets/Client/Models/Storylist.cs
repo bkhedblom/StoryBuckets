@@ -9,11 +9,22 @@ namespace StoryBuckets.Client.Models
 {
     public class Storylist : IStorylist
     {
+        private readonly IDataReader<IStory> _datareader;
+
         public Storylist(IDataReader<IStory> datareader)
         {
-
+            _datareader = datareader;
         }
 
-        public IStory NextUnbucketedStory => throw new NotImplementedException();
+        public IStory NextUnbucketedStory { get; }
+
+        public bool DataIsready { get; }
+
+        public uint? NumberOfUnbucketedStories { get; }
+
+        public async Task InitializeAsync()
+        {
+            await _datareader.ReadAsync();
+        }
     }
 }

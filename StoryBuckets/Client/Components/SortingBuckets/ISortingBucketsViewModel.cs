@@ -5,5 +5,6 @@
         string TextForNextStoryToSort { get; }
         public bool HideStory { get; }
         public bool HideAllDone { get; }
+        bool HideLoader { get; }
     }
 }

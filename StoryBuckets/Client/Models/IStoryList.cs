@@ -9,5 +9,8 @@ namespace StoryBuckets.Client.Models
     public interface IStorylist
     {
         IStory NextUnbucketedStory { get; }
+        bool DataIsready { get; }
+        uint? NumberOfUnbucketedStories { get; }
+        Task InitializeAsync();
     }
 }

@@ -8,6 +8,6 @@ namespace StoryBuckets.Client.ServerCommunication
 {
     public interface IDataReader<T> where T : IData
     {
-        Task<IReadOnlyCollection<T>> Read();
+        Task<IReadOnlyCollection<T>> ReadAsync();
     }
 }
