@@ -15,8 +15,11 @@ namespace StoryBuckets.Client.Components.SortingBuckets
             _storylist = storylist;
         }
         public string TextForNextStoryToSort => _storylist.NextUnbucketedStory?.ToString() ?? "";
-        public bool HideStory => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories == 0;
-        public bool HideAllDone => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories > 0;
-        public bool HideLoader => _storylist.DataIsready;
+        public bool StoryHidden => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories == 0;
+        public bool AllDoneHidden => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories > 0;
+        public bool LoaderHidden => _storylist.DataIsready;
+
+        public async Task OnInitializedAsync()
+            => await _storylist.InitializeAsync();
     }
 }

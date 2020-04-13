@@ -80,7 +80,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Act
             //Assert
-            Assert.IsFalse(vm.HideStory);
+            Assert.IsFalse(vm.StoryHidden);
         }
 
         [TestMethod()]
@@ -99,7 +99,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Act
             //Assert
-            Assert.IsTrue(vm.HideAllDone);
+            Assert.IsTrue(vm.AllDoneHidden);
         }
 
         [TestMethod()]
@@ -115,7 +115,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Act
             //Assert
-            Assert.IsTrue(vm.HideLoader);
+            Assert.IsTrue(vm.LoaderHidden);
         }
 
         [TestMethod()]
@@ -131,7 +131,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Act
             //Assert
-            Assert.IsFalse(vm.HideLoader);
+            Assert.IsFalse(vm.LoaderHidden);
         }
 
         [TestMethod()]
@@ -147,7 +147,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Act
             //Assert
-            Assert.IsTrue(vm.HideStory);
+            Assert.IsTrue(vm.StoryHidden);
         }
 
         [TestMethod()]
@@ -163,7 +163,25 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Act
             //Assert
-            Assert.IsTrue(vm.HideAllDone);
+            Assert.IsTrue(vm.AllDoneHidden);
+        }
+
+        [TestMethod()]
+        public void Initializes_storylist_OnInitializedAsync()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(false);
+
+            var vm = new SortingBucketsViewModel(storylist.Object);
+
+            //Act
+            vm.OnInitializedAsync().Wait();
+
+            //Assert
+            storylist.Verify(mock => mock.InitializeAsync(), Times.Once);
         }
     }
 }

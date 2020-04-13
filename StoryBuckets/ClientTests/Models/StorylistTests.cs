@@ -80,5 +80,87 @@ namespace StoryBuckets.Client.Models.Tests
             //Assert
             Assert.IsTrue(storylist.DataIsready);
         }
+
+        [TestMethod()]
+        public void NumberOfUnbucketedStories_returns_number_of_stories_not_in_a_bucket()
+        {
+            //Arrange
+            var reader = new Mock<IDataReader<IStory>>();
+            var storyInBucket = new Mock<IStory>();
+            storyInBucket
+                .SetupGet(fake => fake.IsInBucket)
+                .Returns(true);
+            var unbucketedStory = new Mock<IStory>();
+            unbucketedStory
+                .SetupGet(fake => fake.IsInBucket)
+                .Returns(false);
+            reader
+                .Setup(fake => fake.ReadAsync())
+                .ReturnsAsync(new[] { 
+                    storyInBucket.Object,
+                    unbucketedStory.Object
+                });
+
+            var storylist = new Storylist(reader.Object);
+
+            //Act
+            storylist.InitializeAsync().Wait();
+
+            //Assert
+            Assert.AreEqual(1u, storylist.NumberOfUnbucketedStories);
+        }
+
+        [TestMethod()]
+        public void NextUnbucketedStory_returns_an_unbucketedStory()
+        {
+            //Arrange
+            var reader = new Mock<IDataReader<IStory>>();
+            var storyInBucket = new Mock<IStory>();
+            storyInBucket
+                .SetupGet(fake => fake.IsInBucket)
+                .Returns(true);
+            var unbucketedStory = new Mock<IStory>();
+            unbucketedStory
+                .SetupGet(fake => fake.IsInBucket)
+                .Returns(false);
+            reader
+                .Setup(fake => fake.ReadAsync())
+                .ReturnsAsync(new[] {
+                    storyInBucket.Object,
+                    unbucketedStory.Object
+                });
+
+            var storylist = new Storylist(reader.Object);
+
+            //Act
+            storylist.InitializeAsync().Wait();
+
+            //Assert
+            Assert.AreEqual(unbucketedStory.Object, storylist.NextUnbucketedStory);
+        }
+
+        [TestMethod()]
+        public void NextUnbucketedStory_is_null_if_all_stories_are_in_buckets()
+        {
+            //Arrange
+            var reader = new Mock<IDataReader<IStory>>();
+            var storyInBucket = new Mock<IStory>();
+            storyInBucket
+                .SetupGet(fake => fake.IsInBucket)
+                .Returns(true);
+            reader
+                .Setup(fake => fake.ReadAsync())
+                .ReturnsAsync(new[] {
+                    storyInBucket.Object
+                });
+
+            var storylist = new Storylist(reader.Object);
+
+            //Act
+            storylist.InitializeAsync().Wait();
+
+            //Assert
+            Assert.IsNull(storylist.NextUnbucketedStory);
+        }
     }
 }

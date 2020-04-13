@@ -1,8 +1,14 @@
 ﻿@inject ISortingBucketsViewModel vm
-<p hidden=@vm.HideStory>
+<p hidden=@vm.StoryHidden>
     @vm.TextForNextStoryToSort
 </p>
-<p hidden=@vm.HideAllDone class="alert-success">
+<p hidden=@vm.AllDoneHidden class="alert-success">
     All done!
 </p>
-<p hidden="@vm.HideLoader">Loading...</p>
+<p hidden="@vm.LoaderHidden">Loading...</p>
+
+@code {
+    protected override async Task OnInitializedAsync()
+        => await vm.OnInitializedAsync();
+
+}
