@@ -1,12 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using Segment.Exception;
-using StoryBuckets.Client.Models;
 using StoryBuckets.Client.ServerCommunication;
 using StoryBuckets.Shared;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace StoryBuckets.Client.Models.Tests
 {
