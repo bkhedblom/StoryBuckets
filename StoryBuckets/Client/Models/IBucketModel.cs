@@ -1,4 +1,4 @@
-﻿using StoryBuckets.Client.ServerSync;
+﻿using StoryBuckets.Client.ServerCommunication;
 using StoryBuckets.Shared;
 
 namespace StoryBuckets.Client.Models

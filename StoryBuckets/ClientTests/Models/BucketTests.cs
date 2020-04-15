@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using StoryBuckets.Client.ServerSync;
+using StoryBuckets.Client.ServerCommunication;
 using StoryBuckets.Shared;
 
 namespace StoryBuckets.Client.Models.Tests
@@ -12,7 +12,7 @@ namespace StoryBuckets.Client.Models.Tests
         public void Add_AddsStory()
         {
             //Arrange
-            var persister = new Mock<IServerSync<IBucketModel>>();
+            var persister = new Mock<IDataSync<IBucketModel>>();
             var bucket = new Bucket(persister.Object);
             var story = new Mock<IStory>();
 
@@ -29,7 +29,7 @@ namespace StoryBuckets.Client.Models.Tests
         public void Add_SetsBucketOfAddedStory()
         {
             //Arrange
-            var persister = new Mock<IServerSync<IBucketModel>>();
+            var persister = new Mock<IDataSync<IBucketModel>>();
             var bucket = new Bucket(persister.Object);
             var story = new Mock<IStory>();
 
@@ -45,7 +45,7 @@ namespace StoryBuckets.Client.Models.Tests
         public void Add_UpdatePersistedBucket()
         {
             //Arrange
-            var persister = new Mock<IServerSync<IBucketModel>>();
+            var persister = new Mock<IDataSync<IBucketModel>>();
             var bucket = new Bucket(persister.Object);
             var story = new Mock<IStory>();
 
