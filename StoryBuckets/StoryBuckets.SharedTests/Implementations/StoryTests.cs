@@ -25,5 +25,23 @@ namespace StoryBuckets.Shared.Implementations.Tests
             var stringContainsId = stringRepresentation.Contains(id.ToString());
             Assert.IsTrue(stringContainsId);
         }
+
+        [TestMethod()]
+        public void String_representation_contains_title()
+        {
+            //Arrange
+            var title = "foobar";
+            var story = new Story
+            {
+                Title = title
+            };
+
+            //Act
+            var stringRepresentation = story.ToString();
+
+            //Assert
+            var stringContainsId = stringRepresentation.Contains(title);
+            Assert.IsTrue(stringContainsId);
+        }
     }
 }

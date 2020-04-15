@@ -1,14 +1,20 @@
 ﻿@inject ISortingBucketsViewModel vm
-<p hidden=@vm.StoryHidden>
-    @vm.TextForNextStoryToSort
-</p>
-<p hidden=@vm.AllDoneHidden class="alert alert-success">
-    All done!
-</p>
-<p hidden="@vm.LoaderHidden">Loading...</p>
+    <div class="row justify-content-center">
+        <div hidden=@vm.StoryHidden class="card col-7">
+            <div class="card-body">
+                <h4 class="card-header text-center">@vm.TextForNextStoryToSort</h4>
+            </div>
+        </div>
+        <p hidden=@vm.AllDoneHidden class="alert alert-success col">
+            All done!
+        </p>
+        <p hidden="@vm.LoaderHidden" class="alert alert-light col">
+            Loading...
+            If this doesn't dissapear something went wrong.
+        </p>
+    </div>
 
 @code {
     protected override async Task OnInitializedAsync()
         => await vm.OnInitializedAsync();
-
 }

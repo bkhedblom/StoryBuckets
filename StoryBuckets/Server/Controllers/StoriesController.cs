@@ -20,7 +20,9 @@ namespace StoryBuckets.Server.Controllers
             {
                 new Story
                 {
-                    IsInBucket = true
+                    Id = 42,
+                    Title = "A Planet-sized computer simulation",
+                    IsInBucket = false
                 }
             };
 
