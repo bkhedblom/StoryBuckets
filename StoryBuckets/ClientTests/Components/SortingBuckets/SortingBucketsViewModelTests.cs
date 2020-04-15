@@ -183,5 +183,81 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             //Assert
             storylist.Verify(mock => mock.InitializeAsync(), Times.Once);
         }
+
+        [TestMethod()]
+        public void Clicking_Next_sets_current_as_being_in_bucket()
+        {
+            //Arrange
+            var nextStory = new Mock<IStory>();            
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.NextUnbucketedStory)
+                .Returns(nextStory.Object);
+
+            var vm = new SortingBucketsViewModel(storylist.Object);
+
+            //Act
+            vm.OnClickBtnNext();
+
+            //Assert
+            nextStory.VerifySet(mock => mock.IsInBucket = true);
+        }
+
+        [TestMethod()]
+        public void When_DataIsReady_and_NumberOfUnbucketedStories_is_more_than_0_Enable_next_button()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(true);
+            storylist
+                .SetupGet(fake => fake.NumberOfUnbucketedStories)
+                .Returns(3);
+
+            var vm = new SortingBucketsViewModel(storylist.Object);
+
+            //Act
+            //Assert
+            Assert.IsFalse(vm.BtnNextDisabled);
+        }
+
+        [TestMethod()]
+        public void When_NumberOfUnbucketedStories_is_0_Disable_next_button()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(true);
+            storylist
+                .SetupGet(fake => fake.NumberOfUnbucketedStories)
+                .Returns(0);
+
+            var vm = new SortingBucketsViewModel(storylist.Object);
+
+            //Act
+            //Assert
+            Assert.IsTrue(vm.BtnNextDisabled);
+        }
+
+        [TestMethod()]
+        public void When_Not_DataIsReady_Disable_next_button()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(false);
+            storylist
+                .SetupGet(fake => fake.NumberOfUnbucketedStories)
+                .Returns(3);
+
+            var vm = new SortingBucketsViewModel(storylist.Object);
+
+            //Act
+            //Assert
+            Assert.IsTrue(vm.BtnNextDisabled);
+        }
     }
 }
