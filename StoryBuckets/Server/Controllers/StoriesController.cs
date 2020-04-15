@@ -22,7 +22,11 @@ namespace StoryBuckets.Server.Controllers
                 {
                     Id = 42,
                     Title = "A Planet-sized computer simulation",
-                    IsInBucket = false
+                },
+                new Story
+                {
+                    Id = 31415,
+                    Title = "Squaring the circle"
                 }
             };
 

@@ -19,6 +19,13 @@ namespace StoryBuckets.Client.Components.SortingBuckets
         public bool AllDoneHidden => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories > 0;
         public bool LoaderHidden => _storylist.DataIsready;
 
+        public bool BtnNextDisabled => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories == 0;
+
+        public void OnClickBtnNext()
+        {
+            _storylist.NextUnbucketedStory.IsInBucket = true;
+        }
+
         public async Task OnInitializedAsync()
             => await _storylist.InitializeAsync();
     }

@@ -3,6 +3,6 @@
     public interface IStory:IData, IWorkItem
     {
         IBucket Bucket { get; set; }
-        bool IsInBucket { get; }
+        bool IsInBucket { get; set; }
     }
 }
