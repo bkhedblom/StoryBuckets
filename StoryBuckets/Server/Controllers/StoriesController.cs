@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StoryBuckets.Server.Services;
 using StoryBuckets.Shared;
 using StoryBuckets.Shared.Implementations;
 
@@ -13,22 +14,17 @@ namespace StoryBuckets.Server.Controllers
     [ApiController]
     public class StoriesController : ControllerBase
     {
+        private readonly IStoryService _service;
+
+        public StoriesController(IStoryService service)
+        {
+            _service = service;
+        }
+
         // GET: api/Stories
         [HttpGet]
-        public IReadOnlyCollection<IStory> Get() 
-            => new[] 
-            {
-                new Story
-                {
-                    Id = 42,
-                    Title = "A Planet-sized computer simulation",
-                },
-                new Story
-                {
-                    Id = 31415,
-                    Title = "Squaring the circle"
-                }
-            };
+        public async Task<IEnumerable<IStory>> Get()
+            => await _service.GetAsync();
 
         //// GET: api/Stories/5
         //[HttpGet("{id}", Name = "Get")]
