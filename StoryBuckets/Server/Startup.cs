@@ -9,6 +9,7 @@ using System.Linq;
 using StoryBuckets.Server.Services;
 using StoryBuckets.Server.DataStores;
 using StoryBuckets.Shared;
+using StoryBuckets.Server.Integrations;
 
 namespace StoryBuckets.Server
 {
@@ -25,8 +26,9 @@ namespace StoryBuckets.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IDataStore<IStory>, InMemoryDataStore<IStory>>();
+            services.AddScoped<IIntegration, HardcodedIntegration>();
             services.AddScoped<IStoryService, StoryService>();
-            services.AddSingleton<IDataStore<IStory>, HardcodedStoryStore>();
             services.AddControllersWithViews();
         }
 

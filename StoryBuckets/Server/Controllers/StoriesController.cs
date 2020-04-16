@@ -24,7 +24,10 @@ namespace StoryBuckets.Server.Controllers
         // GET: api/Stories
         [HttpGet]
         public async Task<IEnumerable<IStory>> Get()
-            => await _service.GetAllAsync();
+        {
+            var data = await _service.GetAllAsync();
+            return data;
+        }
 
         //// GET: api/Stories/5
         //[HttpGet("{id}", Name = "Get")]

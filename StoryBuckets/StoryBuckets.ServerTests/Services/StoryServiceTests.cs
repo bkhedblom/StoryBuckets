@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using StoryBuckets.Server.DataStores;
+using StoryBuckets.Server.Integrations;
 using StoryBuckets.Shared;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,9 @@ namespace StoryBuckets.Server.Services.Tests
                 .Setup(fake => fake.GetAllAsync())
                 .ReturnsAsync(new List<IStory>());
 
-            var service = new StoryService(dataStore.Object);
+            var integration = new Mock<IIntegration>();
+
+            var service = new StoryService(dataStore.Object, integration.Object);
 
             //Act
             var result = service.GetAllAsync().Result;
@@ -39,7 +42,9 @@ namespace StoryBuckets.Server.Services.Tests
                 .Setup(fake => fake.GetAllAsync())
                 .ReturnsAsync(new List<IStory>());
 
-            var service = new StoryService(dataStore.Object);
+            var integration = new Mock<IIntegration>();
+
+            var service = new StoryService(dataStore.Object, integration.Object);
 
             //Act
             var result = service.GetAllAsync().Result;
@@ -61,7 +66,9 @@ namespace StoryBuckets.Server.Services.Tests
                 .Setup(fake => fake.GetAllAsync())
                 .ReturnsAsync(stories);
 
-            var service = new StoryService(dataStore.Object);
+            var integration = new Mock<IIntegration>();
+
+            var service = new StoryService(dataStore.Object, integration.Object);
 
             //Act
             var result = service.GetAllAsync().Result;
@@ -70,5 +77,75 @@ namespace StoryBuckets.Server.Services.Tests
             Assert.AreEqual(stories.First(), result.First());
         }
 
+        [TestMethod()]
+        public void If_DataStore_is_empty_GetAll_use_Integration_to_fetch_stories()
+        {
+            //Arrange
+            var dataStore = new Mock<IDataStore<IStory>>();
+            dataStore
+                .SetupGet(fake => fake.IsEmpty)
+                .Returns(true);
+
+            var integration = new Mock<IIntegration>();
+
+            var service = new StoryService(dataStore.Object, integration.Object);
+
+            //Act
+            var result = service.GetAllAsync().Result;
+
+            //Assert
+            integration.Verify(mock => mock.FetchAsync(), Times.Once);
+        }
+
+        [TestMethod()]
+        public void If_DataStore_is_not_empty_Integration_are_not_called()
+        {
+            //Arrange
+            var dataStore = new Mock<IDataStore<IStory>>();
+            dataStore
+                .SetupGet(fake => fake.IsEmpty)
+                .Returns(false);
+
+            var integration = new Mock<IIntegration>();
+
+            var service = new StoryService(dataStore.Object, integration.Object);
+
+            //Act
+            var result = service.GetAllAsync().Result;
+
+            //Assert
+            integration.Verify(mock => mock.FetchAsync(), Times.Never);
+        }
+
+        [TestMethod()]
+        public void Fetched_stories_are_added_to_the_datastore()
+        {
+            //Arrange
+            IEnumerable<IStory> addedStories = Enumerable.Empty<IStory>();
+            var dataStore = new Mock<IDataStore<IStory>>();
+            dataStore
+                .SetupGet(fake => fake.IsEmpty)
+                .Returns(true);
+            dataStore
+                .Setup(mock => mock.AddAsync(It.IsAny<IEnumerable<IStory>>()))
+                .Callback<IEnumerable<IStory>>(items => addedStories = items);                
+
+            var stories = new[]
+            {
+                new Mock<IStory>().Object
+            };
+            var integration = new Mock<IIntegration>();
+            integration
+                .Setup(fake => fake.FetchAsync())
+                .ReturnsAsync(stories);
+
+            var service = new StoryService(dataStore.Object, integration.Object);
+
+            //Act
+            service.GetAllAsync().Wait();
+
+            //Assert
+            Assert.AreEqual(stories.Single(), addedStories.Single());
+        }
     }
 }

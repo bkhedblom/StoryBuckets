@@ -5,12 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StoryBuckets.Server.DataStores
+namespace StoryBuckets.Server.Integrations
 {
-    public class HardcodedStoryStore : IDataStore<IStory>
+    public class HardcodedIntegration : IIntegration
     {
-        public async Task<IEnumerable<IStory>> GetAllAsync() => new[]
-                       {
+        public Task<IEnumerable<IStory>> FetchAsync()
+        {
+            var tcs = new TaskCompletionSource<IEnumerable<IStory>>();
+            tcs.SetResult(new[]
+                              {
                 new Story
                 {
                     Id = 42,
@@ -21,13 +24,8 @@ namespace StoryBuckets.Server.DataStores
                     Id = 31415,
                     Title = "Squaring the circle"
                 }
-            };
-
-        public Task AddAsync(IEnumerable<IStory> items)
-        {
-            throw new NotImplementedException();
+            });
+            return tcs.Task;
         }
-
-        public bool IsEmpty => false;
     }
 }
