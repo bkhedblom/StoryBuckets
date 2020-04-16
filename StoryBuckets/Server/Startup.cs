@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using StoryBuckets.Server.Services;
+using StoryBuckets.Server.DataStores;
+using StoryBuckets.Shared;
 
 namespace StoryBuckets.Server
 {
@@ -24,6 +26,7 @@ namespace StoryBuckets.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IStoryService, StoryService>();
+            services.AddSingleton<IDataStore<IStory>, HardcodedStoryStore>();
             services.AddControllersWithViews();
         }
 

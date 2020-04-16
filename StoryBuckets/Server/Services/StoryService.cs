@@ -1,4 +1,5 @@
-﻿using StoryBuckets.Shared;
+﻿using StoryBuckets.Server.DataStores;
+using StoryBuckets.Shared;
 using StoryBuckets.Shared.Implementations;
 using System;
 using System.Collections.Generic;
@@ -9,19 +10,16 @@ namespace StoryBuckets.Server.Services
 {
     public class StoryService : IStoryService
     {
-        public async Task<IEnumerable<IStory>> GetAsync()
-            => new[] 
-            {
-                new Story
-                {
-                    Id = 42,
-                    Title = "A Planet-sized computer simulation",
-                },
-                new Story
-                {
-                    Id = 31415,
-                    Title = "Squaring the circle"
-                }
-            };
+        private readonly IDataStore<IStory> _dataStore;
+
+        public StoryService(IDataStore<IStory> dataStore)
+        {
+            _dataStore = dataStore;
+        }
+
+        public async Task<IEnumerable<IStory>> GetAllAsync()
+        {
+           return await _dataStore.GetAllAsync();
+        }
     }
 }

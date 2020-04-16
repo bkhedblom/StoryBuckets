@@ -8,6 +8,6 @@ namespace StoryBuckets.Server.Services
 {
     public interface IStoryService
     {
-        Task<IEnumerable<IStory>> GetAsync();
+        Task<IEnumerable<IStory>> GetAllAsync();
     }
 }

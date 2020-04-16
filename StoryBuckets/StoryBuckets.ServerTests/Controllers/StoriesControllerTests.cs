@@ -25,7 +25,7 @@ namespace StoryBuckets.Server.Controllers.Tests
                 };
             var service = new Mock<IStoryService>();
             service
-                .Setup(fake => fake.GetAsync())
+                .Setup(fake => fake.GetAllAsync())
                 .ReturnsAsync(stories);
 
             var controller = new StoriesController(service.Object);
@@ -34,7 +34,7 @@ namespace StoryBuckets.Server.Controllers.Tests
             var result = controller.Get().Result;
 
             //Assert
-            service.Verify(mock => mock.GetAsync(), Times.Once);
+            service.Verify(mock => mock.GetAllAsync(), Times.Once);
             Assert.AreEqual(stories.Count(), result.Count());
             Assert.AreEqual(stories.First(), result.First());
         }
