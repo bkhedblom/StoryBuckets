@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using StoryBuckets.Shared.Implementations;
+using StoryBuckets.Shared;
 using System.Linq;
 
 namespace StoryBuckets.Client.ServerCommunication.Tests

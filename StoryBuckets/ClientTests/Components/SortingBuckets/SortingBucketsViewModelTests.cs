@@ -15,7 +15,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             var storylist = new Mock<IStorylist>();
             storylist
                 .SetupGet(fake => fake.NextUnbucketedStory)
-                .Returns(new Mock<IStory>().Object);
+                .Returns(new Mock<Story>().Object);
 
             var vm = new SortingBucketsViewModel(storylist.Object);
 
@@ -31,7 +31,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             var storylist = new Mock<IStorylist>();
             storylist
                 .SetupGet(fake => fake.NextUnbucketedStory)
-                .Returns((IStory)null);
+                .Returns((Story)null);
 
             var vm = new SortingBucketsViewModel(storylist.Object);
 
@@ -46,7 +46,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             //Arrange
             var text = "#1337 Foobar";
             
-            var nextUnbucketedStory = new Mock<IStory>();
+            var nextUnbucketedStory = new Mock<Story>();
             nextUnbucketedStory
                 .Setup(fake => fake.ToString())
                 .Returns(text);
@@ -188,11 +188,11 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
         public void Clicking_Next_sets_current_as_being_in_bucket()
         {
             //Arrange
-            var nextStory = new Mock<IStory>();            
+            var nextStory = new Story();            
             var storylist = new Mock<IStorylist>();
             storylist
                 .SetupGet(fake => fake.NextUnbucketedStory)
-                .Returns(nextStory.Object);
+                .Returns(nextStory);
 
             var vm = new SortingBucketsViewModel(storylist.Object);
 
@@ -200,7 +200,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             vm.OnClickBtnNext();
 
             //Assert
-            nextStory.VerifySet(mock => mock.IsInBucket = true);
+            Assert.IsTrue(nextStory.IsInBucket);
         }
 
         [TestMethod()]

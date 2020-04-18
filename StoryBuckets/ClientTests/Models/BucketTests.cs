@@ -14,7 +14,7 @@ namespace StoryBuckets.Client.Models.Tests
             //Arrange
             var persister = new Mock<IDataSync<IBucketModel>>();
             var bucket = new Bucket(persister.Object);
-            var story = new Mock<IStory>();
+            var story = new Mock<Story>();
 
             //Act
             var countBefore = bucket.Stories.Count;
@@ -31,14 +31,14 @@ namespace StoryBuckets.Client.Models.Tests
             //Arrange
             var persister = new Mock<IDataSync<IBucketModel>>();
             var bucket = new Bucket(persister.Object);
-            var story = new Mock<IStory>();
+            var story = new Story();
 
             //Act
-            bucket.Add(story.Object);
+            bucket.Add(story);
 
 
             //Assert
-            story.VerifySet(mock => mock.Bucket = bucket);
+            Assert.AreEqual(bucket, story.Bucket);
         }
 
         [TestMethod()]
@@ -47,7 +47,7 @@ namespace StoryBuckets.Client.Models.Tests
             //Arrange
             var persister = new Mock<IDataSync<IBucketModel>>();
             var bucket = new Bucket(persister.Object);
-            var story = new Mock<IStory>();
+            var story = new Mock<Story>();
 
             //Act
             bucket.Add(story.Object);

@@ -1,5 +1,4 @@
 ﻿using StoryBuckets.Shared;
-using StoryBuckets.Shared.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace StoryBuckets.Server.DataStores
 {
-    public class HardcodedStoryStore : IDataStore<IStory>
+    public class HardcodedStoryStore : IDataStore<Story>
     {
-        public async Task<IEnumerable<IStory>> GetAllAsync() => new[]
+        public async Task<IEnumerable<Story>> GetAllAsync() => new[]
                        {
                 new Story
                 {
@@ -23,7 +22,7 @@ namespace StoryBuckets.Server.DataStores
                 }
             };
 
-        public Task AddAsync(IEnumerable<IStory> items)
+        public Task AddAsync(IEnumerable<Story> items)
         {
             throw new NotImplementedException();
         }

@@ -6,6 +6,6 @@ namespace StoryBuckets.Server.Integrations
 {
     public interface IIntegration
     {
-        Task<IEnumerable<IStory>> FetchAsync();
+        Task<IEnumerable<Story>> FetchAsync();
     }
 }

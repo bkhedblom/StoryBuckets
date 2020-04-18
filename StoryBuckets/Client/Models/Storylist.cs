@@ -9,15 +9,15 @@ namespace StoryBuckets.Client.Models
 {
     public class Storylist : IStorylist
     {
-        private readonly IDataReader<IStory> _datareader;
-        private IReadOnlyCollection<IStory> _stories;
+        private readonly IDataReader<Story> _datareader;
+        private IReadOnlyCollection<Story> _stories;
 
-        public Storylist(IDataReader<IStory> datareader)
+        public Storylist(IDataReader<Story> datareader)
         {
             _datareader = datareader;
         }
 
-        public IStory NextUnbucketedStory => _stories?.FirstOrDefault(story => !story.IsInBucket);
+        public Story NextUnbucketedStory => _stories?.FirstOrDefault(story => !story.IsInBucket);
 
         public bool DataIsready => _stories != null;
 

@@ -1,4 +1,4 @@
-﻿using StoryBuckets.Shared;
+﻿using StoryBuckets.Shared.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

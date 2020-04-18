@@ -13,7 +13,7 @@ namespace StoryBuckets.Client.Models.Tests
         public void NextUnbucketedStory_return_null_if_called_before_initialization()
         {
             //Arrange
-            var reader = new Mock<IDataReader<IStory>>();
+            var reader = new Mock<IDataReader<Story>>();
             var storylist = new Storylist(reader.Object);
 
             //Act
@@ -25,7 +25,7 @@ namespace StoryBuckets.Client.Models.Tests
         public void NumberOfUnbucketedStories_return_null_if_called_before_initialization()
         {
             //Arrange
-            var reader = new Mock<IDataReader<IStory>>();
+            var reader = new Mock<IDataReader<Story>>();
             var storylist = new Storylist(reader.Object);
 
             //Act
@@ -37,7 +37,7 @@ namespace StoryBuckets.Client.Models.Tests
         public void DataIsready_should_be_false_before_data_is_loaded()
         {
             //Arrange
-            var reader = new Mock<IDataReader<IStory>>();
+            var reader = new Mock<IDataReader<Story>>();
             var storylist = new Storylist(reader.Object);
 
             //Act
@@ -49,7 +49,7 @@ namespace StoryBuckets.Client.Models.Tests
         public void Data_should_be_Read_when_InitializeAsync_is_called()
         {
             //Arrange
-            var reader = new Mock<IDataReader<IStory>>();
+            var reader = new Mock<IDataReader<Story>>();
             var storylist = new Storylist(reader.Object);
 
             //Act
@@ -63,10 +63,10 @@ namespace StoryBuckets.Client.Models.Tests
         public void DataIsready_should_be_true_after_fetching_data()
         {
             //Arrange
-            var reader = new Mock<IDataReader<IStory>>();
+            var reader = new Mock<IDataReader<Story>>();
             reader
                 .Setup(fake => fake.ReadAsync())
-                .ReturnsAsync(new List<IStory>());
+                .ReturnsAsync(new List<Story>());
 
             var storylist = new Storylist(reader.Object);
 
@@ -81,20 +81,17 @@ namespace StoryBuckets.Client.Models.Tests
         public void NumberOfUnbucketedStories_returns_number_of_stories_not_in_a_bucket()
         {
             //Arrange
-            var reader = new Mock<IDataReader<IStory>>();
-            var storyInBucket = new Mock<IStory>();
-            storyInBucket
-                .SetupGet(fake => fake.IsInBucket)
-                .Returns(true);
-            var unbucketedStory = new Mock<IStory>();
-            unbucketedStory
-                .SetupGet(fake => fake.IsInBucket)
-                .Returns(false);
+            var reader = new Mock<IDataReader<Story>>();
+            var storyInBucket = new Story { 
+                IsInBucket = true };
+            var unbucketedStory = new Story { 
+                IsInBucket = false
+            };
             reader
                 .Setup(fake => fake.ReadAsync())
-                .ReturnsAsync(new[] { 
-                    storyInBucket.Object,
-                    unbucketedStory.Object
+                .ReturnsAsync(new[] {
+                    storyInBucket,
+                    unbucketedStory
                 });
 
             var storylist = new Storylist(reader.Object);
@@ -110,20 +107,22 @@ namespace StoryBuckets.Client.Models.Tests
         public void NextUnbucketedStory_returns_an_unbucketedStory()
         {
             //Arrange
-            var reader = new Mock<IDataReader<IStory>>();
-            var storyInBucket = new Mock<IStory>();
-            storyInBucket
-                .SetupGet(fake => fake.IsInBucket)
-                .Returns(true);
-            var unbucketedStory = new Mock<IStory>();
-            unbucketedStory
-                .SetupGet(fake => fake.IsInBucket)
-                .Returns(false);
+            var reader = new Mock<IDataReader<Story>>();
+            var storyInBucket = new Story
+            {
+                IsInBucket = true
+            };
+
+            var unbucketedStory = new Story
+            {
+                IsInBucket = false
+            };
+            
             reader
                 .Setup(fake => fake.ReadAsync())
                 .ReturnsAsync(new[] {
-                    storyInBucket.Object,
-                    unbucketedStory.Object
+                    storyInBucket,
+                    unbucketedStory
                 });
 
             var storylist = new Storylist(reader.Object);
@@ -132,22 +131,22 @@ namespace StoryBuckets.Client.Models.Tests
             storylist.InitializeAsync().Wait();
 
             //Assert
-            Assert.AreEqual(unbucketedStory.Object, storylist.NextUnbucketedStory);
+            Assert.AreEqual(unbucketedStory, storylist.NextUnbucketedStory);
         }
 
         [TestMethod()]
         public void NextUnbucketedStory_is_null_if_all_stories_are_in_buckets()
         {
             //Arrange
-            var reader = new Mock<IDataReader<IStory>>();
-            var storyInBucket = new Mock<IStory>();
-            storyInBucket
-                .SetupGet(fake => fake.IsInBucket)
-                .Returns(true);
+            var reader = new Mock<IDataReader<Story>>();
+            var storyInBucket = new Story
+            {
+                IsInBucket = true
+            };
             reader
                 .Setup(fake => fake.ReadAsync())
                 .ReturnsAsync(new[] {
-                    storyInBucket.Object
+                    storyInBucket
                 });
 
             var storylist = new Storylist(reader.Object);

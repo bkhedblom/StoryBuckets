@@ -8,18 +8,18 @@ namespace StoryBuckets.Client.Models
 {
     public class Bucket : IBucketModel
     {
-        private readonly Collection<IStory> _stories = new Collection<IStory>();
+        private readonly Collection<Story> _stories = new Collection<Story>();
         private readonly IDataSync<IBucketModel> _persister;
 
         public Bucket(IDataSync<IBucketModel> persister)
         {
             _persister = persister;
         }
-        public IReadOnlyCollection<IStory> Stories => _stories;
+        public IReadOnlyCollection<Story> Stories => _stories;
 
         public int Id => throw new NotImplementedException();
 
-        public async void Add(IStory story)
+        public async void Add(Story story)
         {
             _stories.Add(story);
             story.Bucket = this;

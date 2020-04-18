@@ -1,4 +1,4 @@
-﻿using StoryBuckets.Shared;
+﻿using StoryBuckets.Shared.Interfaces;
 
 namespace StoryBuckets.Client.ServerCommunication
 {

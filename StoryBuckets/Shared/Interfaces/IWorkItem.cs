@@ -1,4 +1,4 @@
-﻿namespace StoryBuckets.Shared
+﻿namespace StoryBuckets.Shared.Interfaces
 {
     public interface IWorkItem
     {

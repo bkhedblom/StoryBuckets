@@ -19,9 +19,9 @@ namespace StoryBuckets.Server.Controllers.Tests
             //Arrange
             var stories = new []
                 {
-                    new Mock<IStory>().Object,
-                    new Mock<IStory>().Object,
-                    new Mock<IStory>().Object
+                    new Story(),
+                    new Story(),
+                    new Story()
                 };
             var service = new Mock<IStoryService>();
             service

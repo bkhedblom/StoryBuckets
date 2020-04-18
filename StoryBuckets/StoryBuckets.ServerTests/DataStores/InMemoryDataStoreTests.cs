@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using StoryBuckets.Server.DataStores;
-using StoryBuckets.Shared;
+using StoryBuckets.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

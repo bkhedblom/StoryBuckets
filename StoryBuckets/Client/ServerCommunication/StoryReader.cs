@@ -1,5 +1,4 @@
 ﻿using StoryBuckets.Shared;
-using StoryBuckets.Shared.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StoryBuckets.Client.ServerCommunication
 {
-    public class StoryReader : IDataReader<IStory>
+    public class StoryReader : IDataReader<Story>
     {
         private const string storyEndpoint = "stories";
         private IHttpClient _httpClient;
@@ -17,7 +16,7 @@ namespace StoryBuckets.Client.ServerCommunication
             _httpClient = httpClient;
         }
 
-        public async Task<IReadOnlyCollection<IStory>> ReadAsync()
+        public async Task<IReadOnlyCollection<Story>> ReadAsync()
             => await _httpClient.GetJsonAsync<Story[]>(storyEndpoint);
     }
 }

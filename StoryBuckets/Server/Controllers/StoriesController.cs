@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StoryBuckets.Server.Services;
 using StoryBuckets.Shared;
-using StoryBuckets.Shared.Implementations;
 
 namespace StoryBuckets.Server.Controllers
 {
@@ -23,11 +24,7 @@ namespace StoryBuckets.Server.Controllers
 
         // GET: api/Stories
         [HttpGet]
-        public async Task<IEnumerable<IStory>> Get()
-        {
-            var data = await _service.GetAllAsync();
-            return data;
-        }
+        public async Task<IEnumerable<Story>> Get() => await _service.GetAllAsync();
 
         //// GET: api/Stories/5
         //[HttpGet("{id}", Name = "Get")]

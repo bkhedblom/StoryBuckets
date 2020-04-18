@@ -1,5 +1,4 @@
 ﻿using StoryBuckets.Shared;
-using StoryBuckets.Shared.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +8,9 @@ namespace StoryBuckets.Server.Integrations
 {
     public class HardcodedIntegration : IIntegration
     {
-        public Task<IEnumerable<IStory>> FetchAsync()
+        public Task<IEnumerable<Story>> FetchAsync()
         {
-            var tcs = new TaskCompletionSource<IEnumerable<IStory>>();
+            var tcs = new TaskCompletionSource<IEnumerable<Story>>();
             tcs.SetResult(new[]
                               {
                 new Story

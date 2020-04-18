@@ -17,10 +17,10 @@ namespace StoryBuckets.Server.Services.Tests
         public void GetAll_returns_some_stories()
         {
             //Arrange
-            var dataStore = new Mock<IDataStore<IStory>>();
+            var dataStore = new Mock<IDataStore<Story>>();
             dataStore
                 .Setup(fake => fake.GetAllAsync())
-                .ReturnsAsync(new List<IStory>());
+                .ReturnsAsync(new List<Story>());
 
             var integration = new Mock<IIntegration>();
 
@@ -37,10 +37,10 @@ namespace StoryBuckets.Server.Services.Tests
         public void GetAll_gets_stories_From_datastore()
         {
             //Arrange
-            var dataStore = new Mock<IDataStore<IStory>>();
+            var dataStore = new Mock<IDataStore<Story>>();
             dataStore
                 .Setup(fake => fake.GetAllAsync())
-                .ReturnsAsync(new List<IStory>());
+                .ReturnsAsync(new List<Story>());
 
             var integration = new Mock<IIntegration>();
 
@@ -59,9 +59,9 @@ namespace StoryBuckets.Server.Services.Tests
             //Arrange
             var stories = new[]
             {
-                new Mock<IStory>().Object
+                new Mock<Story>().Object
             };
-            var dataStore = new Mock<IDataStore<IStory>>();
+            var dataStore = new Mock<IDataStore<Story>>();
             dataStore
                 .Setup(fake => fake.GetAllAsync())
                 .ReturnsAsync(stories);
@@ -81,7 +81,7 @@ namespace StoryBuckets.Server.Services.Tests
         public void If_DataStore_is_empty_GetAll_use_Integration_to_fetch_stories()
         {
             //Arrange
-            var dataStore = new Mock<IDataStore<IStory>>();
+            var dataStore = new Mock<IDataStore<Story>>();
             dataStore
                 .SetupGet(fake => fake.IsEmpty)
                 .Returns(true);
@@ -101,7 +101,7 @@ namespace StoryBuckets.Server.Services.Tests
         public void If_DataStore_is_not_empty_Integration_are_not_called()
         {
             //Arrange
-            var dataStore = new Mock<IDataStore<IStory>>();
+            var dataStore = new Mock<IDataStore<Story>>();
             dataStore
                 .SetupGet(fake => fake.IsEmpty)
                 .Returns(false);
@@ -121,18 +121,18 @@ namespace StoryBuckets.Server.Services.Tests
         public void Fetched_stories_are_added_to_the_datastore()
         {
             //Arrange
-            IEnumerable<IStory> addedStories = Enumerable.Empty<IStory>();
-            var dataStore = new Mock<IDataStore<IStory>>();
+            IEnumerable<Story> addedStories = Enumerable.Empty<Story>();
+            var dataStore = new Mock<IDataStore<Story>>();
             dataStore
                 .SetupGet(fake => fake.IsEmpty)
                 .Returns(true);
             dataStore
-                .Setup(mock => mock.AddAsync(It.IsAny<IEnumerable<IStory>>()))
-                .Callback<IEnumerable<IStory>>(items => addedStories = items);                
+                .Setup(mock => mock.AddAsync(It.IsAny<IEnumerable<Story>>()))
+                .Callback<IEnumerable<Story>>(items => addedStories = items);                
 
             var stories = new[]
             {
-                new Mock<IStory>().Object
+                new Mock<Story>().Object
             };
             var integration = new Mock<IIntegration>();
             integration
