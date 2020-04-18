@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace StoryBuckets.DataStoresTests
+namespace StoryBuckets.DataStores.Tests
 {
     [TestClass()]
     public class InMemoryDataStoreTests

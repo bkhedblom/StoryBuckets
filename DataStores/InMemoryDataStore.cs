@@ -9,10 +9,10 @@ namespace StoryBuckets.DataStores
 {
     public class InMemoryDataStore<T> : IDataStore<T> where T : IData
     {
-        public readonly Dictionary<int, T> _items = new Dictionary<int, T>();
+        private readonly Dictionary<int, T> _items = new Dictionary<int, T>();
         public bool IsEmpty => !_items.Any();
 
-        public Task AddAsync(IEnumerable<T> items)
+        public virtual Task AddAsync(IEnumerable<T> items)
         {
             foreach (var item in items)
             {
@@ -28,7 +28,7 @@ namespace StoryBuckets.DataStores
             return Task.CompletedTask;
         }
 
-        public Task<IEnumerable<T>> GetAllAsync()
+        public virtual Task<IEnumerable<T>> GetAllAsync()
         {
             var tcs = new TaskCompletionSource<IEnumerable<T>>();
             tcs.SetResult(_items.Values.ToArray());

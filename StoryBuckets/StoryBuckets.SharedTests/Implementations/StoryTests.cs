@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace StoryBuckets.Shared.Implementations.Tests
+namespace StoryBuckets.Shared.Tests
 {
     [TestClass()]
     public class StoryTests
