@@ -2,13 +2,14 @@
 using Moq;
 using StoryBuckets.DataStores;
 using StoryBuckets.Integrations;
+using StoryBuckets.Services;
 using StoryBuckets.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace StoryBuckets.Server.Services.Tests
+namespace StoryBuckets.Services.Tests
 {
     [TestClass()]
     public class StoryServiceTests
@@ -128,7 +129,7 @@ namespace StoryBuckets.Server.Services.Tests
                 .Returns(true);
             dataStore
                 .Setup(mock => mock.AddAsync(It.IsAny<IEnumerable<Story>>()))
-                .Callback<IEnumerable<Story>>(items => addedStories = items);                
+                .Callback<IEnumerable<Story>>(items => addedStories = items);
 
             var stories = new[]
             {

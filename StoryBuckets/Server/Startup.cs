@@ -6,10 +6,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
-using StoryBuckets.Server.Services;
 using StoryBuckets.Shared;
 using StoryBuckets.Integrations;
 using StoryBuckets.DataStores;
+using StoryBuckets.Services;
 
 namespace StoryBuckets.Server
 {

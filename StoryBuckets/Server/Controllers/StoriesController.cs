@@ -6,7 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using StoryBuckets.Server.Services;
+using StoryBuckets.Services;
 using StoryBuckets.Shared;
 
 namespace StoryBuckets.Server.Controllers

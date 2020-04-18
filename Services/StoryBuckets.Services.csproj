@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataStores\StoryBuckets.DataStores.csproj" />
+    <ProjectReference Include="..\Integrations\StoryBuckets.Integrations.csproj" />
+    <ProjectReference Include="..\StoryBuckets\Shared\StoryBuckets.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
