@@ -9,7 +9,7 @@ using System.Linq;
 using StoryBuckets.Server.Services;
 using StoryBuckets.Server.DataStores;
 using StoryBuckets.Shared;
-using StoryBuckets.Server.Integrations;
+using StoryBuckets.Integrations;
 
 namespace StoryBuckets.Server
 {

@@ -1,5 +1,5 @@
-﻿using StoryBuckets.Server.DataStores;
-using StoryBuckets.Server.Integrations;
+﻿using StoryBuckets.Integrations;
+using StoryBuckets.Server.DataStores;
 using StoryBuckets.Shared;
 using System;
 using System.Collections.Generic;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace StoryBuckets.Server.Integrations
+namespace StoryBuckets.Integrations
 {
     public interface IIntegration
     {
