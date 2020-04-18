@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StoryBuckets.DataStores
+namespace StoryBuckets.DataStores.Stories
 {
     public class HardcodedStoryStore : IDataStore<Story>
     {
@@ -22,11 +22,18 @@ namespace StoryBuckets.DataStores
                 }
             };
 
-        public Task AddAsync(IEnumerable<Story> items)
+        public Task AddOrUpdateAsync(IEnumerable<Story> items)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task InitializeAsync()
         {
             throw new NotImplementedException();
         }
 
         public bool IsEmpty => false;
+
+        public bool IsInitialized => true;
     }
 }

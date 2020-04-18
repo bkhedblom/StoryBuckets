@@ -10,6 +10,10 @@ using StoryBuckets.Shared;
 using StoryBuckets.Integrations;
 using StoryBuckets.DataStores;
 using StoryBuckets.Services;
+using StoryBuckets.DataStores.Generic;
+using StoryBuckets.DataStores.FileStore;
+using StoryBuckets.DataStores.FileStorage;
+using StoryBuckets.DataStores.Stories;
 
 namespace StoryBuckets.Server
 {
@@ -26,7 +30,10 @@ namespace StoryBuckets.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IDataStore<Story>, InMemoryDataStore<Story>>();
+            services.AddSingleton<IFilesystemIo, FilesystemIo>();
+            services.AddSingleton<IPathProvider, TempFolderPathProvider>();
+            services.AddSingleton<IStorageFolderProvider, StorageFolderProvider>();
+            services.AddScoped<IDataStore<Story>, InMemoryFileBackedStoryDataStore>();
             services.AddScoped<IIntegration, HardcodedIntegration>();
             services.AddScoped<IStoryService, StoryService>();
             services.AddControllersWithViews();

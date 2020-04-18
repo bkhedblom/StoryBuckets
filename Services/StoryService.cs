@@ -21,10 +21,11 @@ namespace StoryBuckets.Services
 
         public async Task<IEnumerable<Story>> GetAllAsync()
         {
+            if (!_dataStore.IsInitialized)
+                await _dataStore.InitializeAsync();            
             if (_dataStore.IsEmpty)
-            {
                 await FillDataStoreFromIntegration();
-            }
+            
             return await _dataStore.GetAllAsync();
         }
 
@@ -36,7 +37,7 @@ namespace StoryBuckets.Services
                 Id = integrationStory.Id,
                 Title = integrationStory.Title
             });
-            await _dataStore.AddAsync(storiesToAdd);
+            await _dataStore.AddOrUpdateAsync(storiesToAdd);
         }
     }
 }

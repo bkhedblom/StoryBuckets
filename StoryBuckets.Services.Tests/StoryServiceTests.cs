@@ -128,7 +128,7 @@ namespace StoryBuckets.Services.Tests
                 .SetupGet(fake => fake.IsEmpty)
                 .Returns(true);
             dataStore
-                .Setup(mock => mock.AddAsync(It.IsAny<IEnumerable<Story>>()))
+                .Setup(mock => mock.AddOrUpdateAsync(It.IsAny<IEnumerable<Story>>()))
                 .Callback<IEnumerable<Story>>(items => addedStories = items);
 
             var stories = new[]
@@ -161,7 +161,7 @@ namespace StoryBuckets.Services.Tests
                 .SetupGet(fake => fake.IsEmpty)
                 .Returns(true);
             dataStore
-                .Setup(mock => mock.AddAsync(It.IsAny<IEnumerable<Story>>()))
+                .Setup(mock => mock.AddOrUpdateAsync(It.IsAny<IEnumerable<Story>>()))
                 .Callback<IEnumerable<Story>>(items => addedStories = items);
 
             var story1 = new Mock<IStoryFromIntegration>();
@@ -210,7 +210,7 @@ namespace StoryBuckets.Services.Tests
                 .SetupGet(fake => fake.IsEmpty)
                 .Returns(true);
             dataStore
-                .Setup(mock => mock.AddAsync(It.IsAny<IEnumerable<Story>>()))
+                .Setup(mock => mock.AddOrUpdateAsync(It.IsAny<IEnumerable<Story>>()))
                 .Callback<IEnumerable<Story>>(items => addedStories = items);
 
             var story1 = new Mock<IStoryFromIntegration>();
@@ -247,6 +247,26 @@ namespace StoryBuckets.Services.Tests
             {
                 Assert.IsNotNull(addedStories.SingleOrDefault(story => story.Title == integrationStory.Title), $"Story Title {integrationStory.Title} was not added!");
             }
+        }
+
+        [TestMethod()]
+        public void If_DataStore_is_not_initialized_GetAll_initializes_it()
+        {
+            //Arrange
+            var dataStore = new Mock<IDataStore<Story>>();
+            dataStore
+                .SetupGet(fake => fake.IsInitialized)
+                .Returns(false);
+
+            var integration = new Mock<IIntegration>();
+
+            var service = new StoryService(dataStore.Object, integration.Object);
+
+            //Act
+            service.GetAllAsync().Wait();
+
+            //Assert
+            dataStore.Verify(mock => mock.InitializeAsync(), Times.Once);
         }
     }
 }

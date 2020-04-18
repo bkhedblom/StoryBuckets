@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using StoryBuckets.DataStores;
+using StoryBuckets.DataStores.Generic;
 using StoryBuckets.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace StoryBuckets.DataStores.Tests
             };
 
             //Act
-            datastore.AddAsync(items).Wait();
+            datastore.AddOrUpdateAsync(items).Wait();
 
             //Assert
             Assert.IsFalse(datastore.IsEmpty);
@@ -53,7 +53,7 @@ namespace StoryBuckets.DataStores.Tests
             };
 
             //Act
-            datastore.AddAsync(items).Wait();
+            datastore.AddOrUpdateAsync(items).Wait();
             var retrieved = datastore.GetAllAsync().Result;
 
             //Assert
@@ -72,10 +72,10 @@ namespace StoryBuckets.DataStores.Tests
             };
 
             //Act
-            datastore.AddAsync(items).Wait();
+            datastore.AddOrUpdateAsync(items).Wait();
             var countAfterFirstAdd = datastore.GetAllAsync().Result.Count();
 
-            datastore.AddAsync(items).Wait();
+            datastore.AddOrUpdateAsync(items).Wait();
             var countAfterSecondAdd = datastore.GetAllAsync().Result.Count();
 
             //Assert
@@ -102,7 +102,7 @@ namespace StoryBuckets.DataStores.Tests
             };
 
             //Act
-            datastore.AddAsync(items).Wait();
+            datastore.AddOrUpdateAsync(items).Wait();
             var retrieved = datastore.GetAllAsync().Result;
 
             //Assert
@@ -123,8 +123,8 @@ namespace StoryBuckets.DataStores.Tests
             item2.SetupGet(fake => fake.Id).Returns(id);
 
             //Act
-            datastore.AddAsync(new[] { item1.Object }).Wait();
-            datastore.AddAsync(new[] { item2.Object }).Wait();
+            datastore.AddOrUpdateAsync(new[] { item1.Object }).Wait();
+            datastore.AddOrUpdateAsync(new[] { item2.Object }).Wait();
             var retrieved = datastore.GetAllAsync().Result;
 
             //Assert
