@@ -9,17 +9,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Client", "Stor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Shared", "StoryBuckets\Shared\StoryBuckets.Shared.csproj", "{0D430DAA-2ECE-417C-874B-C037EBA27541}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.ClientTests", "StoryBuckets\ClientTests\StoryBuckets.ClientTests.csproj", "{25B5F93C-DC3D-457B-9718-AF2F3715AABF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Client.Tests", "StoryBuckets\ClientTests\StoryBuckets.Client.Tests.csproj", "{25B5F93C-DC3D-457B-9718-AF2F3715AABF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.SharedTests", "StoryBuckets\StoryBuckets.SharedTests\StoryBuckets.SharedTests.csproj", "{F7873B6D-7C37-4165-B474-8E24ED3ECE01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Shared.Tests", "StoryBuckets\StoryBuckets.SharedTests\StoryBuckets.Shared.Tests.csproj", "{F7873B6D-7C37-4165-B474-8E24ED3ECE01}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.ServerTests", "StoryBuckets\StoryBuckets.ServerTests\StoryBuckets.ServerTests.csproj", "{3C7620A6-BF38-4C2F-BC3D-99B613BC8C13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Server.Tests", "StoryBuckets\StoryBuckets.ServerTests\StoryBuckets.Server.Tests.csproj", "{3C7620A6-BF38-4C2F-BC3D-99B613BC8C13}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Integrations", "Integrations\StoryBuckets.Integrations.csproj", "{43118597-434F-4EB5-B71B-8AB78EA503EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.DataStores", "DataStores\StoryBuckets.DataStores.csproj", "{F565CB9F-986F-42BC-9955-F0FE6A6C2BFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.DataStoresTests", "StoryBuckets.DataStoresTests\StoryBuckets.DataStoresTests.csproj", "{82CC0A9C-BB9D-4E10-96DF-19D37E1F663E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.DataStores.Tests", "StoryBuckets.DataStoresTests\StoryBuckets.DataStores.Tests.csproj", "{82CC0A9C-BB9D-4E10-96DF-19D37E1F663E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Services", "Services\StoryBuckets.Services.csproj", "{544B1138-C819-41CA-AE16-545D7601F4F6}"
 EndProject
