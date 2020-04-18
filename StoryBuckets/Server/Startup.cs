@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using StoryBuckets.Server.Services;
-using StoryBuckets.Server.DataStores;
 using StoryBuckets.Shared;
 using StoryBuckets.Integrations;
+using StoryBuckets.DataStores;
 
 namespace StoryBuckets.Server
 {

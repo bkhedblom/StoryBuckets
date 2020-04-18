@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StoryBuckets.Server.DataStores
+namespace StoryBuckets.DataStores
 {
     public class InMemoryDataStore<T> : IDataStore<T> where T : IData
     {
@@ -15,7 +15,7 @@ namespace StoryBuckets.Server.DataStores
         public Task AddAsync(IEnumerable<T> items)
         {
             foreach (var item in items)
-            {               
+            {
                 if (_items.ContainsKey(item.Id))
                 {
                     _items[item.Id] = item;

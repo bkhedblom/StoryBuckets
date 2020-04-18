@@ -1,5 +1,5 @@
-﻿using StoryBuckets.Integrations;
-using StoryBuckets.Server.DataStores;
+﻿using StoryBuckets.DataStores;
+using StoryBuckets.Integrations;
 using StoryBuckets.Shared;
 using System;
 using System.Collections.Generic;
@@ -25,8 +25,7 @@ namespace StoryBuckets.Server.Services
             {
                 await FillDataStoreFromIntegration();
             }
-            var data = await _dataStore.GetAllAsync();
-            return data;
+            return await _dataStore.GetAllAsync();
         }
 
         private async Task FillDataStoreFromIntegration()

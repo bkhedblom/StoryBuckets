@@ -15,11 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Server\StoryBuckets.Server.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DataStores\" />
+    <ProjectReference Include="..\DataStores\StoryBuckets.DataStores.csproj" />
   </ItemGroup>
 
 </Project>

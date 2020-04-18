@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StoryBuckets.Server.DataStores
+namespace StoryBuckets.DataStores
 {
     public class HardcodedStoryStore : IDataStore<Story>
     {

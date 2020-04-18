@@ -10,14 +10,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DataStores\StoryBuckets.DataStores.csproj" />
     <ProjectReference Include="..\..\Integrations\StoryBuckets.Integrations.csproj" />
     <ProjectReference Include="..\Client\StoryBuckets.Client.csproj" />
     <ProjectReference Include="..\Shared\StoryBuckets.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Integrations\" />
-    <Folder Include="Models\" />
+    <Folder Include="DataStores\" />
   </ItemGroup>
 
 

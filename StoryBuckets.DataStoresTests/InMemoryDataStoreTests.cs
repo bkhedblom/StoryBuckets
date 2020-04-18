@@ -1,13 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using StoryBuckets.Server.DataStores;
+using StoryBuckets.DataStores;
 using StoryBuckets.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace StoryBuckets.Server.DataStores.Tests
+namespace StoryBuckets.DataStoresTests
 {
     [TestClass()]
     public class InMemoryDataStoreTests
@@ -87,7 +87,7 @@ namespace StoryBuckets.Server.DataStores.Tests
         {
             //Arrange
             var datastore = new InMemoryDataStore<IData>();
-            
+
             var id = 42;
             var item1 = new Mock<IData>();
             item1.SetupGet(fake => fake.Id).Returns(id);
@@ -97,7 +97,7 @@ namespace StoryBuckets.Server.DataStores.Tests
 
             var items = new[]
             {
-                item1.Object, 
+                item1.Object,
                 item2.Object
             };
 
