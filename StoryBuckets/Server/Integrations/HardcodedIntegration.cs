@@ -8,17 +8,17 @@ namespace StoryBuckets.Server.Integrations
 {
     public class HardcodedIntegration : IIntegration
     {
-        public Task<IEnumerable<Story>> FetchAsync()
+        public Task<IEnumerable<IStoryFromIntegration>> FetchAsync()
         {
-            var tcs = new TaskCompletionSource<IEnumerable<Story>>();
+            var tcs = new TaskCompletionSource<IEnumerable<IStoryFromIntegration>>();
             tcs.SetResult(new[]
                               {
-                new Story
+                new StoryFromIntegration
                 {
                     Id = 42,
                     Title = "A Planet-sized computer simulation",
                 },
-                new Story
+                new StoryFromIntegration
                 {
                     Id = 31415,
                     Title = "Squaring the circle"

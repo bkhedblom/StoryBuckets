@@ -31,8 +31,13 @@ namespace StoryBuckets.Server.Services
 
         private async Task FillDataStoreFromIntegration()
         {
-            IEnumerable<Story> storiesFromIntegration = await _integration.FetchAsync();
-            await _dataStore.AddAsync(storiesFromIntegration);
+            var storiesFromIntegration = await _integration.FetchAsync();
+            var storiesToAdd = storiesFromIntegration.Select(integrationStory => new Story
+            {
+                Id = integrationStory.Id,
+                Title = integrationStory.Title
+            });
+            await _dataStore.AddAsync(storiesToAdd);
         }
     }
 }

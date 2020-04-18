@@ -118,7 +118,7 @@ namespace StoryBuckets.Server.Services.Tests
         }
 
         [TestMethod()]
-        public void Fetched_stories_are_added_to_the_datastore()
+        public void After_fetching_stories_that_number_of_stories_are_added_to_the_datastore()
         {
             //Arrange
             IEnumerable<Story> addedStories = Enumerable.Empty<Story>();
@@ -132,7 +132,9 @@ namespace StoryBuckets.Server.Services.Tests
 
             var stories = new[]
             {
-                new Mock<Story>().Object
+                new Mock<IStoryFromIntegration>().Object,
+                new Mock<IStoryFromIntegration>().Object,
+                new Mock<IStoryFromIntegration>().Object
             };
             var integration = new Mock<IIntegration>();
             integration
@@ -145,7 +147,105 @@ namespace StoryBuckets.Server.Services.Tests
             service.GetAllAsync().Wait();
 
             //Assert
-            Assert.AreEqual(stories.Single(), addedStories.Single());
+            Assert.AreEqual(stories.Count(), addedStories.Count());
+        }
+
+        [TestMethod()]
+        public void After_fetching_stories_Ids_are_mapped_to_stories_that_are_added_to_the_datastore()
+        {
+            //Arrange
+            IEnumerable<Story> addedStories = Enumerable.Empty<Story>();
+            var dataStore = new Mock<IDataStore<Story>>();
+            dataStore
+                .SetupGet(fake => fake.IsEmpty)
+                .Returns(true);
+            dataStore
+                .Setup(mock => mock.AddAsync(It.IsAny<IEnumerable<Story>>()))
+                .Callback<IEnumerable<Story>>(items => addedStories = items);
+
+            var story1 = new Mock<IStoryFromIntegration>();
+            story1
+                .SetupGet(fake => fake.Id)
+                .Returns(1);
+            var story2 = new Mock<IStoryFromIntegration>();
+            story2
+                .SetupGet(fake => fake.Id)
+                .Returns(2);
+            var story3 = new Mock<IStoryFromIntegration>();
+            story3
+                .SetupGet(fake => fake.Id)
+                .Returns(3);
+            var storiesFromIntegration = new[]
+            {
+                story1.Object,
+                story2.Object,
+                story3.Object
+            };
+
+            var integration = new Mock<IIntegration>();
+            integration
+                .Setup(fake => fake.FetchAsync())
+                .ReturnsAsync(storiesFromIntegration);
+
+            var service = new StoryService(dataStore.Object, integration.Object);
+
+            //Act
+            service.GetAllAsync().Wait();
+
+            //Assert
+            foreach (var integrationStory in storiesFromIntegration)
+            {
+                Assert.IsNotNull(addedStories.SingleOrDefault(story => story.Id == integrationStory.Id), $"Story Id {integrationStory.Id} was not added!");
+            }
+        }
+
+        [TestMethod()]
+        public void After_fetching_stories_Titles_are_mapped_to_stories_that_are_added_to_the_datastore()
+        {
+            //Arrange
+            IEnumerable<Story> addedStories = Enumerable.Empty<Story>();
+            var dataStore = new Mock<IDataStore<Story>>();
+            dataStore
+                .SetupGet(fake => fake.IsEmpty)
+                .Returns(true);
+            dataStore
+                .Setup(mock => mock.AddAsync(It.IsAny<IEnumerable<Story>>()))
+                .Callback<IEnumerable<Story>>(items => addedStories = items);
+
+            var story1 = new Mock<IStoryFromIntegration>();
+            story1
+                .SetupGet(fake => fake.Title)
+                .Returns("Title 1");
+            var story2 = new Mock<IStoryFromIntegration>();
+            story2
+                .SetupGet(fake => fake.Title)
+                .Returns("Title 2");
+            var story3 = new Mock<IStoryFromIntegration>();
+            story3
+                .SetupGet(fake => fake.Title)
+                .Returns("Title 3");
+            var storiesFromIntegration = new[]
+            {
+                story1.Object,
+                story2.Object,
+                story3.Object
+            };
+
+            var integration = new Mock<IIntegration>();
+            integration
+                .Setup(fake => fake.FetchAsync())
+                .ReturnsAsync(storiesFromIntegration);
+
+            var service = new StoryService(dataStore.Object, integration.Object);
+
+            //Act
+            service.GetAllAsync().Wait();
+
+            //Assert
+            foreach (var integrationStory in storiesFromIntegration)
+            {
+                Assert.IsNotNull(addedStories.SingleOrDefault(story => story.Title == integrationStory.Title), $"Story Title {integrationStory.Title} was not added!");
+            }
         }
     }
 }
