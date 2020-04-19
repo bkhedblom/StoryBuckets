@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Linq.Async" Version="4.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DataStores\StoryBuckets.DataStores.csproj" />
     <ProjectReference Include="..\Integrations\StoryBuckets.Integrations.csproj" />
     <ProjectReference Include="..\StoryBuckets\Shared\StoryBuckets.Shared.csproj" />

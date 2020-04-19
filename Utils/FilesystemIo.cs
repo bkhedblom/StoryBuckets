@@ -16,5 +16,8 @@ namespace Utils
 
         public FileStream Open(string filename, FileMode mode, FileAccess access)
             => File.Open(filename, mode, access);
+        
+        public StreamReader OpenText(string path)
+            => File.OpenText(path);
     }
 }

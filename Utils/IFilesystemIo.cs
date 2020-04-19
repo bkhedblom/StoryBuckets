@@ -9,5 +9,6 @@ namespace Utils
         string GetTempPath();
         IEnumerable<string> EnumerateFiles(string path);
         FileStream Open(string filename, FileMode mode, FileAccess access);
+        StreamReader OpenText(string path);
     }
 }
