@@ -15,15 +15,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Shared.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Server.Tests", "StoryBuckets\StoryBuckets.ServerTests\StoryBuckets.Server.Tests.csproj", "{3C7620A6-BF38-4C2F-BC3D-99B613BC8C13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Integrations", "Integrations\StoryBuckets.Integrations.csproj", "{43118597-434F-4EB5-B71B-8AB78EA503EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Integrations", "Integrations\StoryBuckets.Integrations.csproj", "{43118597-434F-4EB5-B71B-8AB78EA503EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.DataStores", "DataStores\StoryBuckets.DataStores.csproj", "{F565CB9F-986F-42BC-9955-F0FE6A6C2BFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.DataStores", "DataStores\StoryBuckets.DataStores.csproj", "{F565CB9F-986F-42BC-9955-F0FE6A6C2BFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.DataStores.Tests", "StoryBuckets.DataStoresTests\StoryBuckets.DataStores.Tests.csproj", "{82CC0A9C-BB9D-4E10-96DF-19D37E1F663E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.DataStores.Tests", "StoryBuckets.DataStoresTests\StoryBuckets.DataStores.Tests.csproj", "{82CC0A9C-BB9D-4E10-96DF-19D37E1F663E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Services", "Services\StoryBuckets.Services.csproj", "{544B1138-C819-41CA-AE16-545D7601F4F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Services", "Services\StoryBuckets.Services.csproj", "{544B1138-C819-41CA-AE16-545D7601F4F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Services.Tests", "StoryBuckets.Services.Tests\StoryBuckets.Services.Tests.csproj", "{396118BC-6BEB-4F22-9BF0-5DC0A958D61E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Services.Tests", "StoryBuckets.Services.Tests\StoryBuckets.Services.Tests.csproj", "{396118BC-6BEB-4F22-9BF0-5DC0A958D61E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{C6DC2FFD-7169-432C-81F3-83362E9F0874}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{396118BC-6BEB-4F22-9BF0-5DC0A958D61E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{396118BC-6BEB-4F22-9BF0-5DC0A958D61E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{396118BC-6BEB-4F22-9BF0-5DC0A958D61E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6DC2FFD-7169-432C-81F3-83362E9F0874}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6DC2FFD-7169-432C-81F3-83362E9F0874}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6DC2FFD-7169-432C-81F3-83362E9F0874}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6DC2FFD-7169-432C-81F3-83362E9F0874}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
