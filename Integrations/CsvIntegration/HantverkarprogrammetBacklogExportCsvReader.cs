@@ -1,6 +1,7 @@
 ﻿using StoryBuckets.Options;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Utils;
@@ -36,7 +37,6 @@ namespace StoryBuckets.Integrations.CsvIntegration
 
         private class Parser
         {
-            private static readonly Regex Regexp = new Regex("(?:^\"|,\")((?:[^\"]|\"{2})*?)\"(?!\")");
             private readonly StreamReader _filereader;
             private string _nextLine;
 
@@ -51,13 +51,44 @@ namespace StoryBuckets.Integrations.CsvIntegration
                     return null;
 
                 var columns = new List<string>();
-                Match match = Regexp.Match(_nextLine);
 
-                while (match.Success)
+                var sb = new StringBuilder();
+                var inQuotedArea = false;
+
+                for (int i = 0; i < _nextLine.Length; i++)
                 {
-                    columns.Add(match.Groups[1].Value.Replace("\"\"", "\""));
-                    match = match.NextMatch();
-                }
+                    var currentChar = _nextLine[i];
+                    if (inQuotedArea)
+                    {
+                        if (currentChar == '"')
+                        {
+                            if (i + 1 < _nextLine.Length && _nextLine[i + 1] == '"')
+                            {
+                                sb.Append(currentChar);
+                                i++;
+                            }
+                            else
+                            {
+                                inQuotedArea = false;
+                            }
+                            continue;
+                        }
+                        sb.Append(currentChar);
+                    }
+                    else
+                    {
+                        if (currentChar == '"')
+                        {
+                            inQuotedArea = true;
+                        }
+
+                        if (currentChar == ',')
+                        {
+                            columns.Add(sb.ToString());
+                            sb.Clear();
+                        }
+                    }
+                }                 
 
                 var newItem = new FlattenedHierarchyItem
                 {
