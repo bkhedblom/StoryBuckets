@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using StoryBuckets.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +28,7 @@ namespace StoryBuckets.Integrations.CsvIntegration.Tests
             _ = Enumerate(filereader.ParseAsync()).Result;
 
             //Assert
-            pathProvider.Verify(mock => mock.GetPath(), Times.Once);
+            pathProvider.Verify(mock => mock.GetPathToIntegrationFile(), Times.Once);
         }
 
         [TestMethod()]
@@ -169,7 +170,7 @@ namespace StoryBuckets.Integrations.CsvIntegration.Tests
         }
 
         [TestMethod()]
-        public void Handles_non_existing_parentId()
+        public void Sets_non_existing_parentId_to_null()
         {
             //Arrange
             var filesystem = GetFileSystemWithFakedOpenText(new[] {
@@ -183,6 +184,35 @@ namespace StoryBuckets.Integrations.CsvIntegration.Tests
 
             //Assert
             Assert.IsNull(result.Single().ParentId);
+        }
+
+        [TestMethod()]
+        public void Handles_reading_other_properties_with_non_existing_parentId()
+        {
+            //Arrange
+            var id1 = 16432;
+            var title1 = "Inloggning med konto specifikt för denna tjänst";
+            var id2 = 16603;
+            var title2 = "Kundregister";
+            
+            var filesystem = GetFileSystemWithFakedOpenText(new[] {
+                correctFileHeader,
+                $"\"Product Backlog Item\",\"Approved\",\"{id1}\",,\"{title1}\",\"Story 0:Som utvecklare vill jag inte behöva hantera användares inloggningsuppgifter för att slippa det otroligt svåra jobbet att göra detta korrektStory 1:Om jag saknar konto hos någon annan kontogivare så vill jag kunna skapa ett konto specifikt för denna tjänstStory 2:Som användare vill jag kunna logga in med ett konto specifikt för denna tjänst så att jag kan hålla mina inloggningar separerade\"",
+                $"\"Feature\",\"New\",\"{id2}\",,\"{title2}\","           
+            });
+            var filereader = new HantverkarprogrammetBacklogExportCsvReader(filesystem.Object, GetPathProvider().Object);
+
+            //Act
+            var result = Enumerate(filereader.ParseAsync()).Result;
+
+            //Assert
+            var firstItem = result.First();
+            var secondItem = result.Skip(1).First();
+
+            Assert.AreEqual(id1, firstItem.Id);
+            Assert.AreEqual(title1, firstItem.Title);
+            Assert.AreEqual(id2, secondItem.Id);
+            Assert.AreEqual(title2, secondItem.Title);
         }
 
         private static async Task<List<T>> Enumerate<T>(IAsyncEnumerable<T> asyncEnumerable)
@@ -210,11 +240,11 @@ namespace StoryBuckets.Integrations.CsvIntegration.Tests
             return filesystem;
         }
 
-        private static Mock<IIntegrationFilePathProvider> GetPathProvider(string path = @"c:\foo\bar.csv")
+        private static Mock<IIntegrationPathProvider> GetPathProvider(string path = @"c:\foo\bar.csv")
         {
-            var provider = new Mock<IIntegrationFilePathProvider>();
+            var provider = new Mock<IIntegrationPathProvider>();
             provider
-                .Setup(fake => fake.GetPath())
+                .Setup(fake => fake.GetPathToIntegrationFile())
                 .Returns(path);
             return provider;
         }

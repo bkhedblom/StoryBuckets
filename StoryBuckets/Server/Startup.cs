@@ -15,6 +15,8 @@ using StoryBuckets.DataStores.FileStore;
 using StoryBuckets.DataStores.FileStorage;
 using StoryBuckets.DataStores.Stories;
 using Utils;
+using StoryBuckets.Options;
+using StoryBuckets.Integrations.CsvIntegration;
 
 namespace StoryBuckets.Server
 {
@@ -31,12 +33,14 @@ namespace StoryBuckets.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IFilesystemIo, FilesystemIo>();
-            services.AddSingleton<IPathProvider, TempFolderPathProvider>();
-            services.AddSingleton<IStorageFolderProvider, StorageFolderProvider>();
-            services.AddScoped<IDataStore<Story>, InMemoryFileBackedStoryDataStore>();
-            services.AddScoped<IIntegration, HardcodedIntegration>();
-            services.AddScoped<IStoryService, StoryService>();
+            services.AddTransient<IFilesystemIo, FilesystemIo>();
+            services.AddTransient<IIntegrationPathProvider, AppDataPathProvider>();
+            services.AddTransient<IStoragePathProvider, AppDataPathProvider>();
+            services.AddTransient<IStorageFolderProvider, StorageFolderProvider>();
+            services.AddTransient<IDataStore<Story>, InMemoryFileBackedStoryDataStore>();
+            services.AddTransient<IFileReader, HantverkarprogrammetBacklogExportCsvReader>();
+            services.AddTransient<IIntegration, FileIntegration>();
+            services.AddTransient<IStoryService, StoryService>();
             services.AddControllersWithViews();
         }
 

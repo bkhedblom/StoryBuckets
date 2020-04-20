@@ -1,4 +1,5 @@
 ﻿using StoryBuckets.DataStores.FileStore;
+using StoryBuckets.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,10 +10,10 @@ namespace StoryBuckets.DataStores.FileStorage
 {
     public class StorageFolderProvider : IStorageFolderProvider
     {
-        private readonly IPathProvider _pathProvider;
+        private readonly IStoragePathProvider _pathProvider;
         private readonly IFilesystemIo _directoryIO;
 
-        public StorageFolderProvider(IPathProvider pathProvider, IFilesystemIo directoryIO)
+        public StorageFolderProvider(IStoragePathProvider pathProvider, IFilesystemIo directoryIO)
         {
             _pathProvider = pathProvider;
             _directoryIO = directoryIO;

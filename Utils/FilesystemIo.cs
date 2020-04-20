@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Utils
@@ -19,5 +20,7 @@ namespace Utils
         
         public StreamReader OpenText(string path)
             => File.OpenText(path);
+        public string GetFolderPath(Environment.SpecialFolder folder)
+            => Environment.GetFolderPath(folder);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StoryBuckets.Options;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -10,16 +11,16 @@ namespace StoryBuckets.Integrations.CsvIntegration
     {
         public const string CorrectFileHeader = "Work Item Type,State,ID,Parent,Title,Description";
         private readonly IFilesystemIo _filesystem;
-        private readonly IIntegrationFilePathProvider _pathProvider;
+        private readonly IIntegrationPathProvider _pathProvider;
 
-        public HantverkarprogrammetBacklogExportCsvReader(IFilesystemIo filesystem, IIntegrationFilePathProvider pathProvider)
+        public HantverkarprogrammetBacklogExportCsvReader(IFilesystemIo filesystem, IIntegrationPathProvider pathProvider)
         {
             _filesystem = filesystem;
             _pathProvider = pathProvider;
         }
         public async IAsyncEnumerable<FlattenedHierarchyItem> ParseAsync()
         {
-            using (var filereader = _filesystem.OpenText(_pathProvider.GetPath()))
+            using (var filereader = _filesystem.OpenText(_pathProvider.GetPathToIntegrationFile()))
             {
                 var header = await filereader.ReadLineAsync();
                 if (header != CorrectFileHeader)

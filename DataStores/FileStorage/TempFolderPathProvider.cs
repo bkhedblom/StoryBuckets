@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StoryBuckets.Options;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -6,7 +7,7 @@ using Utils;
 
 namespace StoryBuckets.DataStores.FileStorage
 {
-    public class TempFolderPathProvider : IPathProvider
+    public class TempFolderPathProvider : IStoragePathProvider
     {
         private readonly IFilesystemIo _filesystem;
 

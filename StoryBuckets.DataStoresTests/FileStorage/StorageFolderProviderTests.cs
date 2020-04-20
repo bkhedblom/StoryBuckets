@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using StoryBuckets.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +16,7 @@ namespace StoryBuckets.DataStores.FileStorage.Tests
         {
             //Arrange
             var basePath = @"basepath\foo\bar";
-            var pathprovider = new Mock<IPathProvider>();
+            var pathprovider = new Mock<IStoragePathProvider>();
             pathprovider
                 .Setup(fake => fake.GetStorageBasePath())
                 .Returns(basePath);
@@ -38,7 +39,7 @@ namespace StoryBuckets.DataStores.FileStorage.Tests
             var basePath = @"basepath\foo\bar\";
             var foldername = "foobar";
             
-            var pathprovider = new Mock<IPathProvider>();
+            var pathprovider = new Mock<IStoragePathProvider>();
             pathprovider
                 .Setup(fake => fake.GetStorageBasePath())
                 .Returns(basePath);
@@ -66,7 +67,7 @@ namespace StoryBuckets.DataStores.FileStorage.Tests
             var foldername = "foobar";
             var basePath = @"basepath\foo\bar";
 
-            var pathprovider = new Mock<IPathProvider>();
+            var pathprovider = new Mock<IStoragePathProvider>();
             pathprovider
                 .Setup(fake => fake.GetStorageBasePath())
                 .Returns(basePath);

@@ -25,9 +25,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Services", "Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Services.Tests", "StoryBuckets.Services.Tests\StoryBuckets.Services.Tests.csproj", "{396118BC-6BEB-4F22-9BF0-5DC0A958D61E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{C6DC2FFD-7169-432C-81F3-83362E9F0874}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "Utils\Utils.csproj", "{C6DC2FFD-7169-432C-81F3-83362E9F0874}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Integrations.Tests", "StoryBuckets.Integrations.Tests\StoryBuckets.Integrations.Tests.csproj", "{22CDC347-2341-4DDB-B4A3-8C669610ACB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Integrations.Tests", "StoryBuckets.Integrations.Tests\StoryBuckets.Integrations.Tests.csproj", "{22CDC347-2341-4DDB-B4A3-8C669610ACB6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Options", "Options\StoryBuckets.Options.csproj", "{4C782411-9D2B-414A-BBC5-B70C32037516}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Options.Tests", "StoryBuckets.Options.Tests\StoryBuckets.Options.Tests.csproj", "{7741FA54-46FB-4497-A491-78BAB1F70EB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +91,14 @@ Global
 		{22CDC347-2341-4DDB-B4A3-8C669610ACB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22CDC347-2341-4DDB-B4A3-8C669610ACB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22CDC347-2341-4DDB-B4A3-8C669610ACB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C782411-9D2B-414A-BBC5-B70C32037516}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C782411-9D2B-414A-BBC5-B70C32037516}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C782411-9D2B-414A-BBC5-B70C32037516}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C782411-9D2B-414A-BBC5-B70C32037516}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7741FA54-46FB-4497-A491-78BAB1F70EB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7741FA54-46FB-4497-A491-78BAB1F70EB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7741FA54-46FB-4497-A491-78BAB1F70EB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7741FA54-46FB-4497-A491-78BAB1F70EB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

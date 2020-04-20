@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Utils
@@ -10,5 +11,6 @@ namespace Utils
         IEnumerable<string> EnumerateFiles(string path);
         FileStream Open(string filename, FileMode mode, FileAccess access);
         StreamReader OpenText(string path);
+        string GetFolderPath(Environment.SpecialFolder folder);
     }
 }
