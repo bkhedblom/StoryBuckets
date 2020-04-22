@@ -9,6 +9,7 @@ namespace StoryBuckets.Client.ServerCommunication
 {
     public class StoryBucketsHttpClient:IHttpClient
     {
+        private const string ApiPrefix = "api/";
         private readonly HttpClient _client;
 
         public StoryBucketsHttpClient(HttpClient client)
@@ -17,6 +18,9 @@ namespace StoryBuckets.Client.ServerCommunication
         }
 
         public async Task<T> GetJsonAsync<T>(string endpoint)
-            => await _client.GetJsonAsync<T>($"api/{endpoint}");
+            => await _client.GetJsonAsync<T>($"{ApiPrefix}{endpoint}");
+
+        public async Task<T> PutJsonAsync<T>(string endpoint, T content) where T:ISyncable
+            => await _client.PutJsonAsync<T>($"{ApiPrefix}{endpoint}/{content.Id}", content);
     }
 }

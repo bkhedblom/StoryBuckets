@@ -9,10 +9,10 @@ namespace StoryBuckets.Client.Models
 {
     public class Storylist : IStorylist
     {
-        private readonly IDataReader<Story> _datareader;
-        private IReadOnlyCollection<Story> _stories;
+        private readonly IDataReader<SyncableStory> _datareader;
+        private IReadOnlyCollection<SyncableStory> _stories;
 
-        public Storylist(IDataReader<Story> datareader)
+        public Storylist(IDataReader<SyncableStory> datareader)
         {
             _datareader = datareader;
         }

@@ -19,11 +19,13 @@ namespace StoryBuckets.Client.Models
 
         public int Id => throw new NotImplementedException();
 
+        public event EventHandler Updated;
+
         public async void Add(Story story)
         {
             _stories.Add(story);
             story.Bucket = this;
-            await _persister.Update(this);
+            await _persister.UpdateAsync(this);
         }
     }
 }

@@ -22,10 +22,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets
         public bool BtnNextDisabled => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories == 0;
 
         public void OnClickBtnNext()
-        {
-            _storylist.NextUnbucketedStory.IsInBucket = true;
-        }
-
+            => _storylist.NextUnbucketedStory.IsInBucket = true;
         public async Task OnInitializedAsync()
             => await _storylist.InitializeAsync();
     }

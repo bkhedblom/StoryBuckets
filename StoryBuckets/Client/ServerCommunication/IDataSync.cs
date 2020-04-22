@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace StoryBuckets.Client.ServerCommunication
 {
-    public interface IDataSync<T> : IDataReader<T> where T:ISyncable
+    public interface IDataSync<T> : IDataReader<T>, IDataUpdater<T> where T:ISyncable
     {
-        Task Update(T model);
     }
 }

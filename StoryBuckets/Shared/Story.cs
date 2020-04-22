@@ -10,7 +10,7 @@ namespace StoryBuckets.Shared
     {
         public IBucket Bucket { get; set; }
 
-        public bool IsInBucket { get; set; }
+        public virtual bool IsInBucket { get; set; }
 
         public int Id { get; set; }
 

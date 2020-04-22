@@ -54,7 +54,7 @@ namespace StoryBuckets.Client.Models.Tests
 
 
             //Assert
-            persister.Verify(mock => mock.Update(bucket));
+            persister.Verify(mock => mock.UpdateAsync(bucket));
         }
     }
 }

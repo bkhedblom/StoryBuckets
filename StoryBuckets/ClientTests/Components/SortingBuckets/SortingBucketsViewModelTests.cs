@@ -15,7 +15,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             var storylist = new Mock<IStorylist>();
             storylist
                 .SetupGet(fake => fake.NextUnbucketedStory)
-                .Returns(new Mock<Story>().Object);
+                .Returns(new Story());
 
             var vm = new SortingBucketsViewModel(storylist.Object);
 
@@ -194,6 +194,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
                 .SetupGet(fake => fake.NextUnbucketedStory)
                 .Returns(nextStory);
 
+            Assert.IsFalse(nextStory.IsInBucket, "Test preconditions failed!");
             var vm = new SortingBucketsViewModel(storylist.Object);
 
             //Act
