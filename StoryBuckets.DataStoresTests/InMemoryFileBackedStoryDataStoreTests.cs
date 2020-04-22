@@ -4,6 +4,7 @@ using StoryBuckets.DataStores.FileStorage;
 using StoryBuckets.DataStores.FileStore;
 using StoryBuckets.DataStores.Stories;
 using StoryBuckets.Shared;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -292,6 +293,126 @@ namespace StoryBuckets.DataStores.Tests
             //Act
             datastore.AddOrUpdateAsync(new[] { story1 }).Wait();
             datastore.AddOrUpdateAsync(new[] { story2 }).Wait();
+
+            //Assert
+            storagefolder.Verify(mock => mock.ReplaceFileWithItemAsync(id.ToString(), story2));
+        }
+
+        [TestMethod()]
+        public void Update_updates_the_existing_item()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<Story>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
+
+            var id = 42;
+            var story1 = new Story
+            {
+                Id = id
+            };
+
+            var story2 = new Story
+            {
+                Id = id
+            };
+            datastore.AddOrUpdateAsync(new[] { story1 }).Wait();
+
+            //Act
+            datastore.UpdateAsync(id, story2).Wait();
+            var retrieved = datastore.GetAllAsync().Result;
+
+            //Assert
+            Assert.AreEqual(story2, retrieved.Single(item => item.Id == id));
+        }
+
+        [TestMethod()]
+        public void Trying_to_update_non_existing_item_throws_InvalidOperationException()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<Story>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
+
+            var id = 42;
+            var story1 = new Story
+            {
+                Id = id
+            };
+
+
+            //Act &&
+            //Assert
+            Assert.ThrowsExceptionAsync<InvalidOperationException>(() => datastore.UpdateAsync(id, story1)).Wait();
+        }
+
+        [TestMethod()]
+        public void Trying_to_set_an_item_with_id_that_differs_from_supplied_id_throws_InvalidOperationException()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<Story>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
+
+            var id = 42;
+            var story1 = new Story
+            {
+                Id = id
+            };
+            datastore.AddOrUpdateAsync(new[] { story1 }).Wait(); //first, the id must exist
+
+            var story2 = new Story
+            {
+                Id = 314
+            };
+
+            //Act &&
+            //Assert
+            Assert.ThrowsExceptionAsync<InvalidOperationException>(() => datastore.UpdateAsync(id, story2)).Wait();
+        }
+
+        [TestMethod()]
+        public void Updating_item_updates_corresponding_file()
+        {
+            //Arrange
+            var id = 42;
+            var story1 = new Story
+            {
+                Id = id
+            };
+
+            var story2 = new Story
+            {
+                Id = id
+            };
+
+            var storagefolder = new Mock<IStorageFolder<Story>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
+
+            datastore.AddOrUpdateAsync(new[] { story1 }).Wait();
+            //Act
+            datastore.UpdateAsync(id, story2).Wait();
 
             //Assert
             storagefolder.Verify(mock => mock.ReplaceFileWithItemAsync(id.ToString(), story2));

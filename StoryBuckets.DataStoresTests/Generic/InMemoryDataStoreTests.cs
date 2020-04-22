@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace StoryBuckets.DataStores.Tests
+namespace StoryBuckets.DataStores.Generic.Tests
 {
     [TestClass()]
     public class InMemoryDataStoreTests
@@ -129,6 +129,63 @@ namespace StoryBuckets.DataStores.Tests
 
             //Assert
             Assert.AreEqual(item2.Object, retrieved.Single(item => item.Id == id));
+        }
+
+        [TestMethod()]
+        public void Update_updated_the_existing_item()
+        {
+            //Arrange
+            var datastore = new InMemoryDataStore<IData>();
+
+            var id = 42;
+            var item1 = new Mock<IData>();
+            item1.SetupGet(fake => fake.Id).Returns(id);
+
+            var item2 = new Mock<IData>();
+            item2.SetupGet(fake => fake.Id).Returns(id);
+            datastore.AddOrUpdateAsync(new[] { item1.Object }).Wait();
+
+            //Act
+            datastore.UpdateAsync(id, item2.Object).Wait();
+            var retrieved = datastore.GetAllAsync().Result;
+
+            //Assert
+            Assert.AreEqual(item2.Object, retrieved.Single(item => item.Id == id));
+        }
+
+        [TestMethod()]
+        public void Trying_to_update_non_existing_item_throws_InvalidOperationException()
+        {
+            //Arrange
+            var datastore = new InMemoryDataStore<IData>();
+
+            var id = 42;
+            var item1 = new Mock<IData>();
+            item1.SetupGet(fake => fake.Id).Returns(id);
+
+
+            //Act &&
+            //Assert
+            Assert.ThrowsExceptionAsync<InvalidOperationException>(() => datastore.UpdateAsync(id, item1.Object)).Wait();
+        }
+
+        [TestMethod()]
+        public void Trying_to_set_an_item_with_id_that_differs_from_supplied_id_throws_InvalidOperationException()
+        {
+            //Arrange
+            var datastore = new InMemoryDataStore<IData>();
+
+            var id = 42;
+            var item1 = new Mock<IData>();
+            item1.SetupGet(fake => fake.Id).Returns(id);
+            datastore.AddOrUpdateAsync(new[] { item1.Object }).Wait(); //first, the id must exist
+
+            var item2 = new Mock<IData>();
+            item2.SetupGet(fake => fake.Id).Returns(314);
+
+            //Act &&
+            //Assert
+            Assert.ThrowsExceptionAsync<InvalidOperationException>(() => datastore.UpdateAsync(id, item2.Object)).Wait();
         }
     }
 }

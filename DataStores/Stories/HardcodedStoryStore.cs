@@ -32,6 +32,11 @@ namespace StoryBuckets.DataStores.Stories
             throw new NotImplementedException();
         }
 
+        public Task UpdateAsync(int id, Story item)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsEmpty => false;
 
         public bool IsInitialized => true;

@@ -268,5 +268,45 @@ namespace StoryBuckets.Services.Tests
             //Assert
             dataStore.Verify(mock => mock.InitializeAsync(), Times.Once);
         }
+
+        [TestMethod()]
+        public void UpdateAsync_sends_story_to_data_store()
+        {
+            //Arrange
+            var dataStore = new Mock<IDataStore<Story>>();
+            
+            var integration = new Mock<IIntegration>();
+
+            var service = new StoryService(dataStore.Object, integration.Object);
+
+            var id = 42;
+            var story = new Story();
+
+            //Act
+            service.UpdateAsync(id, story).Wait();
+
+            //Assert
+            dataStore.Verify(mock => mock.UpdateAsync(id, story));
+        }
+
+        [TestMethod()]
+        public void If_DataStore_is_not_initialized_Update_initializes_it()
+        {
+            //Arrange
+            var dataStore = new Mock<IDataStore<Story>>();
+            dataStore
+                .SetupGet(fake => fake.IsInitialized)
+                .Returns(false);
+
+            var integration = new Mock<IIntegration>();
+
+            var service = new StoryService(dataStore.Object, integration.Object);
+
+            //Act
+            service.UpdateAsync(42, new Story()).Wait();
+
+            //Assert
+            dataStore.Verify(mock => mock.InitializeAsync(), Times.Once);
+        }
     }
 }

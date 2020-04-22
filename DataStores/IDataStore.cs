@@ -10,6 +10,7 @@ namespace StoryBuckets.DataStores
         bool IsInitialized { get; }
         Task<IEnumerable<T>> GetAllAsync();
         Task AddOrUpdateAsync(IEnumerable<T> items);
+        Task UpdateAsync(int id, T item);
         Task InitializeAsync();
     }
 }

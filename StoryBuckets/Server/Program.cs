@@ -20,6 +20,7 @@ namespace StoryBuckets.Server
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseUrls("https://*:5001");
                     webBuilder.UseStartup<Startup>();
                 });
     }

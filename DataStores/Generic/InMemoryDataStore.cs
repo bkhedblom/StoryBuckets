@@ -39,6 +39,17 @@ namespace StoryBuckets.DataStores.Generic
 
         public virtual Task InitializeAsync() => Task.CompletedTask;
 
+        public async Task UpdateAsync(int id, T item)
+        {
+            if (id != item.Id)
+                throw new InvalidOperationException($"Cannot add item with one id ({item.Id}) to different id ({id})");
+
+            if (!IdIsInStore(id))
+                throw new InvalidOperationException($"Item with id {id} does not exist.");
+
+            await AddOrUpdateAsync(new[] { item });
+        }
+
         protected bool IdIsInStore(int id) => _items.ContainsKey(id);
     }
 }

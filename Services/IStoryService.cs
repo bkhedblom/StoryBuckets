@@ -9,5 +9,6 @@ namespace StoryBuckets.Services
     public interface IStoryService
     {
         Task<IEnumerable<Story>> GetAllAsync();
+        Task UpdateAsync(int id, Story story);
     }
 }

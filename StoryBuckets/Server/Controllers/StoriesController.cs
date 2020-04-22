@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -33,10 +34,12 @@ namespace StoryBuckets.Server.Controllers
         //    return "value";
         //}
 
-        //// PUT: api/Stories/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
+        // PUT: api/Stories/5
+        [HttpPut("{id}")]
+        public async Task<Story> Put(int id, [FromBody] Story story)
+        {
+            await _service.UpdateAsync(id, story);
+            return story;
+        }
     }
 }

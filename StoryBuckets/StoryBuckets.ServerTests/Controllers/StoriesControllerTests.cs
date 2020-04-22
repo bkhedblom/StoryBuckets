@@ -38,5 +38,23 @@ namespace StoryBuckets.Server.Controllers.Tests
             Assert.AreEqual(stories.Count(), result.Count());
             Assert.AreEqual(stories.First(), result.First());
         }
+
+        [TestMethod()]
+        public void Put_sends_data_straight_to_service()
+        {
+            //Arrange
+            var service = new Mock<IStoryService>();
+
+            var controller = new StoriesController(service.Object);
+            
+            var id = 42;
+            var story = new Story();
+
+            //Act
+            controller.Put(id, story).Wait();
+
+            //Assert
+            service.Verify(mock => mock.UpdateAsync(id, story), Times.Once);
+        }
     }
 }
