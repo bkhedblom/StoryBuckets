@@ -9,23 +9,24 @@ namespace StoryBuckets.Client.Models
     public class Bucket : IBucketModel
     {
         private readonly Collection<Story> _stories = new Collection<Story>();
-        private readonly IDataSync<IBucketModel> _persister;
 
-        public Bucket(IDataSync<IBucketModel> persister)
-        {
-            _persister = persister;
-        }
         public IReadOnlyCollection<Story> Stories => _stories;
 
-        public int Id => throw new NotImplementedException();
+        public int Id { get; }
 
         public event EventHandler Updated;
 
-        public async void Add(Story story)
+        public void Add(Story story)
         {
             _stories.Add(story);
             story.Bucket = this;
-            await _persister.UpdateAsync(this);
+            TriggerUpdated();
+        }
+
+        private void TriggerUpdated()
+        {
+            var handler = Updated;
+            handler?.Invoke(this, new EventArgs());
         }
     }
 }
