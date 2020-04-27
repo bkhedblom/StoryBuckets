@@ -41,6 +41,7 @@ namespace StoryBuckets.Server
             services.AddTransient<IFileReader, HantverkarprogrammetBacklogExportCsvReader>();
             services.AddTransient<IIntegration, FileIntegration>();
             services.AddTransient<IStoryService, StoryService>();
+            services.AddTransient<IBucketService, BucketService>();
             services.AddControllersWithViews();
         }
 
