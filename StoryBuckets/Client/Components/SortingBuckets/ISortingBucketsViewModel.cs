@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using StoryBuckets.Client.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace StoryBuckets.Client.Components.SortingBuckets
 {
@@ -9,6 +11,9 @@ namespace StoryBuckets.Client.Components.SortingBuckets
         bool AllDoneHidden { get; }
         bool LoaderHidden { get; }
         bool BtnNextDisabled { get; }
+        bool BucketsHidden { get; }
+        IReadOnlyCollection<IBucketModel> Buckets { get; }
+
         Task OnInitializedAsync();
         void OnClickBtnNext();
     }

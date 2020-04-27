@@ -13,7 +13,7 @@ namespace StoryBuckets.Client.Models.Tests
         public void Add_AddsStory()
         {
             //Arrange
-            var bucket = new Bucket();
+            var bucket = new SyncableBucket();
             var story = new Mock<Story>();
 
             //Act
@@ -29,7 +29,7 @@ namespace StoryBuckets.Client.Models.Tests
         public void Add_SetsBucketOfAddedStory()
         {
             //Arrange
-            var bucket = new Bucket();
+            var bucket = new SyncableBucket();
             var story = new Story();
 
             //Act
@@ -44,14 +44,14 @@ namespace StoryBuckets.Client.Models.Tests
         public void Adding_Story_triggers_Updated_event_after_Adding_story()
         {
             //Arrange
-            var bucket = new Bucket();
+            var bucket = new SyncableBucket();
             var story = new Story();
 
             var eventWasTriggered = false;
             Story singleStoryInBucketWhenEventTriggered = null;
             bucket.Updated += (o, e) => {
                 eventWasTriggered = true;
-                singleStoryInBucketWhenEventTriggered = (o as Bucket).Stories.Single();
+                singleStoryInBucketWhenEventTriggered = (o as SyncableBucket).Stories.Single();
             };
 
             //Act

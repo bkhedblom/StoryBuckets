@@ -1,19 +1,28 @@
 ﻿@inject ISortingBucketsViewModel vm
-    <div class="row justify-content-center mt-5 pt-5">
-        <div hidden=@vm.StoryHidden class="card col-7">
-            <div class="card-body">
-                <h4 class="card-header">@vm.TextForNextStoryToSort</h4>
-                <button @onclick="vm.OnClickBtnNext" class="btn btn-primary m-2 float-right">Next</button>
-            </div>
+<div class="row justify-content-center mt-5 pt-5">
+    <div hidden=@vm.StoryHidden class="card col-7">
+        <div class="card-body">
+            <h4 class="card-header">@vm.TextForNextStoryToSort</h4>
+            <button @onclick="vm.OnClickBtnNext" class="btn btn-primary m-2 float-right">Next</button>
         </div>
-        <p hidden=@vm.AllDoneHidden class="alert alert-success col">
-            All done!
-        </p>
-        <p hidden="@vm.LoaderHidden" class="alert alert-light col">
-            Loading...
-            If this doesn't dissapear something went wrong.
-        </p>
     </div>
+    <p hidden=@vm.AllDoneHidden class="alert alert-success col">
+        All done!
+    </p>
+    <p hidden="@vm.LoaderHidden" class="alert alert-light col">
+        Loading...
+        If you can read this, something might've gone wrong...'
+    </p>
+</div>
+@if (!vm.BucketsHidden)
+{
+    <div class="row justify-content-center mt-5 pt-5">
+        @foreach (var bucket in vm.Buckets)
+        {
+            <div class="col">A bucket!</div>
+        }
+    </div>
+}
 
 @code {
     protected override async Task OnInitializedAsync()
