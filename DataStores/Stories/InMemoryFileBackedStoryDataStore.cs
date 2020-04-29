@@ -9,11 +9,16 @@ using System.Threading.Tasks;
 
 namespace StoryBuckets.DataStores.Stories
 {
-    public class InMemoryFileBackedStoryDataStore : InMemoryFileBackedDataStore<Story>
+    public class InMemoryFileBackedStoryDataStore : InMemoryFileBackedDataStore<Story>, IFileBackedStoryDataStore
     {
 
         public InMemoryFileBackedStoryDataStore(IStorageFolderProvider fileStore) : base(fileStore.GetStorageFolder<Story>("stories"))
         {
+        }
+
+        public Task<IEnumerable<Story>> GetStoriesInBucket(int bucketId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

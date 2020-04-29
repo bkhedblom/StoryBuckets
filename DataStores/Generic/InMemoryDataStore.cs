@@ -1,6 +1,5 @@
 ﻿using StoryBuckets.Shared.Interfaces;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +12,8 @@ namespace StoryBuckets.DataStores.Generic
         public bool IsEmpty => !_items.Any();
 
         public virtual bool IsInitialized => true;
+
+        protected IReadOnlyDictionary<int, T> Items => _items;
 
         public virtual Task AddOrUpdateAsync(IEnumerable<T> items)
         {
