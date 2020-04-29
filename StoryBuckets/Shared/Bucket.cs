@@ -8,18 +8,7 @@ namespace StoryBuckets.Shared
     {
         private readonly Collection<Story> _stories = new Collection<Story>();
 
-        public Bucket()
-        {
-        }
-
-        public Bucket(IEnumerable<Story> stories):this()
-        {
-            foreach (var story in stories)
-            {
-                Add(story);
-            }
-        }
-        public int Id { get; set; }
+        public int Id { get; }
 
         public IReadOnlyCollection<Story> Stories => _stories;
 
