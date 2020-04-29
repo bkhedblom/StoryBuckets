@@ -8,7 +8,7 @@ namespace StoryBuckets.Shared
     {
         private readonly Collection<Story> _stories = new Collection<Story>();
 
-        public int Id { get; }
+        public int Id { get; set; }
 
         public IReadOnlyCollection<Story> Stories => _stories;
 

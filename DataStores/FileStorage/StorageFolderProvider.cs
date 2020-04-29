@@ -11,18 +11,18 @@ namespace StoryBuckets.DataStores.FileStorage
     public class StorageFolderProvider : IStorageFolderProvider
     {
         private readonly IStoragePathProvider _pathProvider;
-        private readonly IFilesystemIo _directoryIO;
+        private readonly IFilesystemIo _filesystem;
 
-        public StorageFolderProvider(IStoragePathProvider pathProvider, IFilesystemIo directoryIO)
+        public StorageFolderProvider(IStoragePathProvider pathProvider, IFilesystemIo filesystemIo)
         {
             _pathProvider = pathProvider;
-            _directoryIO = directoryIO;
+            _filesystem = filesystemIo;
         }
         public IStorageFolder<T> GetStorageFolder<T>(string foldername)
         {
             var basePath = _pathProvider.GetStorageBasePath();
             var folderPath = Path.Combine(basePath, foldername);
-            return new StorageFolder<T>(folderPath, _directoryIO);
+            return new StorageFolder<T>(folderPath, _filesystem);
         }
     }
 }

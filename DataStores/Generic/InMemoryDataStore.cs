@@ -39,7 +39,7 @@ namespace StoryBuckets.DataStores.Generic
 
         public virtual Task InitializeAsync() => Task.CompletedTask;
 
-        public async Task UpdateAsync(int id, T item)
+        public virtual async Task UpdateAsync(int id, T item)
         {
             if (id != item.Id)
                 throw new InvalidOperationException($"Cannot add item with one id ({item.Id}) to different id ({id})");
