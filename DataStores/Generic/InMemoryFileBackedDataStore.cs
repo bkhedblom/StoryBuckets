@@ -4,18 +4,20 @@ using StoryBuckets.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StoryBuckets.DataStores.Generic
 {
-    public class InMemoryFileBackedDataStore<TData, TStorage> : InMemoryDataStore<TData> 
+    public abstract class InMemoryFileBackedDataStore<TData, TStorage> : InMemoryDataStore<TData> 
         where TData : IData 
         where TStorage: IFileStoredData<TData>, new()
     {
+        private static readonly SemaphoreSlim _fileProcessLock = new SemaphoreSlim(1);
         private readonly IStorageFolder<TStorage> _folder;
         private bool _initialized;
 
-        public InMemoryFileBackedDataStore(IStorageFolder<TStorage> storageFolder)
+        protected InMemoryFileBackedDataStore(IStorageFolder<TStorage> storageFolder)
         {
             _folder = storageFolder;
         }
@@ -28,13 +30,21 @@ namespace StoryBuckets.DataStores.Generic
             {
                 var storageItem = new TStorage();
                 storageItem.MapFromData(item);
-                if (IdIsInStore(item.Id))
+                await _fileProcessLock.WaitAsync();
+                try
                 {
-                    await _folder.ReplaceFileWithItemAsync(item.Id.ToString(), storageItem);
+                    if (IdIsInStore(item.Id))
+                    {
+                        await _folder.ReplaceFileWithItemAsync(item.Id.ToString(), storageItem);
+                    }
+                    else
+                    {
+                        await _folder.CreateFileForItemAsync(storageItem, item.Id.ToString());
+                    }
                 }
-                else
+                finally
                 {
-                    await _folder.CreateFileForItemAsync(storageItem, item.Id.ToString());
+                    _fileProcessLock.Release();
                 }
             }
             await base.AddOrUpdateAsync(items);
@@ -43,12 +53,20 @@ namespace StoryBuckets.DataStores.Generic
 
         public override async Task InitializeAsync()
         {
-            await foreach (var storedItem in _folder.GetStoredItemsAsync())
+            await _fileProcessLock.WaitAsync();
+            try
             {
-                var dataItem = await ConvertStorageItemToData(storedItem);
-                await AddToBaseAsync(dataItem);
+                await foreach (var storedItem in _folder.GetStoredItemsAsync())
+                {
+                    var dataItem = await ConvertStorageItemToData(storedItem);
+                    await AddToBaseAsync(dataItem);
+                }
+                _initialized = true;
             }
-            _initialized = true;
+            finally
+            {
+                _fileProcessLock.Release();
+            }           
         }
 
         protected virtual Task<TData> ConvertStorageItemToData(TStorage storedItem) => Task.FromResult(storedItem.ToData());

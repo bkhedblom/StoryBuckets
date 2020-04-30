@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BucketBuckets.DataStores.Buckets.Tests
 {
@@ -311,6 +313,40 @@ namespace BucketBuckets.DataStores.Buckets.Tests
                 var bucketContainsStory = storiesOfBucket.Any(returnedStory => returnedStory.Id == fakeStory.Id);
                 Assert.IsTrue(bucketContainsStory, $"Story with id {fakeStory.Id} not found in bucket!");
             }
+        }
+
+      
+
+        [TestMethod()]
+        public async Task Should_not_load_items_if_another_initialization_is_in_progress()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+            var testHelper = new AsyncReadTester();
+            storagefolder
+                .Setup(fake => fake.GetStoredItemsAsync())
+                .Returns(testHelper.ReadAsync());
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            var firstInit = datastore.InitializeAsync();
+
+            //Act
+            var secondInit = datastore.InitializeAsync();
+
+            testHelper.StopFakeReading();
+
+            await Task.WhenAll(firstInit, secondInit);
+
+            //Assert
+            Assert.IsFalse(testHelper.CalledWhileInProgress);
         }
 
         //[TestMethod()]
@@ -618,6 +654,74 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         //    //Assert
         //    storagefolder.Verify(mock => mock.ReplaceFileWithItemAsync(id.ToString(), bucket2));
         //}
+
+        //[TestMethod()]
+        //public async Task Should_not_try_to_write_files_if_another_instance_is_reading()
+        //{
+        //    //Arrange
+        //    var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+        //    var testHelper = new AsyncReadTester();
+        //    storagefolder
+        //        .Setup(mock => mock.GetStoredItemsAsync())
+        //        .Returns(testHelper.ReadAsync());
+        //    storagefolder
+        //        .Setup(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredBucket>(), It.IsAny<string>()))
+        //        .Callback(() => testHelper.SetOtherFunctionCalled());
+
+        //    var folderprovider = new Mock<IStorageFolderProvider>();
+        //    folderprovider
+        //        .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+        //        .Returns(storagefolder.Object);
+
+        //    var storyStore = new Mock<IDataStore<Story>>();
+
+        //    var datastore1 = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+        //    var datastore2 = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+        //    var reading = datastore1.InitializeAsync();
+
+        //    //Act
+        //    var writing = datastore2.AddOrUpdateAsync(new[] { new Bucket() });
+
+        //    testHelper.StopFakeReading();
+
+        //    await Task.WhenAll(reading, writing);
+
+        //    //Assert
+        //    Assert.IsFalse(testHelper.CalledWhileInProgress);
+        //}
+
+        private class AsyncReadTester
+        {
+            private bool _continueFakeReading = true;
+            private bool _inProgress;
+
+            public bool CalledWhileInProgress { get; private set; }
+
+            public void StopFakeReading()
+            {
+                _continueFakeReading = false;
+            }
+
+            public async IAsyncEnumerable<FileStoredBucket> ReadAsync()
+            {
+                CalledWhileInProgress = _inProgress;
+                _inProgress = true;
+                do
+                {
+                    await Task.Delay(1);
+                    yield return new FileStoredBucket();
+                } while (_continueFakeReading);
+                _inProgress = false;
+            }
+
+            public Task SetOtherFunctionCalled()
+            {
+                CalledWhileInProgress = _inProgress;
+                return Task.CompletedTask;
+            }
+
+        }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async IAsyncEnumerable<T> MakeAsync<T>(IEnumerable<T> items)

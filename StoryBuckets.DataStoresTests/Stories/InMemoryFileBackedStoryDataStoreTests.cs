@@ -7,6 +7,8 @@ using StoryBuckets.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace StoryBuckets.DataStores.Stories.Tests
 {
@@ -463,6 +465,104 @@ namespace StoryBuckets.DataStores.Stories.Tests
             Assert.IsTrue(containsStory1);
             Assert.IsTrue(containsStory2);
             Assert.AreEqual(2, result.Count());
+        }
+
+        [TestMethod()]
+        public async Task Should_not_load_items_if_another_initialization_is_in_progressAsync()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
+            var testHelper = new AsyncReadTester();
+            storagefolder
+                .Setup(fake => fake.GetStoredItemsAsync())
+                .Returns(testHelper.ReadAsync());
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+
+            var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
+
+            var firstInit = datastore.InitializeAsync();
+
+            //Act
+            var secondInit = datastore.InitializeAsync();
+
+            testHelper.StopFakeReading();
+
+            await Task.WhenAll(firstInit, secondInit);
+
+            //Assert
+            Assert.IsFalse(testHelper.CalledWhileInProgress);
+        }
+
+        [TestMethod()]
+        public async Task Should_not_try_to_write_files_if_another_instance_is_reading()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
+            var testHelper = new AsyncReadTester();
+            storagefolder
+                .Setup(mock => mock.GetStoredItemsAsync())
+                .Returns(testHelper.ReadAsync());
+            storagefolder
+                .Setup(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredStory>(), It.IsAny<string>()))
+                .Callback(() => testHelper.SetOtherFunctionCalled());
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+
+            var datastore1 = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
+            var datastore2 = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
+
+            var reading = datastore1.InitializeAsync();
+
+            //Act
+            var writing = datastore2.AddOrUpdateAsync(new[] { new Story() });
+
+            testHelper.StopFakeReading();
+
+            await Task.WhenAll(reading, writing);
+
+            //Assert
+            Assert.IsFalse(testHelper.CalledWhileInProgress);
+        }
+
+        private class AsyncReadTester
+        {
+            private bool _continueFakeReading = true;
+            private bool _inProgress;
+
+            public bool CalledWhileInProgress { get; private set; }
+
+            public void StopFakeReading()
+            {
+                _continueFakeReading = false;
+            }
+
+            public async IAsyncEnumerable<FileStoredStory> ReadAsync()
+            {
+                CalledWhileInProgress = _inProgress;
+                _inProgress = true;
+                do
+                {
+                    await Task.Delay(1);
+                    yield return new FileStoredStory();
+                } while (_continueFakeReading);
+                _inProgress = false;
+            }
+
+            public Task SetOtherFunctionCalled()
+            {
+                CalledWhileInProgress = _inProgress;
+                return Task.CompletedTask;
+            }
+
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
