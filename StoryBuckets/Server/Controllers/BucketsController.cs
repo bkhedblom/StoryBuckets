@@ -25,5 +25,12 @@ namespace StoryBuckets.Server.Controllers
         // GET: api/buckets
         [HttpGet]
         public async Task<IEnumerable<IBucket>> Get() => await _service.GetAllAsync();
+
+        [HttpPost]
+        public async Task<Bucket> Post(Bucket bucket)
+        {
+            await _service.Add(bucket);
+            return bucket;
+        }
     }
 }

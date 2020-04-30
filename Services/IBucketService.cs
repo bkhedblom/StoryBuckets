@@ -8,6 +8,7 @@ namespace StoryBuckets.Services
 {
     public interface IBucketService
     {
+        Task Add(Bucket bucket);
         Task<IEnumerable<Bucket>> GetAllAsync();
     }
 }
