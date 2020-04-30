@@ -11,18 +11,21 @@
     </p>
     <p hidden="@vm.LoaderHidden" class="alert alert-light col">
         Loading...
-        If you can read this, something might've gone wrong...'
+        If you can read this, something might've gone wrong...
     </p>
 </div>
+    <div class="row justify-content-center mt-5 pt-5">
 @if (!vm.BucketsHidden)
 {
-    <div class="row justify-content-center mt-5 pt-5">
         @foreach (var bucket in vm.Buckets)
         {
             <div class="col">A bucket!</div>
         }
+    <div class="col">
+        <button class="btn btn-light" title="Create a new bucket" @onclick="vm.OnClickCreateBucket">+ Add</button>
     </div>
 }
+    </div>
 
 @code {
     protected override async Task OnInitializedAsync()

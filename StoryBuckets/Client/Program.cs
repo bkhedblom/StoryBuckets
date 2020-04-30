@@ -33,7 +33,8 @@ namespace StoryBuckets.Client
         {
             services.AddScoped<IHttpClient, StoryBucketsHttpClient>();
             services.AddScoped<IDataReader<SyncableStory>, StorySync>();
-            services.AddScoped<IDataReader<IBucketModel>, BucketReader>();
+            services.AddScoped<IDataReader<IBucketModel>, BucketSync>();
+            services.AddScoped<IDataCreator<IBucketModel>, BucketSync>();
         }
 
         private static void AddModelInjection(IServiceCollection services)

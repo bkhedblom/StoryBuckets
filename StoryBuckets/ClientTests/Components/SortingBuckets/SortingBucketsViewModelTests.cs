@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using StoryBuckets.Client.Components.SortingBuckets;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using StoryBuckets.Client.Models;
 using StoryBuckets.Client.ServerCommunication;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 {
@@ -24,7 +26,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             //Assert
@@ -42,7 +45,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             //Assert
@@ -67,7 +71,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             //Assert
@@ -89,7 +94,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             //Assert
@@ -110,7 +116,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             //Assert
@@ -118,7 +125,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
         }
 
         [TestMethod()]
-        public void When_DataIsReady_hide_loader()
+        public async Task When_DataIsReady_hide_loader()
         {
             //Arrange
             var storylist = new Mock<IStorylist>();
@@ -131,10 +138,11 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
                 .Setup(fake => fake.ReadAsync())
                 .ReturnsAsync(new List<IBucketModel>());
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
-            vm.OnInitializedAsync();
+            await vm.OnInitializedAsync();
 
             //Assert
             Assert.IsTrue(vm.LoaderHidden);
@@ -151,7 +159,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             //Assert
@@ -169,7 +178,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             //Assert
@@ -187,7 +197,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             //Assert
@@ -204,8 +215,12 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
                 .Returns(false);
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
+            bucketReader
+                .Setup(fake => fake.ReadAsync())
+                .ReturnsAsync(new List<IBucketModel>());
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             vm.OnInitializedAsync().Wait();
@@ -227,7 +242,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             Assert.IsFalse(nextStory.IsInBucket, "Test preconditions failed!");
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             vm.OnClickBtnNext();
@@ -250,7 +266,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             //Assert
@@ -271,7 +288,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             //Assert
@@ -292,7 +310,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             //Assert
@@ -306,8 +325,12 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             var storylist = new Mock<IStorylist>();
 
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
+            bucketReader
+                .Setup(fake => fake.ReadAsync())
+                .ReturnsAsync(new List<IBucketModel>());
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             vm.OnInitializedAsync().Wait();
@@ -334,7 +357,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
                 .Setup(fake => fake.ReadAsync())
                 .ReturnsAsync(buckets);
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             vm.OnInitializedAsync().Wait();
@@ -356,10 +380,11 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             var bucketTcs = new TaskCompletionSource<IReadOnlyCollection<IBucketModel>>();
             var bucketReader = new Mock<IDataReader<IBucketModel>>();
             bucketReader
-                .Setup(fake => fake.ReadAsync())               
+                .Setup(fake => fake.ReadAsync())
                 .Returns(bucketTcs.Task);
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             var initialized = vm.OnInitializedAsync();
@@ -388,7 +413,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
                 .Setup(fake => fake.ReadAsync())
                 .Returns(bucketTcs.Task);
 
-            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
 
             //Act
             var initialized = vm.OnInitializedAsync();
@@ -400,6 +426,62 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             Thread.Sleep(0); //make sure the code gets a chance to run
             Assert.IsFalse(vm.BucketsHidden);
             initialized.Wait();
+        }
+
+        [TestMethod()]
+        public async Task OnClickCreateBucket_creates_a_new_bucket()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(true);
+
+            var bucketReader = new Mock<IDataReader<IBucketModel>>();
+            bucketReader
+                .Setup(fake => fake.ReadAsync())
+                .ReturnsAsync(new List<IBucketModel>());
+
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
+            await vm.OnInitializedAsync();
+
+            //Act
+            await vm.OnClickCreateBucket();
+
+            //Assert
+            bucketCreator.Verify(mock => mock.CreateEmptyAsync(), Times.Once);
+        }
+
+        [TestMethod()]
+        public async Task OnClickCreateBucket_adds_the_created_Bucket_to_Buckets()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(true);
+
+            var bucketReader = new Mock<IDataReader<IBucketModel>>();
+            bucketReader
+                .Setup(fake => fake.ReadAsync())
+                .ReturnsAsync(new List<IBucketModel>());
+
+            var newBucket = new Mock<IBucketModel>();
+
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            bucketCreator
+                .Setup(mock => mock.CreateEmptyAsync())
+                .ReturnsAsync(newBucket.Object);
+
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
+            await vm.OnInitializedAsync();
+
+            //Act
+            await vm.OnClickCreateBucket();
+
+            //Assert
+            Assert.AreEqual(newBucket.Object, vm.Buckets.Single());
         }
     }
 }

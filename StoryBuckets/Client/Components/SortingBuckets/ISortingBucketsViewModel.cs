@@ -16,5 +16,6 @@ namespace StoryBuckets.Client.Components.SortingBuckets
 
         Task OnInitializedAsync();
         void OnClickBtnNext();
+        Task OnClickCreateBucket();
     }
 }
