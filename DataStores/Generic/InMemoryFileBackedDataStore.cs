@@ -1,4 +1,5 @@
 ﻿using StoryBuckets.DataStores.FileStorage;
+using StoryBuckets.DataStores.Generic.Model;
 using StoryBuckets.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -7,29 +8,33 @@ using System.Threading.Tasks;
 
 namespace StoryBuckets.DataStores.Generic
 {
-    public class InMemoryFileBackedDataStore<T> : InMemoryDataStore<T> where T : IData
+    public class InMemoryFileBackedDataStore<TData, TStorage> : InMemoryDataStore<TData> 
+        where TData : IData 
+        where TStorage: IFileStoredData<TData>, new()
     {
-        private readonly IStorageFolder<T> _folder;
+        private readonly IStorageFolder<TStorage> _folder;
         private bool _initialized;
 
-        public InMemoryFileBackedDataStore(IStorageFolder<T> storageFolder)
+        public InMemoryFileBackedDataStore(IStorageFolder<TStorage> storageFolder)
         {
             _folder = storageFolder;
         }
 
         public override bool IsInitialized => _initialized;
 
-        public override async Task AddOrUpdateAsync(IEnumerable<T> items)
+        public override async Task AddOrUpdateAsync(IEnumerable<TData> items)
         {
             foreach (var item in items)
             {
+                var storageItem = new TStorage();
+                storageItem.MapFromData(item);
                 if (IdIsInStore(item.Id))
                 {
-                    await _folder.ReplaceFileWithItemAsync(item.Id.ToString(), item);
+                    await _folder.ReplaceFileWithItemAsync(item.Id.ToString(), storageItem);
                 }
                 else
                 {
-                    await _folder.CreateFileForItemAsync(item, item.Id.ToString());
+                    await _folder.CreateFileForItemAsync(storageItem, item.Id.ToString());
                 }
             }
             await base.AddOrUpdateAsync(items);
@@ -38,14 +43,17 @@ namespace StoryBuckets.DataStores.Generic
 
         public override async Task InitializeAsync()
         {
-            await foreach (var story in _folder.GetStoredItemsAsync())
+            await foreach (var storedItem in _folder.GetStoredItemsAsync())
             {
-                await AddToBaseAsync(story);
+                var dataItem = await ConvertStorageItemToData(storedItem);
+                await AddToBaseAsync(dataItem);
             }
             _initialized = true;
         }
 
-        private async Task AddToBaseAsync(T item)
+        protected virtual Task<TData> ConvertStorageItemToData(TStorage storedItem) => Task.FromResult(storedItem.ToData());
+
+        private async Task AddToBaseAsync(TData item)
             => await base.AddOrUpdateAsync(new[] { item });
 
     }

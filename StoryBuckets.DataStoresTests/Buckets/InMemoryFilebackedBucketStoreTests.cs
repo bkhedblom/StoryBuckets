@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using StoryBuckets.DataStores;
 using StoryBuckets.DataStores.Buckets;
+using StoryBuckets.DataStores.Buckets.Model;
 using StoryBuckets.DataStores.FileStorage;
 using StoryBuckets.DataStores.FileStore;
 using StoryBuckets.DataStores.Stories;
@@ -20,13 +22,13 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         {
             //Arrange
             var folderprovider = new Mock<IStorageFolderProvider>();
-            var storyStore = new Mock<IFileBackedStoryDataStore>();
+            var storyStore = new Mock<IDataStore<Story>>();
 
             //Act
             _ = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
             //Assert
-            folderprovider.Verify(mock => mock.GetStorageFolder<Bucket>("buckets"));
+            folderprovider.Verify(mock => mock.GetStorageFolder<FileStoredBucket>("buckets"));
         }
 
         [TestMethod()]
@@ -34,7 +36,7 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         {
             //Arrange
             var folderprovider = new Mock<IStorageFolderProvider>();
-            var storyStore = new Mock<IFileBackedStoryDataStore>();
+            var storyStore = new Mock<IDataStore<Story>>();
 
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
@@ -47,17 +49,17 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         public void IsInitialized_is_true_after_calling_initialize()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Bucket>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
             storagefolder
                 .Setup(fake => fake.GetStoredItemsAsync())
-                .Returns(MakeAsync(new List<Bucket>()));
+                .Returns(MakeAsync(new List<FileStoredBucket>()));
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
-            var storyStore = new Mock<IFileBackedStoryDataStore>();
+            var storyStore = new Mock<IDataStore<Story>>();
 
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
@@ -72,17 +74,17 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         public void Initializing_gets_the_items_from_StorageFolder()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Bucket>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
             storagefolder
                 .Setup(fake => fake.GetStoredItemsAsync())
-                .Returns(MakeAsync(new List<Bucket>()));
+                .Returns(MakeAsync(new List<FileStoredBucket>()));
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
-            var storyStore = new Mock<IFileBackedStoryDataStore>();
+            var storyStore = new Mock<IDataStore<Story>>();
 
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
@@ -97,22 +99,22 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         public void Initialize_stores_the_retrieved_items_in_the_DataStore()
         {
             //Arrange
-            var bucket = new Bucket
+            var bucket = new FileStoredBucket
             {
                 Id = 42
             };
 
-            var storagefolder = new Mock<IStorageFolder<Bucket>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
             storagefolder
                 .Setup(fake => fake.GetStoredItemsAsync())
                 .Returns(MakeAsync(new[] { bucket }));
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
-            var storyStore = new Mock<IFileBackedStoryDataStore>();
+            var storyStore = new Mock<IDataStore<Story>>();
 
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
@@ -121,24 +123,24 @@ namespace BucketBuckets.DataStores.Buckets.Tests
 
             //Assert
             var result = datastore.GetAllAsync().Result;
-            Assert.AreEqual(bucket, result.Single());
+            Assert.AreEqual(bucket.Id, result.Single().Id);
         }
 
         [TestMethod()]
         public void Initializing_initializes_StoryStore()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Bucket>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
             storagefolder
                 .Setup(fake => fake.GetStoredItemsAsync())
-                .Returns(MakeAsync(new List<Bucket>()));
+                .Returns(MakeAsync(new List<FileStoredBucket>()));
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
-            var storyStore = new Mock<IFileBackedStoryDataStore>();
+            var storyStore = new Mock<IDataStore<Story>>();
 
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
@@ -153,17 +155,17 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         public void Initializing_do_not_initialize_already_initialized_StoryStore()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Bucket>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
             storagefolder
                 .Setup(fake => fake.GetStoredItemsAsync())
-                .Returns(MakeAsync(new List<Bucket>()));
+                .Returns(MakeAsync(new List<FileStoredBucket>()));
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
-            var storyStore = new Mock<IFileBackedStoryDataStore>();
+            var storyStore = new Mock<IDataStore<Story>>();
             storyStore
                 .SetupGet(fake => fake.IsInitialized)
                 .Returns(true);
@@ -178,26 +180,76 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         }
 
         [TestMethod()]
+        public void Get_retrieves_buckets_with_requested_ids()
+        {
+            //Arrange
+            var id1 = 42;
+            var id2 = 27;
+
+            var bucket1 = new FileStoredBucket
+            {
+                Id = id1
+            };
+
+            var bucket2 = new FileStoredBucket
+            {
+                Id = id2
+            };
+
+            var bucket3 = new FileStoredBucket
+            {
+                Id = 123
+            };
+
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+            storagefolder
+                .Setup(fake => fake.GetStoredItemsAsync())
+                .Returns(MakeAsync(new[] { bucket1, bucket2, bucket3 }));
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+            
+            datastore.InitializeAsync().Wait();
+
+            //Act
+            var result = datastore.GetAsync(new[] { id1, id2 }).Result;
+
+            //Assert
+            var containsBucket1 = result.Any(b => b.Id == id1);
+            var containsBucket2 = result.Any(b => b.Id == id2);
+            Assert.IsTrue(containsBucket1);
+            Assert.IsTrue(containsBucket2);
+            Assert.AreEqual(2, result.Count());
+        }
+
+        [TestMethod()]
         public void Stories_are_fetched_from_StoryStore()
         {
             //Arrange
-            var id = 42;
-            var bucket = new Bucket
+            var containedStoryIds = new[] { 31415, 2718 };
+            var bucket = new FileStoredBucket
             {
-                Id = id
+                Id = 42,
+                StoryIds = containedStoryIds.AsEnumerable()
             };
 
-            var storagefolder = new Mock<IStorageFolder<Bucket>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
             storagefolder
                 .Setup(fake => fake.GetStoredItemsAsync())
                 .Returns(MakeAsync(new[] { bucket }));
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
-            var storyStore = new Mock<IFileBackedStoryDataStore>();
+            var storyStore = new Mock<IDataStore<Story>>();
 
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
@@ -207,7 +259,7 @@ namespace BucketBuckets.DataStores.Buckets.Tests
             _ = datastore.GetAllAsync().Result;
 
             //Assert
-            storyStore.Verify(mock => mock.GetStoriesInBucket(id), Times.Once);
+            storyStore.Verify(mock => mock.GetAsync(containedStoryIds), Times.Once);
         }
 
         [TestMethod()]
@@ -215,24 +267,24 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         {
             //Arrange
             var id = 42;
-            var bucket = new Bucket
+            var bucket = new FileStoredBucket
             {
                 Id = id
             };
 
-            var storagefolder = new Mock<IStorageFolder<Bucket>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
             storagefolder
                 .Setup(fake => fake.GetStoredItemsAsync())
                 .Returns(MakeAsync(new[] { bucket }));
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var stories = new[]
             {
-                new Story{ 
+                new Story{
                     Id = 4
                 },
                 new Story
@@ -240,9 +292,9 @@ namespace BucketBuckets.DataStores.Buckets.Tests
                     Id = 2
                 }
             };
-            var storyStore = new Mock<IFileBackedStoryDataStore>();
+            var storyStore = new Mock<IDataStore<Story>>();
             storyStore
-                .Setup(fake => fake.GetStoriesInBucket(It.IsAny<int>()))
+                .Setup(fake => fake.GetAsync(It.IsAny<IEnumerable<int>>()))
                 .ReturnsAsync(stories);
 
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);

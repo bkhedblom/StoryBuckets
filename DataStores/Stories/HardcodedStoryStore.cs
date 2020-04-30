@@ -37,6 +37,11 @@ namespace StoryBuckets.DataStores.Stories
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<Story>> GetAsync(IEnumerable<int> ids)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsEmpty => false;
 
         public bool IsInitialized => true;

@@ -31,12 +31,14 @@ namespace StoryBuckets.DataStores.Generic
             return Task.CompletedTask;
         }
 
-        public Task<IEnumerable<T>> GetAllAsync()
-        {
-            var tcs = new TaskCompletionSource<IEnumerable<T>>();
-            tcs.SetResult(_items.Values.ToArray());
-            return tcs.Task;
-        }
+        public Task<IEnumerable<T>> GetAllAsync() => Task.FromResult(_items.Values.AsEnumerable());
+
+        public Task<IEnumerable<T>> GetAsync(IEnumerable<int> ids) 
+            => Task.FromResult(
+                _items
+                    .Where(kvp => ids.Contains(kvp.Key))
+                    .Select(kvp => kvp.Value)
+            );
 
         public virtual Task InitializeAsync() => Task.CompletedTask;
 

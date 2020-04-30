@@ -1,21 +1,19 @@
-﻿using StoryBuckets.DataStores.FileStorage;
+﻿using StoryBuckets.DataStores.Buckets.Model;
 using StoryBuckets.DataStores.FileStore;
 using StoryBuckets.DataStores.Generic;
-using StoryBuckets.DataStores.Stories;
 using StoryBuckets.Shared;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace StoryBuckets.DataStores.Buckets
 {
-    public class InMemoryFileBackedBucketDataStore: InMemoryFileBackedDataStore<Bucket>
+    public class InMemoryFileBackedBucketDataStore: InMemoryFileBackedDataStore<Bucket, FileStoredBucket>
     {
-        private readonly IFileBackedStoryDataStore _storyStore;
+        private readonly IDataStore<Story> _storyStore;
 
-        public InMemoryFileBackedBucketDataStore(IStorageFolderProvider folderProvider, IFileBackedStoryDataStore storyStore)
-            :base(folderProvider.GetStorageFolder<Bucket>("buckets"))
+        public InMemoryFileBackedBucketDataStore(IStorageFolderProvider folderProvider, IDataStore<Story> storyStore)
+            :base(folderProvider.GetStorageFolder<FileStoredBucket>("buckets"))
         {
             _storyStore = storyStore;
         }
@@ -35,15 +33,12 @@ namespace StoryBuckets.DataStores.Buckets
 
             initializations.Add(base.InitializeAsync());
             await Task.WhenAll(initializations);
+        }
 
-            foreach (var idBucketPair in Items)
-            {
-                var stories = await _storyStore.GetStoriesInBucket(idBucketPair.Key);
-                foreach (var story in stories)
-                {
-                    idBucketPair.Value.Add(story);
-                }
-            }
+        protected override async Task<Bucket> ConvertStorageItemToData(FileStoredBucket storedItem)
+        {
+            var stories = await _storyStore.GetAsync(storedItem.StoryIds);
+            return storedItem.ToData(stories);
         }
     }
 }

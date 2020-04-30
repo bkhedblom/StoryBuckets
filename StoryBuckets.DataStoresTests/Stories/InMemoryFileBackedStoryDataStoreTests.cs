@@ -2,13 +2,13 @@
 using Moq;
 using StoryBuckets.DataStores.FileStorage;
 using StoryBuckets.DataStores.FileStore;
-using StoryBuckets.DataStores.Stories;
+using StoryBuckets.DataStores.Stories.Model;
 using StoryBuckets.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StoryBuckets.DataStores.Tests
+namespace StoryBuckets.DataStores.Stories.Tests
 {
     [TestClass()]
     public class InMemoryFileBackedStoryDataStoreTests
@@ -17,11 +17,11 @@ namespace StoryBuckets.DataStores.Tests
         public void Added_items_can_be_retrieved()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Story>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -43,11 +43,11 @@ namespace StoryBuckets.DataStores.Tests
         public void The_same_item_is_not_added_twice()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Story>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -72,11 +72,11 @@ namespace StoryBuckets.DataStores.Tests
         public void The_same_Id_exists_only_once()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Story>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -107,11 +107,11 @@ namespace StoryBuckets.DataStores.Tests
         public void Adding_the_same_Id_again_updates_exising_item_to_the_new()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Story>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -152,14 +152,14 @@ namespace StoryBuckets.DataStores.Tests
         public void IsInitialized_is_true_after_calling_initialize()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Story>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
             storagefolder
                 .Setup(fake => fake.GetStoredItemsAsync())
-                .Returns(MakeAsync(new List<Story>()));
+                .Returns(MakeAsync(new List<FileStoredStory>()));
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -180,21 +180,21 @@ namespace StoryBuckets.DataStores.Tests
             _ = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
 
             //Assert
-            folderprovider.Verify(mock => mock.GetStorageFolder<Story>("stories"));
+            folderprovider.Verify(mock => mock.GetStorageFolder<FileStoredStory>("stories"));
         }
 
         [TestMethod()]
         public void Initializing_gets_the_items_from_StorageFolder()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Story>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
             storagefolder
                 .Setup(fake => fake.GetStoredItemsAsync())
-                .Returns(MakeAsync(new List<Story>()));
+                .Returns(MakeAsync(new List<FileStoredStory>()));
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -210,19 +210,19 @@ namespace StoryBuckets.DataStores.Tests
         public void Initialize_stores_the_retrieved_items_in_the_DataStore()
         {
             //Arrange
-            var story = new Story
+            var story = new FileStoredStory
             {
                 Id = 42
             };
 
-            var storagefolder = new Mock<IStorageFolder<Story>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
             storagefolder
                 .Setup(fake => fake.GetStoredItemsAsync())
                 .Returns(MakeAsync(new[] { story }));
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -232,7 +232,7 @@ namespace StoryBuckets.DataStores.Tests
 
             //Assert
             var result = datastore.GetAllAsync().Result;
-            Assert.AreEqual(story, result.Single());
+            Assert.AreEqual(story.Id, result.Single().Id);
         }
 
         [TestMethod()]
@@ -249,11 +249,11 @@ namespace StoryBuckets.DataStores.Tests
                 Id = 314
             };
 
-            var storagefolder = new Mock<IStorageFolder<Story>>();
-            
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
+
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -262,8 +262,8 @@ namespace StoryBuckets.DataStores.Tests
             datastore.AddOrUpdateAsync(new[] { story1, story2 }).Wait();
 
             //Assert
-            storagefolder.Verify(mock => mock.CreateFileForItemAsync(story1, story1.Id.ToString()));
-            storagefolder.Verify(mock => mock.CreateFileForItemAsync(story2, story2.Id.ToString()));
+            storagefolder.Verify(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredStory>(), story1.Id.ToString()));
+            storagefolder.Verify(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredStory>(), story2.Id.ToString()));
         }
 
         [TestMethod()]
@@ -281,11 +281,11 @@ namespace StoryBuckets.DataStores.Tests
                 Id = id
             };
 
-            var storagefolder = new Mock<IStorageFolder<Story>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -295,18 +295,18 @@ namespace StoryBuckets.DataStores.Tests
             datastore.AddOrUpdateAsync(new[] { story2 }).Wait();
 
             //Assert
-            storagefolder.Verify(mock => mock.ReplaceFileWithItemAsync(id.ToString(), story2));
+            storagefolder.Verify(mock => mock.ReplaceFileWithItemAsync(id.ToString(), It.IsAny<FileStoredStory>()));
         }
 
         [TestMethod()]
         public void Update_updates_the_existing_item()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Story>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -335,11 +335,11 @@ namespace StoryBuckets.DataStores.Tests
         public void Trying_to_update_non_existing_item_throws_InvalidOperationException()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Story>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -360,11 +360,11 @@ namespace StoryBuckets.DataStores.Tests
         public void Trying_to_set_an_item_with_id_that_differs_from_supplied_id_throws_InvalidOperationException()
         {
             //Arrange
-            var storagefolder = new Mock<IStorageFolder<Story>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -401,11 +401,11 @@ namespace StoryBuckets.DataStores.Tests
                 Id = id
             };
 
-            var storagefolder = new Mock<IStorageFolder<Story>>();
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
 
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
-                .Setup(fake => fake.GetStorageFolder<Story>(It.IsAny<string>()))
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
                 .Returns(storagefolder.Object);
 
             var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
@@ -415,7 +415,54 @@ namespace StoryBuckets.DataStores.Tests
             datastore.UpdateAsync(id, story2).Wait();
 
             //Assert
-            storagefolder.Verify(mock => mock.ReplaceFileWithItemAsync(id.ToString(), story2));
+            storagefolder.Verify(mock => mock.ReplaceFileWithItemAsync(id.ToString(), It.IsAny<FileStoredStory>()));
+        }
+
+        [TestMethod()]
+        public void Get_retrieves_stories_with_requested_ids()
+        {
+            //Arrange
+            var id1 = 42;
+            var id2 = 27;
+
+            var story1 = new FileStoredStory
+            {
+                Id = id1
+            };
+
+            var story2 = new FileStoredStory
+            {
+                Id = id2
+            };
+
+            var story3 = new FileStoredStory
+            {
+                Id = 123
+            };
+
+            var storagefolder = new Mock<IStorageFolder<FileStoredStory>>();
+            storagefolder
+                .Setup(fake => fake.GetStoredItemsAsync())
+                .Returns(MakeAsync(new[] { story1, story2, story3 }));
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredStory>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var datastore = new InMemoryFileBackedStoryDataStore(folderprovider.Object);
+
+            datastore.InitializeAsync().Wait();
+
+            //Act
+            var result = datastore.GetAsync(new[] { id1, id2 }).Result;
+
+            //Assert
+            var containsStory1 = result.Any(b => b.Id == id1);
+            var containsStory2 = result.Any(b => b.Id == id2);
+            Assert.IsTrue(containsStory1);
+            Assert.IsTrue(containsStory2);
+            Assert.AreEqual(2, result.Count());
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously

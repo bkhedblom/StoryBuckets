@@ -1,6 +1,7 @@
 ﻿using StoryBuckets.DataStores.FileStorage;
 using StoryBuckets.DataStores.FileStore;
 using StoryBuckets.DataStores.Generic;
+using StoryBuckets.DataStores.Stories.Model;
 using StoryBuckets.Shared;
 using System;
 using System.Collections.Generic;
@@ -9,16 +10,12 @@ using System.Threading.Tasks;
 
 namespace StoryBuckets.DataStores.Stories
 {
-    public class InMemoryFileBackedStoryDataStore : InMemoryFileBackedDataStore<Story>, IFileBackedStoryDataStore
+    public class InMemoryFileBackedStoryDataStore : InMemoryFileBackedDataStore<Story, FileStoredStory>
     {
 
-        public InMemoryFileBackedStoryDataStore(IStorageFolderProvider fileStore) : base(fileStore.GetStorageFolder<Story>("stories"))
+        public InMemoryFileBackedStoryDataStore(IStorageFolderProvider fileStore) : base(fileStore.GetStorageFolder<FileStoredStory>("stories"))
         {
         }
 
-        public Task<IEnumerable<Story>> GetStoriesInBucket(int bucketId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
