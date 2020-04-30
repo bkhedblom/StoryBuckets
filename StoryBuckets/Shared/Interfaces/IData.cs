@@ -2,6 +2,6 @@
 {
     public interface IData
     {
-        int Id { get; }
+        int Id { get; set; }
     }
 }

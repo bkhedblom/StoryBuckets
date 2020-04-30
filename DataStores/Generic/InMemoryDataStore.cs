@@ -9,6 +9,8 @@ namespace StoryBuckets.DataStores.Generic
     public class InMemoryDataStore<T> : IDataStore<T> where T : IData
     {
         private readonly Dictionary<int, T> _items = new Dictionary<int, T>();
+        private int? _currentMaxId;
+
         public bool IsEmpty => !_items.Any();
 
         public virtual bool IsInitialized => true;
@@ -53,6 +55,15 @@ namespace StoryBuckets.DataStores.Generic
             await AddOrUpdateAsync(new[] { item });
         }
 
-        protected bool IdIsInStore(int id) => _items.ContainsKey(id);
+        protected bool IdIsInStore(int id) => _items.ContainsKey(id);       
+
+        protected int GetNextId()
+        {
+            if (_currentMaxId == null)
+                _currentMaxId = Items.Any() ? Items.Max(kvp => kvp.Key) : 0;
+            
+            _currentMaxId++;
+            return _currentMaxId.Value;
+        }
     }
 }

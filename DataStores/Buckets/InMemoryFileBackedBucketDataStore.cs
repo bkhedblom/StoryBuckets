@@ -25,7 +25,7 @@ namespace StoryBuckets.DataStores.Buckets
             var addingStories = _storyStore.AddOrUpdateAsync(stories);
             var addingItems = base.AddOrUpdateAsync(items);
             await Task.WhenAll(addingStories, addingItems);
-        }
+        }        
 
         public override async Task InitializeAsync()
         {

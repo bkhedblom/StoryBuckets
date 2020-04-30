@@ -9,6 +9,7 @@ using StoryBuckets.DataStores.Stories;
 using StoryBuckets.Shared;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -313,40 +314,6 @@ namespace BucketBuckets.DataStores.Buckets.Tests
                 var bucketContainsStory = storiesOfBucket.Any(returnedStory => returnedStory.Id == fakeStory.Id);
                 Assert.IsTrue(bucketContainsStory, $"Story with id {fakeStory.Id} not found in bucket!");
             }
-        }
-
-      
-
-        [TestMethod()]
-        public async Task Should_not_load_items_if_another_initialization_is_in_progress()
-        {
-            //Arrange
-            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
-            var testHelper = new AsyncReadTester();
-            storagefolder
-                .Setup(fake => fake.GetStoredItemsAsync())
-                .Returns(testHelper.ReadAsync());
-
-            var folderprovider = new Mock<IStorageFolderProvider>();
-            folderprovider
-                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
-                .Returns(storagefolder.Object);
-
-            var storyStore = new Mock<IDataStore<Story>>();
-
-            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
-
-            var firstInit = datastore.InitializeAsync();
-
-            //Act
-            var secondInit = datastore.InitializeAsync();
-
-            testHelper.StopFakeReading();
-
-            await Task.WhenAll(firstInit, secondInit);
-
-            //Assert
-            Assert.IsFalse(testHelper.CalledWhileInProgress);
         }
 
         [TestMethod()]
@@ -755,6 +722,89 @@ namespace BucketBuckets.DataStores.Buckets.Tests
 
             //Assert
             storyStore.Verify(mock => mock.AddOrUpdateAsync(It.IsAny<IEnumerable<Story>>()));
+        }
+
+        [TestMethod()]
+        public async Task Adding_items_without_Id_gives_them_next_available_Id_and_saves_them_to_that_file()
+        {
+            //Arrange
+            var currentMaxId = 42;
+            var earlierStoredBucket = new FileStoredBucket
+            {
+                Id = currentMaxId - 7
+            };
+            var lastStoredBucket = new FileStoredBucket
+            {
+                Id = currentMaxId
+            };
+
+            var newBucket1 = new Bucket
+            {
+                Id = 0
+            };
+
+            var newBucket2 = new Bucket
+            {
+                Id = 0
+            };
+
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+            storagefolder
+                .Setup(fake => fake.GetStoredItemsAsync())
+                .Returns(MakeAsync(new[] { lastStoredBucket, earlierStoredBucket }));
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            await datastore.InitializeAsync();
+
+            //Act
+            await datastore.AddOrUpdateAsync(new[] {  newBucket1, newBucket2 });
+
+            //Assert
+            Assert.AreEqual(currentMaxId + 1, newBucket1.Id);
+            Assert.AreEqual(currentMaxId + 2, newBucket2.Id);
+            storagefolder.Verify(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredBucket>(), newBucket1.Id.ToString()));
+            storagefolder.Verify(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredBucket>(), newBucket2.Id.ToString()));
+        }
+
+
+        [TestMethod()]
+        public async Task Should_not_load_items_if_another_initialization_is_in_progress()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+            var testHelper = new AsyncReadTester();
+            storagefolder
+                .Setup(fake => fake.GetStoredItemsAsync())
+                .Returns(testHelper.ReadAsync());
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            var firstInit = datastore.InitializeAsync();
+
+            //Act
+            var secondInit = datastore.InitializeAsync();
+
+            testHelper.StopFakeReading();
+
+            await Task.WhenAll(firstInit, secondInit);
+
+            //Assert
+            Assert.IsFalse(testHelper.CalledWhileInProgress);
         }
 
         [TestMethod()]

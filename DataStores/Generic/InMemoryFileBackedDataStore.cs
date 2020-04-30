@@ -33,12 +33,15 @@ namespace StoryBuckets.DataStores.Generic
                 await _fileProcessLock.WaitAsync();
                 try
                 {
-                    if (IdIsInStore(item.Id))
+                    if (item.Id != 0 && IdIsInStore(item.Id))
                     {
                         await _folder.ReplaceFileWithItemAsync(item.Id.ToString(), storageItem);
                     }
                     else
                     {
+                        if (item.Id == 0)
+                            item.Id = GetNextId();
+
                         await _folder.CreateFileForItemAsync(storageItem, item.Id.ToString());
                     }
                 }
@@ -49,7 +52,6 @@ namespace StoryBuckets.DataStores.Generic
             }
             await base.AddOrUpdateAsync(items);
         }
-
 
         public override async Task InitializeAsync()
         {
