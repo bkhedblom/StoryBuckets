@@ -48,7 +48,7 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         }
 
         [TestMethod()]
-        public void IsInitialized_is_true_after_calling_initialize()
+        public async Task IsInitialized_is_true_after_calling_initializeAsync()
         {
             //Arrange
             var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
@@ -66,14 +66,14 @@ namespace BucketBuckets.DataStores.Buckets.Tests
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
             //Act
-            datastore.InitializeAsync().Wait();
+            await datastore.InitializeAsync();
 
             //Assert
             Assert.IsTrue(datastore.IsInitialized);
         }
 
         [TestMethod()]
-        public void Initializing_gets_the_items_from_StorageFolder()
+        public async Task Initializing_gets_the_items_from_StorageFolderAsync()
         {
             //Arrange
             var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
@@ -91,14 +91,14 @@ namespace BucketBuckets.DataStores.Buckets.Tests
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
             //Act
-            datastore.InitializeAsync().Wait();
+            await datastore.InitializeAsync();
 
             //Assert
             storagefolder.Verify(mock => mock.GetStoredItemsAsync(), Times.Once);
         }
 
         [TestMethod()]
-        public void Initialize_stores_the_retrieved_items_in_the_DataStore()
+        public async Task Initialize_stores_the_retrieved_items_in_the_DataStoreAsync()
         {
             //Arrange
             var bucket = new FileStoredBucket
@@ -121,7 +121,7 @@ namespace BucketBuckets.DataStores.Buckets.Tests
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
             //Act
-            datastore.InitializeAsync().Wait();
+            await datastore.InitializeAsync();
 
             //Assert
             var result = datastore.GetAllAsync().Result;
@@ -129,7 +129,7 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         }
 
         [TestMethod()]
-        public void Initializing_initializes_StoryStore()
+        public async Task Initializing_initializes_StoryStoreAsync()
         {
             //Arrange
             var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
@@ -147,14 +147,14 @@ namespace BucketBuckets.DataStores.Buckets.Tests
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
             //Act
-            datastore.InitializeAsync().Wait();
+            await datastore.InitializeAsync();
 
             //Assert
             storyStore.Verify(mock => mock.InitializeAsync(), Times.Once);
         }
 
         [TestMethod()]
-        public void Initializing_do_not_initialize_already_initialized_StoryStore()
+        public async Task Initializing_do_not_initialize_already_initialized_StoryStoreAsync()
         {
             //Arrange
             var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
@@ -175,14 +175,14 @@ namespace BucketBuckets.DataStores.Buckets.Tests
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
             //Act
-            datastore.InitializeAsync().Wait();
+            await datastore.InitializeAsync();
 
             //Assert
             storyStore.Verify(mock => mock.InitializeAsync(), Times.Never);
         }
 
         [TestMethod()]
-        public void Get_retrieves_buckets_with_requested_ids()
+        public async Task Get_retrieves_buckets_with_requested_idsAsync()
         {
             //Arrange
             var id1 = 42;
@@ -217,7 +217,7 @@ namespace BucketBuckets.DataStores.Buckets.Tests
 
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
             
-            datastore.InitializeAsync().Wait();
+            await datastore.InitializeAsync();
 
             //Act
             var result = datastore.GetAsync(new[] { id1, id2 }).Result;
@@ -231,7 +231,7 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         }
 
         [TestMethod()]
-        public void Stories_are_fetched_from_StoryStore()
+        public async Task Stories_are_fetched_from_StoryStoreAsync()
         {
             //Arrange
             var containedStoryIds = new[] { 31415, 2718 };
@@ -257,15 +257,15 @@ namespace BucketBuckets.DataStores.Buckets.Tests
 
 
             //Act
-            datastore.InitializeAsync().Wait();
-            _ = datastore.GetAllAsync().Result;
+            await datastore.InitializeAsync();
+            _ = await datastore.GetAllAsync();
 
             //Assert
             storyStore.Verify(mock => mock.GetAsync(containedStoryIds), Times.Once);
         }
 
         [TestMethod()]
-        public void Contained_stories_from_StoryStore_are_added_to_Bucket()
+        public async Task Contained_stories_from_StoryStore_are_added_to_BucketAsync()
         {
             //Arrange
             var id = 42;
@@ -302,8 +302,8 @@ namespace BucketBuckets.DataStores.Buckets.Tests
             var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
 
             //Act
-            datastore.InitializeAsync().Wait();
-            var buckets = datastore.GetAllAsync().Result;
+            await datastore.InitializeAsync();
+            var buckets = await datastore.GetAllAsync();
 
             //Assert
             var storiesOfBucket = buckets.Single().Stories;
@@ -349,347 +349,455 @@ namespace BucketBuckets.DataStores.Buckets.Tests
             Assert.IsFalse(testHelper.CalledWhileInProgress);
         }
 
-        //[TestMethod()]
-        //public void Added_items_can_be_retrieved()
-        //{
-        //    //Arrange
-        //    var storagefolder = new Mock<IStorageFolder<Bucket>>();
-
-        //    var folderprovider = new Mock<IStorageFolderProvider>();
-        //    folderprovider
-        //        .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
-        //        .Returns(storagefolder.Object);
-
-        //    var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object);
-
-        //    var items = new[]
-        //    {
-        //        new Bucket()
-        //    };
-
-        //    //Act
-        //    datastore.AddOrUpdateAsync(items).Wait();
-        //    var retrieved = datastore.GetAllAsync().Result;
-
-        //    //Assert
-        //    Assert.AreEqual(items.Single(), retrieved.Single());
-        //}
-
-        //[TestMethod()]
-        //public void The_same_item_is_not_added_twice()
-        //{
-        //    //Arrange
-        //    var storagefolder = new Mock<IStorageFolder<Bucket>>();
-
-        //    var folderprovider = new Mock<IStorageFolderProvider>();
-        //    folderprovider
-        //        .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
-        //        .Returns(storagefolder.Object);
-
-        //    var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object);
-
-        //    var items = new[]
-        //    {
-        //        new Bucket()
-        //    };
-
-        //    //Act
-        //    datastore.AddOrUpdateAsync(items).Wait();
-        //    var countAfterFirstAdd = datastore.GetAllAsync().Result.Count();
-
-        //    datastore.AddOrUpdateAsync(items).Wait();
-        //    var countAfterSecondAdd = datastore.GetAllAsync().Result.Count();
-
-        //    //Assert
-        //    Assert.AreEqual(countAfterFirstAdd, countAfterSecondAdd);
-        //}
-
-        //[TestMethod()]
-        //public void The_same_Id_exists_only_once()
-        //{
-        //    //Arrange
-        //    var storagefolder = new Mock<IStorageFolder<Bucket>>();
-
-        //    var folderprovider = new Mock<IStorageFolderProvider>();
-        //    folderprovider
-        //        .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
-        //        .Returns(storagefolder.Object);
-
-        //    var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object);
-
-        //    var id = 42;
-
-        //    var items = new[]
-        //    {
-        //        new Bucket
-        //        {
-        //            Id = id
-        //        },
-        //        new Bucket
-        //        {
-        //            Id = id
-        //        }
-        //    };
-
-        //    //Act
-        //    datastore.AddOrUpdateAsync(items).Wait();
-        //    var retrieved = datastore.GetAllAsync().Result;
-
-        //    //Assert
-        //    Assert.AreEqual(1, retrieved.Count(item => item.Id == id));
-        //}
-
-        //[TestMethod()]
-        //public void Adding_the_same_Id_again_updates_exising_item_to_the_new()
-        //{
-        //    //Arrange
-        //    var storagefolder = new Mock<IStorageFolder<Bucket>>();
-
-        //    var folderprovider = new Mock<IStorageFolderProvider>();
-        //    folderprovider
-        //        .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
-        //        .Returns(storagefolder.Object);
-
-        //    var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object);
-
-        //    var id = 42;
-        //    var item1 = new Bucket
-        //    {
-        //        Id = id
-        //    };
-
-        //    var item2 = new Bucket
-        //    {
-        //        Id = id
-        //    };
-
-        //    //Act
-        //    datastore.AddOrUpdateAsync(new[] { item1 }).Wait();
-        //    datastore.AddOrUpdateAsync(new[] { item2 }).Wait();
-        //    var retrieved = datastore.GetAllAsync().Result;
-
-        //    //Assert
-        //    Assert.AreEqual(item2, retrieved.Single(item => item.Id == id));
-        //}
-
-        //[TestMethod()]
-        //public void Adding_items_creates_new_files_for_them_using_id_as_Filename()
-        //{
-        //    //Arrange
-        //    var bucket1 = new Bucket
-        //    {
-        //        Id = 42
-        //    };
-
-        //    var bucket2 = new Bucket
-        //    {
-        //        Id = 314
-        //    };
-
-        //    var storagefolder = new Mock<IStorageFolder<Bucket>>();
-
-        //    var folderprovider = new Mock<IStorageFolderProvider>();
-        //    folderprovider
-        //        .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
-        //        .Returns(storagefolder.Object);
-
-        //    var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object);
-
-        //    //Act
-        //    datastore.AddOrUpdateAsync(new[] { bucket1, bucket2 }).Wait();
-
-        //    //Assert
-        //    storagefolder.Verify(mock => mock.CreateFileForItemAsync(bucket1, bucket1.Id.ToString()));
-        //    storagefolder.Verify(mock => mock.CreateFileForItemAsync(bucket2, bucket2.Id.ToString()));
-        //}
-
-        //[TestMethod()]
-        //public void Adding_item_with_the_same_Id_replaces_current_file()
-        //{
-        //    //Arrange
-        //    var id = 42;
-        //    var bucket1 = new Bucket
-        //    {
-        //        Id = id
-        //    };
-
-        //    var bucket2 = new Bucket
-        //    {
-        //        Id = id
-        //    };
-
-        //    var storagefolder = new Mock<IStorageFolder<Bucket>>();
-
-        //    var folderprovider = new Mock<IStorageFolderProvider>();
-        //    folderprovider
-        //        .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
-        //        .Returns(storagefolder.Object);
-
-        //    var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object);
-
-        //    //Act
-        //    datastore.AddOrUpdateAsync(new[] { bucket1 }).Wait();
-        //    datastore.AddOrUpdateAsync(new[] { bucket2 }).Wait();
-
-        //    //Assert
-        //    storagefolder.Verify(mock => mock.ReplaceFileWithItemAsync(id.ToString(), bucket2));
-        //}
-
-        //[TestMethod()]
-        //public void Update_updates_the_existing_item()
-        //{
-        //    //Arrange
-        //    var storagefolder = new Mock<IStorageFolder<Bucket>>();
-
-        //    var folderprovider = new Mock<IStorageFolderProvider>();
-        //    folderprovider
-        //        .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
-        //        .Returns(storagefolder.Object);
-
-        //    var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object);
-
-        //    var id = 42;
-        //    var bucket1 = new Bucket
-        //    {
-        //        Id = id
-        //    };
-
-        //    var bucket2 = new Bucket
-        //    {
-        //        Id = id
-        //    };
-        //    datastore.AddOrUpdateAsync(new[] { bucket1 }).Wait();
-
-        //    //Act
-        //    datastore.UpdateAsync(id, bucket2).Wait();
-        //    var retrieved = datastore.GetAllAsync().Result;
-
-        //    //Assert
-        //    Assert.AreEqual(bucket2, retrieved.Single(item => item.Id == id));
-        //}
-
-        //[TestMethod()]
-        //public void Trying_to_update_non_existing_item_throws_InvalidOperationException()
-        //{
-        //    //Arrange
-        //    var storagefolder = new Mock<IStorageFolder<Bucket>>();
-
-        //    var folderprovider = new Mock<IStorageFolderProvider>();
-        //    folderprovider
-        //        .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
-        //        .Returns(storagefolder.Object);
-
-        //    var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object);
-
-        //    var id = 42;
-        //    var bucket1 = new Bucket
-        //    {
-        //        Id = id
-        //    };
-
-
-        //    //Act &&
-        //    //Assert
-        //    Assert.ThrowsExceptionAsync<InvalidOperationException>(() => datastore.UpdateAsync(id, bucket1)).Wait();
-        //}
-
-        //[TestMethod()]
-        //public void Trying_to_set_an_item_with_id_that_differs_from_supplied_id_throws_InvalidOperationException()
-        //{
-        //    //Arrange
-        //    var storagefolder = new Mock<IStorageFolder<Bucket>>();
-
-        //    var folderprovider = new Mock<IStorageFolderProvider>();
-        //    folderprovider
-        //        .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
-        //        .Returns(storagefolder.Object);
-
-        //    var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object);
-
-        //    var id = 42;
-        //    var bucket1 = new Bucket
-        //    {
-        //        Id = id
-        //    };
-        //    datastore.AddOrUpdateAsync(new[] { bucket1 }).Wait(); //first, the id must exist
-
-        //    var bucket2 = new Bucket
-        //    {
-        //        Id = 314
-        //    };
-
-        //    //Act &&
-        //    //Assert
-        //    Assert.ThrowsExceptionAsync<InvalidOperationException>(() => datastore.UpdateAsync(id, bucket2)).Wait();
-        //}
-
-        //[TestMethod()]
-        //public void Updating_item_updates_corresponding_file()
-        //{
-        //    //Arrange
-        //    var id = 42;
-        //    var bucket1 = new Bucket
-        //    {
-        //        Id = id
-        //    };
-
-        //    var bucket2 = new Bucket
-        //    {
-        //        Id = id
-        //    };
-
-        //    var storagefolder = new Mock<IStorageFolder<Bucket>>();
-
-        //    var folderprovider = new Mock<IStorageFolderProvider>();
-        //    folderprovider
-        //        .Setup(fake => fake.GetStorageFolder<Bucket>(It.IsAny<string>()))
-        //        .Returns(storagefolder.Object);
-
-        //    var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object);
-
-        //    datastore.AddOrUpdateAsync(new[] { bucket1 }).Wait();
-        //    //Act
-        //    datastore.UpdateAsync(id, bucket2).Wait();
-
-        //    //Assert
-        //    storagefolder.Verify(mock => mock.ReplaceFileWithItemAsync(id.ToString(), bucket2));
-        //}
-
-        //[TestMethod()]
-        //public async Task Should_not_try_to_write_files_if_another_instance_is_reading()
-        //{
-        //    //Arrange
-        //    var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
-        //    var testHelper = new AsyncReadTester();
-        //    storagefolder
-        //        .Setup(mock => mock.GetStoredItemsAsync())
-        //        .Returns(testHelper.ReadAsync());
-        //    storagefolder
-        //        .Setup(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredBucket>(), It.IsAny<string>()))
-        //        .Callback(() => testHelper.SetOtherFunctionCalled());
-
-        //    var folderprovider = new Mock<IStorageFolderProvider>();
-        //    folderprovider
-        //        .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
-        //        .Returns(storagefolder.Object);
-
-        //    var storyStore = new Mock<IDataStore<Story>>();
-
-        //    var datastore1 = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
-        //    var datastore2 = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
-
-        //    var reading = datastore1.InitializeAsync();
-
-        //    //Act
-        //    var writing = datastore2.AddOrUpdateAsync(new[] { new Bucket() });
-
-        //    testHelper.StopFakeReading();
-
-        //    await Task.WhenAll(reading, writing);
-
-        //    //Assert
-        //    Assert.IsFalse(testHelper.CalledWhileInProgress);
-        //}
+        [TestMethod()]
+        public async Task Added_items_can_be_retrievedAsync()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            var items = new[]
+            {
+                new Bucket()
+            };
+
+            //Act
+            await datastore.AddOrUpdateAsync(items);
+            var retrieved = await datastore.GetAllAsync();
+
+            //Assert
+            Assert.AreEqual(items.Single(), retrieved.Single());
+        }
+
+        [TestMethod()]
+        public async Task The_same_item_is_not_added_twiceAsync()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            var items = new[]
+            {
+                new Bucket()
+            };
+
+            //Act
+            await datastore.AddOrUpdateAsync(items);
+            var countAfterFirstAdd = (await datastore.GetAllAsync()).Count();
+
+            datastore.AddOrUpdateAsync(items).Wait();
+            var countAfterSecondAdd = (await datastore.GetAllAsync()).Count();
+
+            //Assert
+            Assert.AreEqual(countAfterFirstAdd, countAfterSecondAdd);
+        }
+
+        [TestMethod()]
+        public async Task The_same_Id_exists_only_onceAsync()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            var id = 42;
+
+            var items = new[]
+            {
+                new Bucket
+                {
+                    Id = id
+                },
+                new Bucket
+                {
+                    Id = id
+                }
+            };
+
+            //Act
+            await datastore.AddOrUpdateAsync(items);
+            var retrieved = await datastore.GetAllAsync();
+
+            //Assert
+            Assert.AreEqual(1, retrieved.Count(item => item.Id == id));
+        }
+
+        [TestMethod()]
+        public async Task Adding_the_same_Id_again_updates_exising_item_to_the_newAsync()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            var id = 42;
+            var item1 = new Bucket
+            {
+                Id = id
+            };
+
+            var item2 = new Bucket
+            {
+                Id = id
+            };
+
+            //Act
+            await datastore.AddOrUpdateAsync(new[] { item1 });
+            await datastore.AddOrUpdateAsync(new[] { item2 });
+            var retrieved = await datastore.GetAllAsync();
+
+            //Assert
+            Assert.AreEqual(item2, retrieved.Single(item => item.Id == id));
+        }
+
+        [TestMethod()]
+        public async Task Adding_items_creates_new_files_for_them_using_id_as_FilenameAsync()
+        {
+            //Arrange
+            var bucket1 = new Bucket
+            {
+                Id = 42
+            };
+
+            var bucket2 = new Bucket
+            {
+                Id = 314
+            };
+
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            //Act
+            await datastore.AddOrUpdateAsync(new[] { bucket1, bucket2 });
+
+            //Assert
+            storagefolder.Verify(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredBucket>(), bucket1.Id.ToString()));
+            storagefolder.Verify(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredBucket>(), bucket2.Id.ToString()));
+        }
+
+        [TestMethod()]
+        public async Task Adding_item_with_the_same_Id_replaces_current_fileAsync()
+        {
+            //Arrange
+            var id = 42;
+            var bucket1 = new Bucket
+            {
+                Id = id
+            };
+
+            var bucket2 = new Bucket
+            {
+                Id = id
+            };
+
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            //Act
+            await datastore.AddOrUpdateAsync(new[] { bucket1 });
+            await datastore.AddOrUpdateAsync(new[] { bucket2 });
+
+            //Assert
+            storagefolder.Verify(mock => mock.ReplaceFileWithItemAsync(id.ToString(), It.IsAny<FileStoredBucket>()));
+        }
+
+        [TestMethod()]
+        public async Task Update_updates_the_existing_itemAsync()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            var id = 42;
+            var bucket1 = new Bucket
+            {
+                Id = id
+            };
+
+            var bucket2 = new Bucket
+            {
+                Id = id
+            };
+            datastore.AddOrUpdateAsync(new[] { bucket1 }).Wait();
+
+            //Act
+            await datastore.UpdateAsync(id, bucket2);
+            var retrieved = await datastore.GetAllAsync();
+
+            //Assert
+            Assert.AreEqual(bucket2, retrieved.Single(item => item.Id == id));
+        }
+
+        [TestMethod()]
+        public async Task Trying_to_update_non_existing_item_throws_InvalidOperationExceptionAsync()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            var id = 42;
+            var bucket1 = new Bucket
+            {
+                Id = id
+            };
+
+
+            //Act &&
+            //Assert
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () => await datastore.UpdateAsync(id, bucket1));
+        }
+
+        [TestMethod()]
+        public async Task Trying_to_set_an_item_with_id_that_differs_from_supplied_id_throws_InvalidOperationExceptionAsync()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            var id = 42;
+            var bucket1 = new Bucket
+            {
+                Id = id
+            };
+            await datastore.AddOrUpdateAsync(new[] { bucket1 }); //first, the id must exist
+
+            var bucket2 = new Bucket
+            {
+                Id = 314
+            };
+
+            //Act &&
+            //Assert
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () => await datastore.UpdateAsync(id, bucket2));
+        }
+
+        [TestMethod()]
+        public async Task Updating_item_updates_corresponding_fileAsync()
+        {
+            //Arrange
+            var id = 42;
+            var bucket1 = new Bucket
+            {
+                Id = id
+            };
+
+            var bucket2 = new Bucket
+            {
+                Id = id
+            };
+
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            await datastore.AddOrUpdateAsync(new[] { bucket1 });
+            //Act
+            await datastore.UpdateAsync(id, bucket2);
+
+            //Assert
+            storagefolder.Verify(mock => mock.ReplaceFileWithItemAsync(id.ToString(), It.IsAny<FileStoredBucket>()));
+        }
+
+        [TestMethod()]
+        public async Task Adding_bucket_with_Stories_calls_StoryStore_to_update_stories()
+        {
+            //Arrange
+            var stories = new[]
+            {
+                new Story()
+            };
+
+            var bucket = new Bucket(stories)
+            {
+                Id = 42
+            };
+
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            //Act
+            await datastore.AddOrUpdateAsync(new[] { bucket });
+
+            //Assert
+            storyStore.Verify(mock => mock.AddOrUpdateAsync(It.IsAny<IEnumerable<Story>>()));
+        }
+
+        [TestMethod()]
+        public async Task Updating_Bucket_with_stories_calls_StoryStore_to_update_stories()
+        {
+            //Arrange
+            var stories = new[]
+            {
+                new Story
+                {
+                    Id = 31415
+                },
+                new Story
+                {
+                    Id = 2718
+                }
+            };
+
+            var id = 42;
+            var StoredBucket = new FileStoredBucket
+            {
+                Id = id
+            };
+
+            var updatedBucket = new Bucket(stories)
+            {
+                Id = id
+            };
+
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+            storagefolder
+                .Setup(fake => fake.GetStoredItemsAsync())
+                .Returns(MakeAsync(new[] { StoredBucket }));
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+            
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            await datastore.InitializeAsync();
+            
+            //Act
+            await datastore.UpdateAsync(id, updatedBucket);
+
+            //Assert
+            storyStore.Verify(mock => mock.AddOrUpdateAsync(It.IsAny<IEnumerable<Story>>()));
+        }
+
+        [TestMethod()]
+        public async Task Should_not_try_to_write_files_if_another_instance_is_reading()
+        {
+            //Arrange
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+            var testHelper = new AsyncReadTester();
+            storagefolder
+                .Setup(mock => mock.GetStoredItemsAsync())
+                .Returns(testHelper.ReadAsync());
+            storagefolder
+                .Setup(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredBucket>(), It.IsAny<string>()))
+                .Callback(() => testHelper.SetOtherFunctionCalled());
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore1 = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+            var datastore2 = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            Task reading, writing;
+            try 
+            { 
+                reading = datastore1.InitializeAsync();
+
+            //Act
+                writing = datastore2.AddOrUpdateAsync(new[] { new Bucket() });
+            }
+            finally
+            {
+                testHelper.StopFakeReading();
+            }
+
+            await Task.WhenAll(reading, writing);
+
+            //Assert
+            Assert.IsFalse(testHelper.CalledWhileInProgress);
+        }
 
         private class AsyncReadTester
         {
