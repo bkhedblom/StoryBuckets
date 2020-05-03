@@ -28,21 +28,19 @@ namespace StoryBuckets.DataStores.Generic
         {
             foreach (var item in items)
             {
-                var storageItem = new TStorage();
-                storageItem.MapFromData(item);
                 await _fileProcessLock.WaitAsync();
                 try
                 {
                     if (item.Id != 0 && IdIsInStore(item.Id))
                     {
-                        await _folder.ReplaceFileWithItemAsync(item.Id.ToString(), storageItem);
+                        await _folder.ReplaceFileWithItemAsync(item.Id.ToString(), GetStorageItem(item));
                     }
                     else
                     {
                         if (item.Id == 0)
                             item.Id = GetNextId();
 
-                        await _folder.CreateFileForItemAsync(storageItem, item.Id.ToString());
+                        await _folder.CreateFileForItemAsync(GetStorageItem(item), item.Id.ToString());
                     }
                 }
                 finally
@@ -51,6 +49,13 @@ namespace StoryBuckets.DataStores.Generic
                 }
             }
             await base.AddOrUpdateAsync(items);
+        }
+
+        private static TStorage GetStorageItem(TData item)
+        {
+            var storageItem = new TStorage();
+            storageItem.MapFromData(item);
+            return storageItem;
         }
 
         public override async Task InitializeAsync()

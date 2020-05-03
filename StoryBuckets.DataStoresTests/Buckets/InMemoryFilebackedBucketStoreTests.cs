@@ -784,11 +784,15 @@ namespace BucketBuckets.DataStores.Buckets.Tests
                 Id = 0
             };
 
+            var storedBuckets = new Dictionary<string, FileStoredBucket>();
+
             var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
             storagefolder
                 .Setup(fake => fake.GetStoredItemsAsync())
                 .Returns(MakeAsync(new[] { lastStoredBucket, earlierStoredBucket }));
-
+            storagefolder
+                .Setup(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredBucket>(), It.IsAny<string>()))
+                .Callback<FileStoredBucket, string>((bucket, id) => storedBuckets.Add(id, bucket));
             var folderprovider = new Mock<IStorageFolderProvider>();
             folderprovider
                 .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
@@ -804,8 +808,10 @@ namespace BucketBuckets.DataStores.Buckets.Tests
             await datastore.AddOrUpdateAsync(new[] {  newBucket1, newBucket2 });
 
             //Assert
-            Assert.AreEqual(currentMaxId + 1, newBucket1.Id);
-            Assert.AreEqual(currentMaxId + 2, newBucket2.Id);
+            Assert.AreEqual(currentMaxId + 1, newBucket1.Id, "Bucket 1 got wrong Id");
+            Assert.AreEqual(currentMaxId + 2, newBucket2.Id, "Bucket 2 got wrong Id");
+            Assert.AreEqual(newBucket1.Id, storedBuckets[newBucket1.Id.ToString()].Id, "Bucket 1 did not get the new Id in storage");
+            Assert.AreEqual(newBucket2.Id, storedBuckets[newBucket2.Id.ToString()].Id, "Bucket 2 did not get the new Id in storage");
             storagefolder.Verify(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredBucket>(), newBucket1.Id.ToString()));
             storagefolder.Verify(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredBucket>(), newBucket2.Id.ToString()));
         }
