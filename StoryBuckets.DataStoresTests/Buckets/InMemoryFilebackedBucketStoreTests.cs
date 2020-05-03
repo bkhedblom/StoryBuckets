@@ -183,6 +183,42 @@ namespace BucketBuckets.DataStores.Buckets.Tests
         }
 
         [TestMethod()]
+        public async Task Initializing_waits_for_StoryStory_to_initialize_before_starting_to_read_stories()
+        { //Since the story store will be called during the conversion of stored buckets
+            //Arrange
+            var readCalledDuringStoryStoreInit = false;
+            var storyStoreInitCompletionSource = new TaskCompletionSource<bool>(); //TResult must be given, bool as recommended as placeholder
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+            storagefolder
+                .Setup(fake => fake.GetStoredItemsAsync())
+                .Returns(MakeAsync(new List<FileStoredBucket>()))
+                .Callback(() => 
+                    readCalledDuringStoryStoreInit = !storyStoreInitCompletionSource.Task.IsCompleted);
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+            storyStore
+                .Setup(mock => mock.InitializeAsync())
+                .Returns(storyStoreInitCompletionSource.Task);
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            //Act
+            var initing = datastore.InitializeAsync();
+            
+            storyStoreInitCompletionSource.SetResult(true);
+            await initing;
+
+            //Assert
+            storyStore.Verify(mock => mock.InitializeAsync(), Times.Once);
+            Assert.IsFalse(readCalledDuringStoryStoreInit);
+        }
+
+        [TestMethod()]
         public async Task Get_retrieves_buckets_with_requested_idsAsync()
         {
             //Arrange

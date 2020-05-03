@@ -29,13 +29,10 @@ namespace StoryBuckets.DataStores.Buckets
 
         public override async Task InitializeAsync()
         {
-            var initializations = new List<Task>();
-            
             if(!_storyStore.IsInitialized)
-                initializations.Add(_storyStore.InitializeAsync());
+                await _storyStore.InitializeAsync();
 
-            initializations.Add(base.InitializeAsync());
-            await Task.WhenAll(initializations);
+            await base.InitializeAsync();            
         }
 
         protected override async Task<Bucket> ConvertStorageItemToData(FileStoredBucket storedItem)
