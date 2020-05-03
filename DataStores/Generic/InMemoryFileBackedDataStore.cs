@@ -75,6 +75,5 @@ namespace StoryBuckets.DataStores.Generic
 
         private async Task AddToBaseAsync(TData item)
             => await base.AddOrUpdateAsync(new[] { item });
-
     }
 }
