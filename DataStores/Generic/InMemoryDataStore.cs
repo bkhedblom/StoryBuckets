@@ -1,6 +1,5 @@
 ﻿using StoryBuckets.Shared.Interfaces;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +12,8 @@ namespace StoryBuckets.DataStores.Generic
         public bool IsEmpty => !_items.Any();
 
         public virtual bool IsInitialized => true;
+
+        protected IReadOnlyDictionary<int, T> Items => _items;
 
         public virtual Task AddOrUpdateAsync(IEnumerable<T> items)
         {
@@ -30,16 +31,18 @@ namespace StoryBuckets.DataStores.Generic
             return Task.CompletedTask;
         }
 
-        public Task<IEnumerable<T>> GetAllAsync()
-        {
-            var tcs = new TaskCompletionSource<IEnumerable<T>>();
-            tcs.SetResult(_items.Values.ToArray());
-            return tcs.Task;
-        }
+        public Task<IEnumerable<T>> GetAllAsync() => Task.FromResult(_items.Values.AsEnumerable());
+
+        public Task<IEnumerable<T>> GetAsync(IEnumerable<int> ids) 
+            => Task.FromResult(
+                _items
+                    .Where(kvp => ids.Contains(kvp.Key))
+                    .Select(kvp => kvp.Value)
+            );
 
         public virtual Task InitializeAsync() => Task.CompletedTask;
 
-        public async Task UpdateAsync(int id, T item)
+        public virtual async Task UpdateAsync(int id, T item)
         {
             if (id != item.Id)
                 throw new InvalidOperationException($"Cannot add item with one id ({item.Id}) to different id ({id})");

@@ -8,7 +8,7 @@ namespace StoryBuckets.DataStores.Stories
 {
     public class HardcodedStoryStore : IDataStore<Story>
     {
-        public async Task<IEnumerable<Story>> GetAllAsync() => new[]
+        public Task<IEnumerable<Story>> GetAllAsync() =>  Task.FromResult(new[]
                        {
                 new Story
                 {
@@ -20,7 +20,7 @@ namespace StoryBuckets.DataStores.Stories
                     Id = 31415,
                     Title = "Squaring the circle"
                 }
-            };
+            }.AsEnumerable());
 
         public Task AddOrUpdateAsync(IEnumerable<Story> items)
         {
@@ -33,6 +33,11 @@ namespace StoryBuckets.DataStores.Stories
         }
 
         public Task UpdateAsync(int id, Story item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Story>> GetAsync(IEnumerable<int> ids)
         {
             throw new NotImplementedException();
         }

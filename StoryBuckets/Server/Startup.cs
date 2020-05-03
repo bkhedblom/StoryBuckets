@@ -17,6 +17,7 @@ using StoryBuckets.DataStores.Stories;
 using Utils;
 using StoryBuckets.Options;
 using StoryBuckets.Integrations.CsvIntegration;
+using StoryBuckets.DataStores.Buckets;
 
 namespace StoryBuckets.Server
 {
@@ -38,9 +39,11 @@ namespace StoryBuckets.Server
             services.AddTransient<IStoragePathProvider, AppDataPathProvider>();
             services.AddTransient<IStorageFolderProvider, StorageFolderProvider>();
             services.AddTransient<IDataStore<Story>, InMemoryFileBackedStoryDataStore>();
+            services.AddTransient<IDataStore<Bucket>, InMemoryFileBackedBucketDataStore>();
             services.AddTransient<IFileReader, HantverkarprogrammetBacklogExportCsvReader>();
             services.AddTransient<IIntegration, FileIntegration>();
             services.AddTransient<IStoryService, StoryService>();
+            services.AddTransient<IBucketService, BucketService>();
             services.AddControllersWithViews();
         }
 
