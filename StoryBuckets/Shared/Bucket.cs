@@ -26,7 +26,7 @@ namespace StoryBuckets.Shared
         public virtual void Add(Story story)
         {
             _stories.Add(story);
-            story.Bucket = this;
+            story.IsInBucket = true;
         }
     }
 }

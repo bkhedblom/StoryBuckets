@@ -1,9 +1,9 @@
 ﻿@inject ISortingBucketsViewModel vm
+@using StoryBuckets.Client.Components.BucketWrapper
 <div class="row justify-content-center mt-5 pt-5">
     <div hidden=@vm.StoryHidden class="card col-7">
         <div class="card-body">
             <h4 class="card-header">@vm.TextForNextStoryToSort</h4>
-            <button @onclick="vm.OnClickBtnNext" class="btn btn-primary m-2 float-right">Next</button>
         </div>
     </div>
     <p hidden=@vm.AllDoneHidden class="alert alert-success col">
@@ -19,10 +19,12 @@
 {
         @foreach (var bucket in vm.Buckets)
         {
-            <div class="col">A bucket!</div>
+            <div class="col">
+                <BucketWrapper Bucket="@bucket" OnChosen="vm.OnBucketChosen" DisableChoosing="vm.DisableBucketChoosing"/>
+            </div>
         }
     <div class="col">
-        <button class="btn btn-light" title="Create a new bucket" @onclick="vm.OnClickCreateBucket">+ Add</button>
+        <button class="btn btn-outline-dark" title="Create a new bucket" @onclick="vm.OnClickCreateBucket">+ Add</button>
     </div>
 }
     </div>

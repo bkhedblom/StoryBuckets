@@ -1,0 +1,7 @@
+﻿<div class="bucket">
+    @foreach (var story in Bucket.Stories)
+    {
+        <p>@story</p>
+    }
+    <button @onclick="OnClickChoose" disabled="@DisableChoosing" class="btn btn-outline-primary">Choose</button>
+</div>

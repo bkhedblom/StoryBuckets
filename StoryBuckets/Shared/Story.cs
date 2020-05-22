@@ -8,8 +8,6 @@ namespace StoryBuckets.Shared
 {
     public class Story : IData, IWorkItem
     {
-        public IBucket Bucket { get; set; }
-
         public virtual bool IsInBucket { get; set; }
 
         public int Id { get; set; }

@@ -253,7 +253,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
         }
 
         [TestMethod()]
-        public void When_DataIsReady_and_NumberOfUnbucketedStories_is_more_than_0_Enable_next_button()
+        public void When_DataIsReady_and_NumberOfUnbucketedStories_is_more_than_0_Enable_bucket_choosing()
         {
             //Arrange
             var storylist = new Mock<IStorylist>();
@@ -271,11 +271,11 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Act
             //Assert
-            Assert.IsFalse(vm.BtnNextDisabled);
+            Assert.IsFalse(vm.DisableBucketChoosing);
         }
 
         [TestMethod()]
-        public void When_NumberOfUnbucketedStories_is_0_Disable_next_button()
+        public void When_NumberOfUnbucketedStories_is_0_Disable_bucket_choosing()
         {
             //Arrange
             var storylist = new Mock<IStorylist>();
@@ -293,11 +293,11 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Act
             //Assert
-            Assert.IsTrue(vm.BtnNextDisabled);
+            Assert.IsTrue(vm.DisableBucketChoosing);
         }
 
         [TestMethod()]
-        public void When_Not_DataIsReady_Disable_next_button()
+        public void When_Not_DataIsReady_Disable_bucket_choosing()
         {
             //Arrange
             var storylist = new Mock<IStorylist>();
@@ -315,7 +315,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Act
             //Assert
-            Assert.IsTrue(vm.BtnNextDisabled);
+            Assert.IsTrue(vm.DisableBucketChoosing);
         }
 
         [TestMethod()]
@@ -482,6 +482,63 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Assert
             Assert.AreEqual(newBucket.Object, vm.Buckets.Single());
+        }
+
+        [TestMethod()]
+        public void Choosing_a_bucket_adds_next_unbucketed_story_to_that_bucket()
+        {
+            //Arrange
+            var nextStory = new Story 
+            { 
+                Id = 123, 
+                Title = "This is a test"
+            };
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.NextUnbucketedStory)
+                .Returns(nextStory);
+
+            Assert.IsFalse(nextStory.IsInBucket, "Test preconditions failed!");
+            var bucketReader = new Mock<IDataReader<IBucketModel>>();
+
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
+
+            Story addedStory = null;
+
+            var bucket = new Mock<IBucketModel>();
+            bucket
+                .Setup(mock => mock.Add(It.IsAny<Story>()))
+                .Callback((Story story) => addedStory = story);
+
+            //Act
+            vm.OnBucketChosen(bucket.Object);
+
+            //Assert
+            Assert.AreEqual(nextStory, addedStory);
+        }
+
+        [TestMethod()]
+        public void Choosing_a_bucket_dont_add_anything_if_next_story_is_null()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.NextUnbucketedStory)
+                .Returns((Story)null);
+
+            var bucketReader = new Mock<IDataReader<IBucketModel>>();
+
+            var bucketCreator = new Mock<IDataCreator<IBucketModel>>();
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object, bucketCreator.Object);
+
+            var bucket = new Mock<IBucketModel>();
+
+            //Act
+            vm.OnBucketChosen(bucket.Object);
+
+            //Assert
+            bucket.Verify(mock => mock.Add(It.IsAny<Story>()), Times.Never);
         }
     }
 }

@@ -27,12 +27,18 @@ namespace StoryBuckets.Client.Components.SortingBuckets
         public bool AllDoneHidden => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories > 0;
         public bool LoaderHidden => _storylist.DataIsready && Buckets != null;
         public bool BucketsHidden => Buckets == null;
-        public bool BtnNextDisabled => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories == 0;
+        public bool DisableBucketChoosing => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories == 0;
 
         public IReadOnlyCollection<IBucketModel> Buckets { get => _buckets; }
 
         public void OnClickBtnNext()
             => _storylist.NextUnbucketedStory.IsInBucket = true;
+
+        public void OnBucketChosen(IBucketModel bucket)
+        {
+            if(_storylist.NextUnbucketedStory != null)
+                bucket.Add(_storylist.NextUnbucketedStory);
+        }
 
         public async Task OnClickCreateBucket()
         {
