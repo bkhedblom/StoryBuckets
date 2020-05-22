@@ -26,18 +26,18 @@ namespace StoryBuckets.Client.Models.Tests
         }
 
         [TestMethod()]
-        public void Add_SetsBucketOfAddedStory()
+        public void Add_Sets_added_story_IsInBucket()
         {
             //Arrange
             var bucket = new SyncableBucket();
             var story = new Story();
+            Assert.IsFalse(story.IsInBucket, "Test assumptions have changed!");
 
             //Act
             bucket.Add(story);
 
-
             //Assert
-            Assert.AreEqual(bucket, story.Bucket);
+            Assert.IsTrue(story.IsInBucket);
         }
 
         [TestMethod()]
