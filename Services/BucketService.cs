@@ -24,7 +24,7 @@ namespace StoryBuckets.Services
             return await _datastore.GetAllAsync();
         }
 
-        public async Task Add(Bucket bucket)
+        public async Task AddAsync(Bucket bucket)
         {
             await InitializeDataStoreIfNeeded();
             await _datastore.AddOrUpdateAsync(new[] { bucket });
@@ -34,6 +34,12 @@ namespace StoryBuckets.Services
         {
             if (!_datastore.IsInitialized)
                 await _datastore.InitializeAsync();
+        }
+
+        public async Task UpdateAsync(int id, Bucket bucket)
+        {
+            await InitializeDataStoreIfNeeded();
+            await _datastore.UpdateAsync(id, bucket);
         }
     }
 }

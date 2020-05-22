@@ -9,6 +9,7 @@ using StoryBuckets.DataStores.Stories;
 using StoryBuckets.Shared;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -816,6 +817,64 @@ namespace BucketBuckets.DataStores.Buckets.Tests
             storagefolder.Verify(mock => mock.CreateFileForItemAsync(It.IsAny<FileStoredBucket>(), newBucket2.Id.ToString()));
         }
 
+        [TestMethod()]
+        public async Task Updating_Bucket_with_stories_stores_ids_of_those_stories()
+        {
+            //Arrange
+            var stories = new[]
+            {
+                new Story
+                {
+                    Id = 31415
+                },
+                new Story
+                {
+                    Id = 2718
+                }
+            };
+
+            var id = 42;
+            var StoredBucket = new FileStoredBucket
+            {
+                Id = id
+            };
+
+            var updatedBucket = new Bucket(stories)
+            {
+                Id = id
+            };
+
+            IEnumerable<int> storedStoryIds = null;
+
+            var storagefolder = new Mock<IStorageFolder<FileStoredBucket>>();
+            storagefolder
+                .Setup(fake => fake.GetStoredItemsAsync())
+                .Returns(MakeAsync(new[] { StoredBucket }));
+            storagefolder
+                .Setup(mock => mock.ReplaceFileWithItemAsync(It.IsAny<string>(), It.IsAny<FileStoredBucket>()))
+                .Callback<string, FileStoredBucket>((_, StoredBucket) => storedStoryIds = StoredBucket.StoryIds);
+
+            var folderprovider = new Mock<IStorageFolderProvider>();
+            folderprovider
+                .Setup(fake => fake.GetStorageFolder<FileStoredBucket>(It.IsAny<string>()))
+                .Returns(storagefolder.Object);
+
+            var storyStore = new Mock<IDataStore<Story>>();
+
+            var datastore = new InMemoryFileBackedBucketDataStore(folderprovider.Object, storyStore.Object);
+
+            await datastore.InitializeAsync();
+
+            //Act
+            await datastore.UpdateAsync(id, updatedBucket);
+
+            //Assert
+            Assert.AreEqual(stories.Count(), storedStoryIds.Count());
+            foreach (var story in stories)
+            {
+                Assert.IsTrue(storedStoryIds.Contains(story.Id), $"Story id ${story.Id} was not stored!");
+            }
+        }
 
         [TestMethod()]
         public async Task Should_not_load_items_if_another_initialization_is_in_progress()

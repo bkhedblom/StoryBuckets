@@ -66,15 +66,34 @@ namespace StoryBuckets.Server.Controllers.Tests
             //Arrange
             var service = new Mock<IBucketService>();
             var controller = new BucketsController(service.Object);
-                        
+
             var bucket = new Bucket();
 
             //Act
             var returned = await controller.Post(bucket);
 
             //Assert
-            service.Verify(mock => mock.Add(bucket), Times.Once);
+            service.Verify(mock => mock.AddAsync(bucket), Times.Once);
             Assert.AreEqual(bucket, returned);
+        }
+
+        [TestMethod()]
+        public async Task Put_sends_data_straight_to_service_and_returns_the_bucket_again()
+        {
+            //Arrange
+            var service = new Mock<IBucketService>();
+
+            var controller = new BucketsController(service.Object);
+
+            var id = 42;
+            var bucket = new Bucket();
+
+            //Act
+            var result = await controller.Put(id, bucket);
+
+            //Assert
+            service.Verify(mock => mock.UpdateAsync(id, bucket), Times.Once);
+            Assert.AreEqual(bucket, result);
         }
     }
 }

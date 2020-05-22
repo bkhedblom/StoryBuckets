@@ -20,10 +20,22 @@ namespace StoryBuckets.Client.ServerCommunication
         {
             var newBucket = new SyncableBucket();
             await _httpClient.PostJsonAsync(Endpoint, newBucket);
+            BindUpdatedEvent(newBucket);
             return newBucket;
         }
 
-        public async Task<IReadOnlyCollection<IBucketModel>> ReadAsync() 
-            => await _httpClient.GetJsonAsync<SyncableBucket[]>(Endpoint);
+        public async Task<IReadOnlyCollection<IBucketModel>> ReadAsync()
+        {
+            var buckets = await _httpClient.GetJsonAsync<SyncableBucket[]>(Endpoint);
+            foreach (var bucket in buckets)
+                BindUpdatedEvent(bucket);
+            return buckets;
+        }
+
+        private void BindUpdatedEvent(SyncableBucket bucket) 
+            => bucket.Updated += async (sender, args) => await SyncBucketUpdateAsync((SyncableBucket)sender);
+
+        private async Task SyncBucketUpdateAsync(SyncableBucket sender) 
+            => await _httpClient.PutJsonAsync(Endpoint, sender);
     }
 }

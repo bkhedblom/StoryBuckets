@@ -29,7 +29,14 @@ namespace StoryBuckets.Server.Controllers
         [HttpPost]
         public async Task<Bucket> Post(Bucket bucket)
         {
-            await _service.Add(bucket);
+            await _service.AddAsync(bucket);
+            return bucket;
+        }
+
+        [HttpPut("{id}")]
+        public async Task<Bucket> Put(int id, [FromBody] Bucket bucket)
+        {
+            await _service.UpdateAsync(id, bucket);
             return bucket;
         }
     }
