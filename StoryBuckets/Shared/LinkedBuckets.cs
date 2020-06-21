@@ -11,6 +11,6 @@ namespace StoryBuckets.Shared
     {
         public LinkedBuckets():base() { }
 
-        public LinkedBuckets(ICollection<IBucket> buckets) : base(buckets) { }
+        public LinkedBuckets(IReadOnlyCollection<IBucket> buckets) : base(buckets) { }
     }
 }

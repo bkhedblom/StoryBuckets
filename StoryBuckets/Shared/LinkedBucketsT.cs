@@ -12,7 +12,7 @@ namespace StoryBuckets.Shared
 
         public LinkedBuckets() : this(new List<T>()) { }
 
-        public LinkedBuckets(ICollection<T> buckets)
+        public LinkedBuckets(IReadOnlyCollection<T> buckets)
         {
             if (buckets.Any() && buckets.Count(bucket => bucket.NextBiggerBucket == null) != 1)
                 throw new InvalidOperationException("There must be one and only one bucket with no NextBiggerBucket set");

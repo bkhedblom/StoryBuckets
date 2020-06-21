@@ -12,7 +12,7 @@ namespace StoryBuckets.Client.Models
         private IDataCreator<IBucketModel> _bucketcreator;
         private HashSet<IBucketModel> _buckets;
 
-        public LinkedBucketModels(IDataCreator<IBucketModel> bucketcreator, ICollection<IBucketModel> buckets) : base(buckets)
+        public LinkedBucketModels(IDataCreator<IBucketModel> bucketcreator, IReadOnlyCollection<IBucketModel> buckets) : base(buckets)
         {
             _bucketcreator = bucketcreator;
             _buckets = new HashSet<IBucketModel>(buckets);

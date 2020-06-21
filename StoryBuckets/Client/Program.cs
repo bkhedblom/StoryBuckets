@@ -5,6 +5,7 @@ using StoryBuckets.Client.Components.Counter;
 using StoryBuckets.Client.Components.SortingBuckets;
 using StoryBuckets.Client.Models;
 using StoryBuckets.Client.ServerCommunication;
+using StoryBuckets.Shared;
 
 namespace StoryBuckets.Client
 {
@@ -30,6 +31,7 @@ namespace StoryBuckets.Client
             services.AddScoped<IDataReader<SyncableStory>, StorySync>();
             services.AddScoped<IDataReader<IBucketModel>, BucketSync>();
             services.AddScoped<IDataCreator<IBucketModel>, BucketSync>();
+            services.AddScoped<IBucketReader, BucketSync>();
         }
 
         private static void AddModelInjection(IServiceCollection services)

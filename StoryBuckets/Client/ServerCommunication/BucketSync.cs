@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StoryBuckets.Client.ServerCommunication
 {
-    public class BucketSync : IDataReader<IBucketModel>, IDataCreator<IBucketModel>
+    public class BucketSync : IDataReader<IBucketModel>, IDataCreator<IBucketModel>, IBucketReader
     {
         private const string Endpoint = "buckets";
         private IHttpClient _httpClient;
@@ -32,10 +32,16 @@ namespace StoryBuckets.Client.ServerCommunication
             return buckets;
         }
 
-        private void BindUpdatedEvent(SyncableBucket bucket) 
+        public async Task<LinkedBucketModels> ReadLinkedBucketsAsync()
+        {
+            var buckets = await ReadAsync();
+            return new LinkedBucketModels(this, buckets);
+        }
+
+        private void BindUpdatedEvent(SyncableBucket bucket)
             => bucket.Updated += async (sender, args) => await SyncBucketUpdateAsync((SyncableBucket)sender);
 
-        private async Task SyncBucketUpdateAsync(SyncableBucket sender) 
+        private async Task SyncBucketUpdateAsync(SyncableBucket sender)
             => await _httpClient.PutJsonAsync(Endpoint, sender);
     }
 }
