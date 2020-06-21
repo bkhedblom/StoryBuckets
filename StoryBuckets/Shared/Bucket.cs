@@ -38,6 +38,8 @@ namespace StoryBuckets.Shared
             }
         }
 
+        public IBucket NextBiggerBucket { get; set; }
+
         private void InitializeStoriesIfNeeded()
         {
             if (_stories == null)
