@@ -3,6 +3,7 @@ using StoryBuckets.Shared;
 using StoryBuckets.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace StoryBuckets.Shared.Tests
@@ -22,10 +23,10 @@ namespace StoryBuckets.Shared.Tests
         }
 
         [TestMethod()]
-        public void ctor_Can_Be_initialised_with_collection_of_IBucket()
+        public void ctor_Can_Be_initialised_with_ReadOnlyCollection_of_IBucket()
         {
             //Arrange
-            ICollection<IBucket> buckets = new[]
+            IReadOnlyCollection<IBucket> buckets = new[]
             {
                 new Bucket{ Id = 1 }
             };
@@ -174,7 +175,7 @@ namespace StoryBuckets.Shared.Tests
         public void ctor_throws_InvalidOperationException_if_initialised_with_collection_containing_more_than_one_Bucket_without_a_NextBiggerBucket()
         {
             //Arrange
-            ICollection<IBucket> buckets = new[]
+            var buckets = new[]
             {
                 new Bucket{ Id = 1 },
                 new Bucket{ Id = 2 }
@@ -190,7 +191,7 @@ namespace StoryBuckets.Shared.Tests
             //Arrange
             var biggerBucket = new Bucket { Id = 3 };
 
-            ICollection<IBucket> buckets = new[]
+            var buckets = new[]
             {
                 new Bucket{ Id = 1, NextBiggerBucket = biggerBucket },
                 new Bucket{ Id = 2, NextBiggerBucket = biggerBucket },
@@ -207,7 +208,7 @@ namespace StoryBuckets.Shared.Tests
             //Arrange
             var biggerBucket = new Bucket { Id = 3 };
 
-            ICollection<IBucket> buckets = new[]
+            var buckets = new[]
             {
                 new Bucket{ Id = 1, NextBiggerBucket = biggerBucket },
             };
@@ -226,7 +227,7 @@ namespace StoryBuckets.Shared.Tests
 
             biggerBucket.NextBiggerBucket = circularBucket;
 
-            ICollection<IBucket> buckets = new[]
+            var buckets = new[]
             {
                 circularBucket,
                 mediumBucket,
@@ -245,7 +246,7 @@ namespace StoryBuckets.Shared.Tests
             var mediumBucket = new Bucket { Id = 42, NextBiggerBucket = biggerBucket };
 
 
-            ICollection<IBucket> buckets = new[]
+            var buckets = new[]
             {
                 new Bucket { Id = 8, NextBiggerBucket = mediumBucket },
                 new Bucket { Id = 10, NextBiggerBucket = biggerBucket },
