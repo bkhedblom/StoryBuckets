@@ -38,7 +38,7 @@ namespace StoryBuckets.Shared
             }
         }
 
-        public IBucket NextBiggerBucket { get; set; }
+        public virtual IBucket NextBiggerBucket { get; set; }
 
         private void InitializeStoriesIfNeeded()
         {
