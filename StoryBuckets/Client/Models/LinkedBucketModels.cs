@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace StoryBuckets.Client.Models
 {
-    public class LinkedBucketModels : LinkedBuckets<IBucketModel>, ILinkedBucketModels
+    public class LinkedBucketModels : LinkedBuckets<SyncableBucket>, ILinkedBucketModels
     {
-        private IDataCreator<IBucketModel> _bucketcreator;
-        private HashSet<IBucketModel> _buckets;
+        private IDataCreator<SyncableBucket> _bucketcreator;
+        private HashSet<SyncableBucket> _buckets;
 
-        public LinkedBucketModels(IDataCreator<IBucketModel> bucketcreator, IReadOnlyCollection<IBucketModel> buckets) : base(buckets)
+        public LinkedBucketModels(IDataCreator<SyncableBucket> bucketcreator, IReadOnlyCollection<SyncableBucket> buckets) : base(buckets)
         {
             _bucketcreator = bucketcreator;
-            _buckets = new HashSet<IBucketModel>(buckets);
+            _buckets = new HashSet<SyncableBucket>(buckets);
         }
 
-        public async Task CreateEmptyBiggerThan(IBucketModel smallerBucket)
+        public async Task CreateEmptyBiggerThan(SyncableBucket smallerBucket)
         {
             var newBucket = await _bucketcreator.CreateEmptyAsync();
             if (smallerBucket == null)

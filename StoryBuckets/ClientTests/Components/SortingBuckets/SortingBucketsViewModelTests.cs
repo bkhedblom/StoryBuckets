@@ -308,12 +308,12 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             //Arrange
             var storylist = new Mock<IStorylist>();
 
-            var bucket1 = new Mock<IBucketModel>().Object;
-            var buckets = new List<IBucketModel>
+            var bucket1 = new Mock<SyncableBucket>().Object;
+            var buckets = new List<SyncableBucket>
             {
                 bucket1,
-                new Mock<IBucketModel>().Object,
-                new Mock<IBucketModel>().Object
+                new Mock<SyncableBucket>().Object,
+                new Mock<SyncableBucket>().Object
             };
             var linkedBuckets = new Mock<ILinkedBucketModels>();
             linkedBuckets
@@ -415,7 +415,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             await vm.OnClickCreateBucket();
 
             //Assert
-            linkedBuckets.Verify(mock => mock.CreateEmptyBiggerThan(It.IsAny<IBucketModel>()), Times.Once);
+            linkedBuckets.Verify(mock => mock.CreateEmptyBiggerThan(It.IsAny<SyncableBucket>()), Times.Once);
         }
 
         [TestMethod()]

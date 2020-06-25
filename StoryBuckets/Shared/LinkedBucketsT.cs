@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace StoryBuckets.Shared
 {
-    public class LinkedBuckets<T> : IEnumerable<T> where T:class,IBucket
+    public class LinkedBuckets<T> : IEnumerable<T> where T: Bucket
     {
         private T _smallestBucket;
 

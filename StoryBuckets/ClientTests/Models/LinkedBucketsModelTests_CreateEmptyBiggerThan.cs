@@ -18,12 +18,12 @@ namespace StoryBuckets.Client.Models.Tests
         public async Task Calls_DataCreator_to_create_a_new_bucket()
         {
             //Arrange
-            var dataCreator = new Mock<IDataCreator<IBucketModel>>();
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
             dataCreator
                 .Setup(fake => fake.CreateEmptyAsync())
-                .ReturnsAsync(new Mock<IBucketModel>().Object);
+                .ReturnsAsync(new Mock<SyncableBucket>().Object);
 
-            var smallerBucket = new Mock<IBucketModel>().Object;
+            var smallerBucket = new Mock<SyncableBucket>().Object;
             
             var testing = new LinkedBucketModels(dataCreator.Object, new[] { smallerBucket });
             
@@ -38,14 +38,14 @@ namespace StoryBuckets.Client.Models.Tests
         public async Task When_smaller_bucket_is_null_the_new_bucket_becomes_the_first()
         {
             //Arrange
-            var newBucket = new Mock<IBucketModel>().Object;
+            var newBucket = new Mock<SyncableBucket>().Object;
 
-            var dataCreator = new Mock<IDataCreator<IBucketModel>>();
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
             dataCreator
                 .Setup(fake => fake.CreateEmptyAsync())
                 .ReturnsAsync(newBucket);
 
-            var testing = new LinkedBucketModels(dataCreator.Object, new List<IBucketModel>());
+            var testing = new LinkedBucketModels(dataCreator.Object, new List<SyncableBucket>());
 
             //Act
             await testing.CreateEmptyBiggerThan(null);
@@ -58,14 +58,14 @@ namespace StoryBuckets.Client.Models.Tests
         public async Task When_adding_a_new_first_the_current_first_is_set_as_NextBiggerBucket()
         {
             //Arrange
-            var newBucket = new Mock<IBucketModel>();
+            var newBucket = new Mock<SyncableBucket>();
 
-            var dataCreator = new Mock<IDataCreator<IBucketModel>>();
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
             dataCreator
                 .Setup(fake => fake.CreateEmptyAsync())
                 .ReturnsAsync(newBucket.Object);
 
-            var testing = new LinkedBucketModels(dataCreator.Object, new[] { new Mock<IBucketModel>().Object });
+            var testing = new LinkedBucketModels(dataCreator.Object, new[] { new Mock<SyncableBucket>().Object });
             
             var currentFirstBucket = testing.First();
             
@@ -80,14 +80,14 @@ namespace StoryBuckets.Client.Models.Tests
         public async Task When_a_smaller_bucket_is_given_that_one_gets_the_new_as_NextBiggerBucket()
         {
             //Arrange
-            var newBucket = new Mock<IBucketModel>().Object;
+            var newBucket = new Mock<SyncableBucket>().Object;
 
-            var dataCreator = new Mock<IDataCreator<IBucketModel>>();
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
             dataCreator
                 .Setup(fake => fake.CreateEmptyAsync())
                 .ReturnsAsync(newBucket);
 
-            var smallerBucket = new Mock<IBucketModel>();
+            var smallerBucket = new Mock<SyncableBucket>();
             var testing = new LinkedBucketModels(dataCreator.Object, new[] { smallerBucket.Object });
 
             //Act
@@ -101,17 +101,17 @@ namespace StoryBuckets.Client.Models.Tests
         public async Task Throws_InvalidOperationException_if_supplied_bucket_is_not_in_the_collection()
         {
             //Arrange
-            var newBucket = new Mock<IBucketModel>();
+            var newBucket = new Mock<SyncableBucket>();
 
-            var dataCreator = new Mock<IDataCreator<IBucketModel>>();
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
             dataCreator
                 .Setup(fake => fake.CreateEmptyAsync())
                 .ReturnsAsync(newBucket.Object);
 
-            var testing = new LinkedBucketModels(dataCreator.Object, new[] { new Mock<IBucketModel>().Object });
+            var testing = new LinkedBucketModels(dataCreator.Object, new[] { new Mock<SyncableBucket>().Object });
 
             //Act & Assert
-            await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () => await testing.CreateEmptyBiggerThan(new Mock<IBucketModel>().Object));
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () => await testing.CreateEmptyBiggerThan(new Mock<SyncableBucket>().Object));
 
         }
 
@@ -119,12 +119,12 @@ namespace StoryBuckets.Client.Models.Tests
         public async Task Newly_added_buckets_can_be_used_as_smallerBucket()
         {
             //Arrange
-            var dataCreator = new Mock<IDataCreator<IBucketModel>>();
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
             dataCreator
                 .Setup(fake => fake.CreateEmptyAsync())
-                .ReturnsAsync(new Mock<IBucketModel>().Object);
+                .ReturnsAsync(new Mock<SyncableBucket>().Object);
 
-            var testing = new LinkedBucketModels(dataCreator.Object, new[] { new Mock<IBucketModel>().Object });
+            var testing = new LinkedBucketModels(dataCreator.Object, new[] { new Mock<SyncableBucket>().Object });
 
             await testing.CreateEmptyBiggerThan(null);
             var newlyAdded = testing.First();
@@ -139,15 +139,15 @@ namespace StoryBuckets.Client.Models.Tests
         public async Task The_new_bucket_gets_the_smaller_buckets_existing_NextBiggerBucket()
         {
             //Arrange
-            var newBucket = new Mock<IBucketModel>();
+            var newBucket = new Mock<SyncableBucket>();
 
-            var dataCreator = new Mock<IDataCreator<IBucketModel>>();
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
             dataCreator
                 .Setup(fake => fake.CreateEmptyAsync())
                 .ReturnsAsync(newBucket.Object);
 
-            var smallerBucket = new Mock<IBucketModel>();
-            var biggerBucket = new Mock<IBucketModel>();
+            var smallerBucket = new Mock<SyncableBucket>();
+            var biggerBucket = new Mock<SyncableBucket>();
             
             smallerBucket
                 .SetupGet(fake => fake.NextBiggerBucket)

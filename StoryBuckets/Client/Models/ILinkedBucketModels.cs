@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace StoryBuckets.Client.Models
 {
-    public interface ILinkedBucketModels : IEnumerable<IBucketModel>
+    public interface ILinkedBucketModels : IEnumerable<SyncableBucket>
     {
-        Task CreateEmptyBiggerThan(IBucketModel smallerBucket);
+        Task CreateEmptyBiggerThan(SyncableBucket smallerBucket);
     }
 }

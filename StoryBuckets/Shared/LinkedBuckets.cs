@@ -7,10 +7,10 @@ using System.Text;
 
 namespace StoryBuckets.Shared
 {
-    public class LinkedBuckets : LinkedBuckets<IBucket>, ILinkedBuckets
+    public class LinkedBuckets : LinkedBuckets<Bucket>, ILinkedBuckets
     {
         public LinkedBuckets():base() { }
 
-        public LinkedBuckets(IReadOnlyCollection<IBucket> buckets) : base(buckets) { }
+        public LinkedBuckets(IReadOnlyCollection<Bucket> buckets) : base(buckets) { }
     }
 }

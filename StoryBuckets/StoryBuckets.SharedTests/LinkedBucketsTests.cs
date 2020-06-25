@@ -26,7 +26,7 @@ namespace StoryBuckets.Shared.Tests
         public void ctor_Can_Be_initialised_with_ReadOnlyCollection_of_IBucket()
         {
             //Arrange
-            IReadOnlyCollection<IBucket> buckets = new[]
+            IReadOnlyCollection<Bucket> buckets = new[]
             {
                 new Bucket{ Id = 1 }
             };
@@ -41,7 +41,7 @@ namespace StoryBuckets.Shared.Tests
         public void ctor_allows_empty_collection()
         {
             //Arrange
-            var buckets = new List<IBucket>();
+            var buckets = new List<Bucket>();
 
             //Act & Assert
             _ = new LinkedBuckets(buckets);

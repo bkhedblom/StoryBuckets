@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace StoryBuckets.Shared
 {
-    public class Bucket : IBucket
+    public class Bucket:IData
     {
         private Collection<Story> _stories;
 
@@ -38,7 +38,7 @@ namespace StoryBuckets.Shared
             }
         }
 
-        public virtual IBucket NextBiggerBucket { get; set; }
+        public virtual Bucket NextBiggerBucket { get; set; }
 
         private void InitializeStoriesIfNeeded()
         {

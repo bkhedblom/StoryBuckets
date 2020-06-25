@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StoryBuckets.Client.ServerCommunication
 {
-    public class BucketSync : IDataReader<IBucketModel>, IDataCreator<IBucketModel>, IBucketReader
+    public class BucketSync : IDataReader<SyncableBucket>, IDataCreator<SyncableBucket>, IBucketReader
     {
         private const string Endpoint = "buckets";
         private IHttpClient _httpClient;
@@ -16,7 +16,7 @@ namespace StoryBuckets.Client.ServerCommunication
             _httpClient = httpClient;
         }
 
-        public async Task<IBucketModel> CreateEmptyAsync()
+        public async Task<SyncableBucket> CreateEmptyAsync()
         {
             var newBucket = new SyncableBucket();
             await _httpClient.PostJsonAsync(Endpoint, newBucket);
@@ -24,7 +24,7 @@ namespace StoryBuckets.Client.ServerCommunication
             return newBucket;
         }
 
-        public async Task<IReadOnlyCollection<IBucketModel>> ReadAsync()
+        public async Task<IReadOnlyCollection<SyncableBucket>> ReadAsync()
         {
             var buckets = await _httpClient.GetJsonAsync<SyncableBucket[]>(Endpoint);
             foreach (var bucket in buckets)

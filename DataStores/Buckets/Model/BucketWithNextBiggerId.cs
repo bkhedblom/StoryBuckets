@@ -13,7 +13,7 @@ namespace StoryBuckets.DataStores.Buckets.Model
         public BucketWithNextBiggerId(IEnumerable<Story> stories, int? nextBiggerBucketId) : base(stories) 
             => _nextBiggerBucketId = nextBiggerBucketId;
 
-        public override IBucket NextBiggerBucket
+        public override Bucket NextBiggerBucket
         {
             get
             {

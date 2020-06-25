@@ -2,7 +2,7 @@
 
 namespace StoryBuckets.Shared.Interfaces
 {
-    internal interface ILinkedBuckets : IEnumerable<IBucket>
+    internal interface ILinkedBuckets : IEnumerable<Bucket>
     {
     }
 }

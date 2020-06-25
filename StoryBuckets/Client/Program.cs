@@ -29,8 +29,7 @@ namespace StoryBuckets.Client
         {
             services.AddScoped<IHttpClient, StoryBucketsHttpClient>();
             services.AddScoped<IDataReader<SyncableStory>, StorySync>();
-            services.AddScoped<IDataReader<IBucketModel>, BucketSync>();
-            services.AddScoped<IDataCreator<IBucketModel>, BucketSync>();
+            services.AddScoped<IDataReader<SyncableBucket>, BucketSync>();
             services.AddScoped<IBucketReader, BucketSync>();
         }
 
