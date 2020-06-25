@@ -7,7 +7,7 @@ using System.Linq;
 namespace StoryBuckets.Client.Models.Tests
 {
     [TestClass()]
-    public class BucketTests
+    public class SyncableBucketTests
     {
         [TestMethod()]
         public void Add_AddsStory()
@@ -61,6 +61,50 @@ namespace StoryBuckets.Client.Models.Tests
             //Assert
             Assert.IsTrue(eventWasTriggered);
             Assert.AreEqual(story, singleStoryInBucketWhenEventTriggered);
+        }
+
+        [TestMethod()]
+        public void Setting_NextBiggerBucket_triggers_update()
+        {
+            //Arrange
+            var bucket = new SyncableBucket();
+
+            var eventWasTriggered = false;
+            //Bucket biggerBucketWhenEventTriggered = null;
+
+            bucket.Updated += (o, e) => {
+                eventWasTriggered = true;
+                //biggerBucketWhenEventTriggered = (o as SyncableBucket).NextBiggerBucket;
+            };
+
+            //Act
+            bucket.NextBiggerBucket = new Bucket();
+
+
+            //Assert
+            Assert.IsTrue(eventWasTriggered, "Event was not  triggered");
+        }
+
+        [TestMethod()]
+        public void Triggering_update_happens_after_Setting_the_NextBiggerBucket()
+        {
+            //Arrange
+            var bucket = new SyncableBucket();
+
+            Bucket biggerBucketWhenEventTriggered = null;
+
+            bucket.Updated += (o, e) => {
+                biggerBucketWhenEventTriggered = (o as SyncableBucket).NextBiggerBucket;
+            };
+
+            var biggerBucket = new Bucket();
+
+            //Act
+            bucket.NextBiggerBucket = biggerBucket;
+
+
+            //Assert
+            Assert.AreEqual(biggerBucket, biggerBucketWhenEventTriggered);
         }
     }
 }

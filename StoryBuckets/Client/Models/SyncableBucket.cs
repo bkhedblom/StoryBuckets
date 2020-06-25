@@ -16,6 +16,17 @@ namespace StoryBuckets.Client.Models
             TriggerUpdated();
         }
 
+        public override Bucket NextBiggerBucket
+        {
+            get => base.NextBiggerBucket; 
+            
+            set
+            {
+                base.NextBiggerBucket = value;
+                TriggerUpdated();
+            }
+        }
+
         private void TriggerUpdated()
         {
             var handler = Updated;
