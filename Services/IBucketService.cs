@@ -10,6 +10,7 @@ namespace StoryBuckets.Services
     {
         Task AddAsync(Bucket bucket);
         Task<IEnumerable<Bucket>> GetAllAsync();
+        Task<LinkedBuckets> GetAllLinkedAsync();
         Task UpdateAsync(int id, Bucket bucket);
     }
 }
