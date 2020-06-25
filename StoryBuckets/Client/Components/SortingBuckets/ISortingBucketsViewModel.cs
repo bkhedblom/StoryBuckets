@@ -12,10 +12,9 @@ namespace StoryBuckets.Client.Components.SortingBuckets
         bool LoaderHidden { get; }
         bool DisableBucketChoosing { get; }
         bool BucketsHidden { get; }
-        IReadOnlyCollection<IBucketModel> Buckets { get; }
+        IEnumerable<IBucketModel> Buckets { get; }
 
         Task OnInitializedAsync();
-        void OnClickBtnNext();
         Task OnClickCreateBucket();
         void OnBucketChosen(IBucketModel bucket);
     }

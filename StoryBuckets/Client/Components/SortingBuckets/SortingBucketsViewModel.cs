@@ -12,15 +12,13 @@ namespace StoryBuckets.Client.Components.SortingBuckets
     public class SortingBucketsViewModel : ISortingBucketsViewModel
     {
         private readonly IStorylist _storylist;
-        private readonly IDataReader<IBucketModel> _bucketReader;
-        private readonly IDataCreator<IBucketModel> _bucketCreator;
-        private List<IBucketModel> _buckets;
+        private readonly IBucketReader _bucketReader;
+        private ILinkedBucketModels _buckets;
 
-        public SortingBucketsViewModel(IStorylist storylist, IDataReader<IBucketModel> bucketReader, IDataCreator<IBucketModel> bucketCreator)
+        public SortingBucketsViewModel(IStorylist storylist, IBucketReader bucketReader)
         {
             _storylist = storylist;
             _bucketReader = bucketReader;
-            _bucketCreator = bucketCreator;
         }
         public string TextForNextStoryToSort => _storylist.NextUnbucketedStory?.ToString() ?? "";
         public bool StoryHidden => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories == 0;
@@ -29,10 +27,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets
         public bool BucketsHidden => Buckets == null;
         public bool DisableBucketChoosing => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories == 0;
 
-        public IReadOnlyCollection<IBucketModel> Buckets { get => _buckets; }
-
-        public void OnClickBtnNext()
-            => _storylist.NextUnbucketedStory.IsInBucket = true;
+        public IEnumerable<IBucketModel> Buckets { get => _buckets; }
 
         public void OnBucketChosen(IBucketModel bucket)
         {
@@ -42,17 +37,17 @@ namespace StoryBuckets.Client.Components.SortingBuckets
 
         public async Task OnClickCreateBucket()
         {
-            _buckets.Add(await _bucketCreator.CreateEmptyAsync());
+            await _buckets.CreateEmptyBiggerThan(null);
         }
 
         public async Task OnInitializedAsync()
         {
-            var bucketReading = _bucketReader.ReadAsync();
+            var bucketReading = _bucketReader.ReadLinkedBucketsAsync();
             await Task.WhenAll(
                            _storylist.InitializeAsync(),
                            bucketReading
                        );
-            _buckets = bucketReading.Result.ToList();
+            _buckets = bucketReading.Result;
         }
     }
 }

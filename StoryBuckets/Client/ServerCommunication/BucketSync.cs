@@ -32,7 +32,7 @@ namespace StoryBuckets.Client.ServerCommunication
             return buckets;
         }
 
-        public async Task<LinkedBucketModels> ReadLinkedBucketsAsync()
+        public async Task<ILinkedBucketModels> ReadLinkedBucketsAsync()
         {
             var buckets = await ReadAsync();
             return new LinkedBucketModels(this, buckets);

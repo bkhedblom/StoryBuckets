@@ -17,15 +17,15 @@
     <div class="row justify-content-center mt-5 pt-5">
 @if (!vm.BucketsHidden)
 {
+        <div class="col">
+            <button class="btn btn-outline-dark" title="Create a new bucket" @onclick="vm.OnClickCreateBucket">+ Add</button>
+        </div>
         @foreach (var bucket in vm.Buckets)
         {
             <div class="col">
                 <BucketWrapper Bucket="@bucket" OnChosen="vm.OnBucketChosen" DisableChoosing="vm.DisableBucketChoosing"/>
             </div>
         }
-    <div class="col">
-        <button class="btn btn-outline-dark" title="Create a new bucket" @onclick="vm.OnClickCreateBucket">+ Add</button>
-    </div>
 }
     </div>
 
