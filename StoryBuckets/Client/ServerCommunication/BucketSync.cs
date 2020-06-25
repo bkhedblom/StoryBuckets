@@ -18,8 +18,7 @@ namespace StoryBuckets.Client.ServerCommunication
 
         public async Task<SyncableBucket> CreateEmptyAsync()
         {
-            var newBucket = new SyncableBucket();
-            await _httpClient.PostJsonAsync(Endpoint, newBucket);
+            var newBucket = await _httpClient.PostJsonAsync(Endpoint, new SyncableBucket());
             BindUpdatedEvent(newBucket);
             return newBucket;
         }

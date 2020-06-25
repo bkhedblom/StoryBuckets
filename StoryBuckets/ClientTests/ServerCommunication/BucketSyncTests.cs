@@ -44,7 +44,9 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
         {
             //Arrange
             var httpclient = new Mock<IHttpClient>();
-
+            httpclient
+                .Setup(fake => fake.PostJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()))
+                .ReturnsAsync(new SyncableBucket { Id = 42 });
             var syncer = new BucketSync(httpclient.Object);
 
             //Act
@@ -59,14 +61,34 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
         {
             //Arrange
             var httpclient = new Mock<IHttpClient>();
+            httpclient
+                .Setup(fake => fake.PostJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()))
+                .ReturnsAsync(new SyncableBucket { Id = 42 });
+            var syncer = new BucketSync(httpclient.Object);
 
+            //Act
+            _ = await syncer.CreateEmptyAsync();
+
+            //Assert
+            httpclient.Verify(mock => mock.PostJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()), Times.Once);
+        }
+
+        [TestMethod]
+        public async Task CreateEmpty_sets_the_returned_id_on_the_returned_bucket()
+        {
+            //Arrange
+            var idForNew = 42;
+            var httpclient = new Mock<IHttpClient>();
+            httpclient
+                .Setup(fake => fake.PostJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()))
+                .ReturnsAsync(new SyncableBucket { Id = idForNew });
             var syncer = new BucketSync(httpclient.Object);
 
             //Act
             var created = await syncer.CreateEmptyAsync();
 
             //Assert
-            httpclient.Verify(mock => mock.PostJsonAsync(BUCKETS, created), Times.Once);
+            Assert.AreEqual(idForNew, created.Id);
         }
 
         [TestMethod()]
@@ -117,6 +139,9 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
             var updatedId = -1;
 
             var httpclient = new Mock<IHttpClient>();
+            httpclient
+                .Setup(fake => fake.PostJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()))
+                .ReturnsAsync(new SyncableBucket { Id = 42 });
             httpclient
                 .Setup(mock => mock.PutJsonAsync<SyncableBucket>(It.IsAny<string>(), It.IsAny<SyncableBucket>()))
                 .Callback<string, SyncableBucket>((_, updatedBucket) => updatedId = updatedBucket.Id);
