@@ -52,5 +52,26 @@ namespace StoryBuckets.Shared
             _stories.Add(story);
             story.IsInBucket = true;
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Bucket bucket &&
+                   Id == bucket.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id);
+        }
+
+        public static bool operator ==(Bucket left, Bucket right)
+        {
+            return EqualityComparer<Bucket>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Bucket left, Bucket right)
+        {
+            return !(left == right);
+        }
     }
 }
