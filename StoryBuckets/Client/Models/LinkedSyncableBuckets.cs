@@ -1,18 +1,20 @@
-﻿using StoryBuckets.Shared.Interfaces;
+﻿using StoryBuckets.Client.ServerCommunication;
+using StoryBuckets.Shared;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace StoryBuckets.Shared
+namespace StoryBuckets.Client.Models
 {
-    public class LinkedBuckets<T> : IEnumerable<T> where T: Bucket
+    public class LinkedSyncableBuckets : ILinkedSyncableBuckets
     {
-        private T _smallestBucket;
+        private IDataCreator<SyncableBucket> _bucketcreator;
+        private HashSet<SyncableBucket> _buckets;
+        private SyncableBucket _smallestBucket;
 
-        public LinkedBuckets() : this(new List<T>()) { }
-
-        public LinkedBuckets(IReadOnlyCollection<T> buckets)
+        public LinkedSyncableBuckets(IDataCreator<SyncableBucket> bucketcreator, IReadOnlyCollection<SyncableBucket> buckets)
         {
             if (buckets.Any() && buckets.Count(bucket => bucket.NextBiggerBucket == null) != 1)
                 throw new InvalidOperationException("There must be one and only one bucket with no NextBiggerBucket set");
@@ -35,13 +37,32 @@ namespace StoryBuckets.Shared
                     throw new InvalidOperationException("All NextBiggerBucket must be contained in the collection");
             }
 
+            _bucketcreator = bucketcreator;
+            _buckets = new HashSet<SyncableBucket>(buckets);
         }
 
-
-        protected T SmallestBucket
+        public async Task CreateEmptyBiggerThan(SyncableBucket smallerBucket)
         {
-            get => _smallestBucket; 
-            
+            var newBucket = await _bucketcreator.CreateEmptyAsync();
+            if (smallerBucket == null)
+            {
+                SmallestBucket = newBucket;
+            }
+            else
+            {
+                if (!_buckets.Contains(smallerBucket))
+                    throw new InvalidOperationException("Supplied smaller bucket must exist");
+
+                newBucket.NextBiggerBucket = smallerBucket.NextBiggerBucket;
+                smallerBucket.NextBiggerBucket = newBucket;
+            }
+            _buckets.Add(newBucket);
+        }
+
+        protected SyncableBucket SmallestBucket
+        {
+            get => _smallestBucket;
+
             set
             {
                 value.NextBiggerBucket = _smallestBucket;
@@ -49,23 +70,23 @@ namespace StoryBuckets.Shared
             }
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public IEnumerator<SyncableBucket> GetEnumerator()
             => new BucketEnumerator(_smallestBucket);
 
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 
-        private class BucketEnumerator : IEnumerator<T>
+        private class BucketEnumerator : IEnumerator<SyncableBucket>
         {
-            private T smallestBucket;
+            private SyncableBucket smallestBucket;
             private bool smallestBucketHasBeenRead = false;
 
-            internal BucketEnumerator(T smallestBucket)
+            internal BucketEnumerator(SyncableBucket smallestBucket)
             {
                 this.smallestBucket = smallestBucket;
             }
 
-            public T Current { get; private set; }
+            public SyncableBucket Current { get; private set; }
 
             object IEnumerator.Current => Current;
 
@@ -83,7 +104,7 @@ namespace StoryBuckets.Shared
                 }
                 else
                 {
-                    Current = Current?.NextBiggerBucket as T;
+                    Current = Current?.NextBiggerBucket;
                 }
 
                 return Current != null;

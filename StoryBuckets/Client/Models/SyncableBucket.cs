@@ -6,8 +6,20 @@ using System.Collections.ObjectModel;
 
 namespace StoryBuckets.Client.Models
 {
-    public class SyncableBucket : Bucket, IBucketModel
+    public class SyncableBucket : Bucket, ISyncableBucket
     {
+        private SyncableBucket _nextBiggerBucket;
+
+        public SyncableBucket()
+        {
+
+        }
+        public SyncableBucket(Bucket bucket):base(bucket.Stories)
+        {
+            Id = bucket.Id;
+            base.NextBiggerBucketId = bucket.NextBiggerBucketId;
+        }
+
         public event EventHandler Updated;
 
         public override void Add(Story story)
@@ -16,15 +28,21 @@ namespace StoryBuckets.Client.Models
             TriggerUpdated();
         }
 
-        public override Bucket NextBiggerBucket
+        public SyncableBucket NextBiggerBucket
         {
-            get => base.NextBiggerBucket; 
+            get => _nextBiggerBucket; 
             
             set
             {
-                base.NextBiggerBucket = value;
+                _nextBiggerBucket = value;
                 TriggerUpdated();
             }
+        }
+
+        public override int? NextBiggerBucketId 
+        { 
+            get => _nextBiggerBucket?.Id ?? base.NextBiggerBucketId; 
+            set => throw new NotSupportedException("Setting NextBiggerBucketId manually is not supported. Set NextBiggerBucket instead"); 
         }
 
         private void TriggerUpdated()

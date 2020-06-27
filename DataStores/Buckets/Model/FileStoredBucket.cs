@@ -17,14 +17,15 @@ namespace StoryBuckets.DataStores.Buckets.Model
         {
             Id = data.Id;
             StoryIds = data.Stories.Select(story => story.Id);
-            NextBiggerBucketId = data.NextBiggerBucket?.Id;
+            NextBiggerBucketId = data.NextBiggerBucketId;
         }
 
         public Bucket ToData() => ToData(Enumerable.Empty<Story>());
 
-        public Bucket ToData(IEnumerable<Story> stories) => new BucketWithNextBiggerId(stories, NextBiggerBucketId)
+        public Bucket ToData(IEnumerable<Story> stories) => new Bucket(stories)
         {
-            Id = this.Id
+            Id = this.Id,
+            NextBiggerBucketId = NextBiggerBucketId
         };
     }
 }

@@ -10,10 +10,10 @@ namespace StoryBuckets.Client.Components.BucketWrapper
     public partial class BucketWrapper
     {
         [Parameter]
-        public IBucketModel Bucket { get; set; }
+        public ISyncableBucket Bucket { get; set; }
 
         [Parameter]
-        public EventCallback<IBucketModel> OnChosen { get; set; }
+        public EventCallback<ISyncableBucket> OnChosen { get; set; }
 
         [Parameter]
         public bool DisableChoosing { get; set; }

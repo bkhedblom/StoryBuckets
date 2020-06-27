@@ -1,38 +1,28 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoryBuckets.Shared;
-using StoryBuckets.Shared.Interfaces;
+using Moq;
+using StoryBuckets.Client.ServerCommunication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace StoryBuckets.Shared.Tests
+namespace StoryBuckets.Client.Models.Tests
 {
     [TestClass()]
     public class LinkedBucketsTests
     {
         [TestMethod()]
-        public void ctor_Can_Be_initialised_without_collection()
+        public void ctor_Can_Be_initialised_with_ReadOnlyCollection_of_SyncableBucket()
         {
             //Arrange
-
-            //Act & Assert
-            _ = new LinkedBuckets();
-
-            //Passes by not throwing exception
-        }
-
-        [TestMethod()]
-        public void ctor_Can_Be_initialised_with_ReadOnlyCollection_of_IBucket()
-        {
-            //Arrange
-            IReadOnlyCollection<Bucket> buckets = new[]
+            IReadOnlyCollection<SyncableBucket> buckets = new[]
             {
-                new Bucket{ Id = 1 }
+                new SyncableBucket{ Id = 1 }
             };
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
 
             //Act & Assert
-            _ = new LinkedBuckets(buckets);
+            _ = new LinkedSyncableBuckets(dataCreator.Object, buckets);
 
             //Passes by not throwing exception
         }
@@ -41,10 +31,11 @@ namespace StoryBuckets.Shared.Tests
         public void ctor_allows_empty_collection()
         {
             //Arrange
-            var buckets = new List<Bucket>();
+            var buckets = new List<SyncableBucket>();
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
 
             //Act & Assert
-            _ = new LinkedBuckets(buckets);
+            _ = new LinkedSyncableBuckets(dataCreator.Object, buckets);
 
             //Passes by not throwing exception
         }
@@ -55,9 +46,10 @@ namespace StoryBuckets.Shared.Tests
             //Arrange
             var buckets = new[]
             {
-                new Bucket{ Id = 1 }
+                new SyncableBucket{ Id = 1 }
             };
-            var testing = new LinkedBuckets(buckets);
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, buckets);
 
             //Act
             var enumerator = testing.GetEnumerator();
@@ -73,9 +65,10 @@ namespace StoryBuckets.Shared.Tests
             //Arrange
             var buckets = new[]
             {
-                new Bucket{ Id = 1 }
+                new SyncableBucket{ Id = 1 }
             };
-            var testing = new LinkedBuckets(buckets);
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, buckets);
             var enumerator = testing.GetEnumerator();
 
             //Act
@@ -91,9 +84,10 @@ namespace StoryBuckets.Shared.Tests
             //Arrange
             var buckets = new[]
             {
-                new Bucket{ Id = 1 }
+                new SyncableBucket{ Id = 1 }
             };
-            var testing = new LinkedBuckets(buckets);
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, buckets);
             var enumerator = testing.GetEnumerator();
 
             //Act
@@ -111,9 +105,10 @@ namespace StoryBuckets.Shared.Tests
             //Arrange
             var buckets = new[]
             {
-                new Bucket{ Id = 1 }
+                new SyncableBucket{ Id = 1 }
             };
-            var testing = new LinkedBuckets(buckets);
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, buckets);
             var enumerator = testing.GetEnumerator();
 
             //Act
@@ -128,7 +123,8 @@ namespace StoryBuckets.Shared.Tests
         public void Enumerator_MoveNext_works_if_created_without_collection()
         {
             //Arrange
-            var testing = new LinkedBuckets();
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, new List<SyncableBucket>());
             var enumerator = testing.GetEnumerator();
 
             //Act
@@ -141,7 +137,8 @@ namespace StoryBuckets.Shared.Tests
         public void Enumerator_Reset_throws_NotSupportedException()
         {
             //Arrange
-            var testing = new LinkedBuckets();
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, new List<SyncableBucket>());
             var enumerator = testing.GetEnumerator();
 
             //Act & Assert
@@ -152,14 +149,15 @@ namespace StoryBuckets.Shared.Tests
         public void Enumerator_MoveNext_sets_Current_to_NextBigger_Bucket()
         {
             //Arrange
-            var biggerBucket = new Bucket { Id = 42 };
-            var smallerBucket = new Bucket { Id = 2, NextBiggerBucket = biggerBucket };
+            var biggerBucket = new SyncableBucket { Id = 42 };
+            var smallerBucket = new SyncableBucket { Id = 2, NextBiggerBucket = biggerBucket };
             var buckets = new[]
             {
                 smallerBucket,
                 biggerBucket
             };
-            var testing = new LinkedBuckets(buckets);
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, buckets);
             var enumerator = testing.GetEnumerator();
 
             //Act
@@ -177,53 +175,56 @@ namespace StoryBuckets.Shared.Tests
             //Arrange
             var buckets = new[]
             {
-                new Bucket{ Id = 1 },
-                new Bucket{ Id = 2 }
+                new SyncableBucket{ Id = 1 },
+                new SyncableBucket{ Id = 2 }
             };
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
 
             //Act & Assert
-            Assert.ThrowsException<InvalidOperationException>(() =>  new LinkedBuckets(buckets));
+            Assert.ThrowsException<InvalidOperationException>(() => new LinkedSyncableBuckets(dataCreator.Object, buckets));
         }
 
         [TestMethod()]
         public void ctor_throws_InvalidOperationException_if_initialised_with_collection_where_more_than_one_Bucket_has_the_same_NextBiggerBucket()
         {
             //Arrange
-            var biggerBucket = new Bucket { Id = 3 };
+            var biggerBucket = new SyncableBucket { Id = 3 };
 
             var buckets = new[]
             {
-                new Bucket{ Id = 1, NextBiggerBucket = biggerBucket },
-                new Bucket{ Id = 2, NextBiggerBucket = biggerBucket },
+                new SyncableBucket{ Id = 1, NextBiggerBucket = biggerBucket },
+                new SyncableBucket{ Id = 2, NextBiggerBucket = biggerBucket },
                 biggerBucket
             };
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
 
             //Act & Assert
-            Assert.ThrowsException<InvalidOperationException>(() => new LinkedBuckets(buckets));
+            Assert.ThrowsException<InvalidOperationException>(() => new LinkedSyncableBuckets(dataCreator.Object, buckets));
         }
 
         [TestMethod()]
         public void ctor_throws_InvalidOperationException_if_initialised_with_collection_where_some_NextBiggerBucket_is_not_in_collection()
         {
             //Arrange
-            var biggerBucket = new Bucket { Id = 3 };
+            var biggerBucket = new SyncableBucket { Id = 3 };
 
             var buckets = new[]
             {
-                new Bucket{ Id = 1, NextBiggerBucket = biggerBucket },
+                new SyncableBucket{ Id = 1, NextBiggerBucket = biggerBucket },
             };
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
 
             //Act & Assert
-            Assert.ThrowsException<InvalidOperationException>(() => new LinkedBuckets(buckets));
+            Assert.ThrowsException<InvalidOperationException>(() => new LinkedSyncableBuckets(dataCreator.Object, buckets));
         }
 
         [TestMethod()]
         public void ctor_throws_InvalidOperationException_if_initialised_with_collection_with_circular_NextBiggerBucket_references()
         {
             //Arrange
-            var biggerBucket = new Bucket { Id = 314 };
-            var mediumBucket = new Bucket { Id = 42, NextBiggerBucket = biggerBucket };
-            var circularBucket = new Bucket { Id = 8, NextBiggerBucket = mediumBucket };
+            var biggerBucket = new SyncableBucket { Id = 314 };
+            var mediumBucket = new SyncableBucket { Id = 42, NextBiggerBucket = biggerBucket };
+            var circularBucket = new SyncableBucket { Id = 8, NextBiggerBucket = mediumBucket };
 
             biggerBucket.NextBiggerBucket = circularBucket;
 
@@ -233,43 +234,46 @@ namespace StoryBuckets.Shared.Tests
                 mediumBucket,
                 biggerBucket
             };
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
 
             //Act & Assert
-            Assert.ThrowsException<InvalidOperationException>(() => new LinkedBuckets(buckets));
+            Assert.ThrowsException<InvalidOperationException>(() => new LinkedSyncableBuckets(dataCreator.Object, buckets));
         }
 
         [TestMethod()]
         public void ctor_throws_InvalidOperationException_if_initialised_with_collection_with_more_than_one_smallest_bucket()
         {
             //Arrange
-            var biggerBucket = new Bucket { Id = 314 };
-            var mediumBucket = new Bucket { Id = 42, NextBiggerBucket = biggerBucket };
+            var biggerBucket = new SyncableBucket { Id = 314 };
+            var mediumBucket = new SyncableBucket { Id = 42, NextBiggerBucket = biggerBucket };
 
 
             var buckets = new[]
             {
-                new Bucket { Id = 8, NextBiggerBucket = mediumBucket },
-                new Bucket { Id = 10, NextBiggerBucket = biggerBucket },
+                new SyncableBucket { Id = 8, NextBiggerBucket = mediumBucket },
+                new SyncableBucket { Id = 10, NextBiggerBucket = biggerBucket },
                 mediumBucket,
                 biggerBucket
             };
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
 
             //Act & Assert
-            Assert.ThrowsException<InvalidOperationException>(() => new LinkedBuckets(buckets));
+            Assert.ThrowsException<InvalidOperationException>(() => new LinkedSyncableBuckets(dataCreator.Object, buckets));
         }
 
         [TestMethod()]
         public void Enumerator_MoveNext_sets_the_first_Current_to_the_only_one_that_is_not_bigger_than_any_of_the_others()
         {
             //Arrange
-            var biggerBucket = new Bucket { Id = 42 };
-            var smallerBucket = new Bucket { Id = 2, NextBiggerBucket = biggerBucket };
+            var biggerBucket = new SyncableBucket { Id = 42 };
+            var smallerBucket = new SyncableBucket { Id = 2, NextBiggerBucket = biggerBucket };
             var buckets = new[]
             {
                 biggerBucket,
                 smallerBucket
             };
-            var testing = new LinkedBuckets(buckets);
+            var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, buckets);
             var enumerator = testing.GetEnumerator();
 
             //Act

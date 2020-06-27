@@ -24,12 +24,6 @@ namespace StoryBuckets.Services
             return await _datastore.GetAllAsync();
         }
 
-        public async Task<LinkedBuckets> GetAllLinkedAsync()
-        {
-            var buckets = await GetAllAsync();
-            return new LinkedBuckets(buckets.ToList());
-        }
-
         public async Task AddAsync(Bucket bucket)
         {
             await InitializeDataStoreIfNeeded();

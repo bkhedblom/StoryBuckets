@@ -5,6 +5,6 @@ namespace StoryBuckets.Client.ServerCommunication
 {
     public interface IBucketReader
     {
-        Task<ILinkedBucketModels> ReadLinkedBucketsAsync();
+        Task<ILinkedSyncableBuckets> ReadLinkedBucketsAsync();
     }
 }

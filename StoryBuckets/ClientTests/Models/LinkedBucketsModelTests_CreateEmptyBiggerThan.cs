@@ -25,7 +25,7 @@ namespace StoryBuckets.Client.Models.Tests
 
             var smallerBucket = new SyncableBucket { Id = 32 };
             
-            var testing = new LinkedBucketModels(dataCreator.Object, new[] { smallerBucket });
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, new[] { smallerBucket });
             
             //Act
             await testing.CreateEmptyBiggerThan(smallerBucket);
@@ -45,7 +45,7 @@ namespace StoryBuckets.Client.Models.Tests
                 .Setup(fake => fake.CreateEmptyAsync())
                 .ReturnsAsync(newBucket);
 
-            var testing = new LinkedBucketModels(dataCreator.Object, new List<SyncableBucket>());
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, new List<SyncableBucket>());
 
             //Act
             await testing.CreateEmptyBiggerThan(null);
@@ -58,14 +58,14 @@ namespace StoryBuckets.Client.Models.Tests
         public async Task When_adding_a_new_first_the_current_first_is_set_as_NextBiggerBucket()
         {
             //Arrange
-            var newBucket = new Mock<SyncableBucket>();
+            var newBucket = new SyncableBucket { Id = 278 };
 
             var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
             dataCreator
                 .Setup(fake => fake.CreateEmptyAsync())
-                .ReturnsAsync(newBucket.Object);
+                .ReturnsAsync(newBucket);
 
-            var testing = new LinkedBucketModels(dataCreator.Object, new[] { new Mock<SyncableBucket>().Object });
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, new[] { new SyncableBucket {Id = 314 } });
             
             var currentFirstBucket = testing.First();
             
@@ -73,7 +73,7 @@ namespace StoryBuckets.Client.Models.Tests
             await testing.CreateEmptyBiggerThan(null);
 
             //Assert
-            newBucket.VerifySet(mock => mock.NextBiggerBucket = currentFirstBucket);
+            Assert.AreEqual(currentFirstBucket, newBucket.NextBiggerBucket);
         }
 
         [TestMethod()]
@@ -89,7 +89,7 @@ namespace StoryBuckets.Client.Models.Tests
 
             var smallerBucket = new SyncableBucket { Id = 278 };
             
-            var testing = new LinkedBucketModels(dataCreator.Object, new[] { smallerBucket });
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, new[] { smallerBucket });
 
             //Act
             await testing.CreateEmptyBiggerThan(smallerBucket);
@@ -109,7 +109,7 @@ namespace StoryBuckets.Client.Models.Tests
                 .Setup(fake => fake.CreateEmptyAsync())
                 .ReturnsAsync(newBucket.Object);
 
-            var testing = new LinkedBucketModels(dataCreator.Object, new[] { new Mock<SyncableBucket>().Object });
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, new[] { new Mock<SyncableBucket>().Object });
 
             //Act & Assert
             await Assert.ThrowsExceptionAsync<InvalidOperationException>(async () => await testing.CreateEmptyBiggerThan(new Mock<SyncableBucket>().Object));
@@ -125,7 +125,7 @@ namespace StoryBuckets.Client.Models.Tests
                 .Setup(fake => fake.CreateEmptyAsync())
                 .ReturnsAsync(new SyncableBucket { Id = 42 });
 
-            var testing = new LinkedBucketModels(dataCreator.Object, new[] { new SyncableBucket {Id = 7 } });
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, new[] { new SyncableBucket {Id = 7 } });
 
             await testing.CreateEmptyBiggerThan(null);
             var newlyAdded = testing.First();
@@ -140,24 +140,24 @@ namespace StoryBuckets.Client.Models.Tests
         public async Task The_new_bucket_gets_the_smaller_buckets_existing_NextBiggerBucket()
         {
             //Arrange
-            var newBucket = new Mock<SyncableBucket>();
+            var newBucket = new SyncableBucket { Id = 314 };
 
             var dataCreator = new Mock<IDataCreator<SyncableBucket>>();
             dataCreator
                 .Setup(fake => fake.CreateEmptyAsync())
-                .ReturnsAsync(newBucket.Object);
+                .ReturnsAsync(newBucket);
 
-            var biggerBucket = new SyncableBucket { Id = 42};
+            var biggerBucket = new SyncableBucket { Id = 42 };
             var smallerBucket = new SyncableBucket { Id = 278, NextBiggerBucket = biggerBucket };
 
 
-            var testing = new LinkedBucketModels(dataCreator.Object, new[] { smallerBucket, biggerBucket });
+            var testing = new LinkedSyncableBuckets(dataCreator.Object, new[] { smallerBucket, biggerBucket });
 
             //Act
             await testing.CreateEmptyBiggerThan(smallerBucket);
 
             //Assert
-            newBucket.VerifySet(mock => mock.NextBiggerBucket = biggerBucket);
+            Assert.AreEqual(biggerBucket, newBucket.NextBiggerBucket);
         }
     }
 }

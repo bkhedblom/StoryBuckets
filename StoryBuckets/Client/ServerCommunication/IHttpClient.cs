@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using StoryBuckets.Shared.Interfaces;
+using System.Threading.Tasks;
 
 namespace StoryBuckets.Client.ServerCommunication
 {
@@ -6,6 +7,6 @@ namespace StoryBuckets.Client.ServerCommunication
     {
         Task<T> GetJsonAsync<T>(string requestUri);
         Task<T> PostJsonAsync<T>(string endpoint, T content);
-        Task<T> PutJsonAsync<T>(string endpoint, T content) where T : ISyncable;
+        Task<T> PutJsonAsync<T>(string endpoint, T content) where T : IData;
     }
 }

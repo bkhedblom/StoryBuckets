@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using StoryBuckets.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace StoryBuckets.Client.ServerCommunication
         public async Task<T> GetJsonAsync<T>(string endpoint)
             => await _client.GetJsonAsync<T>($"{ApiPrefix}{endpoint}");
 
-        public async Task<T> PutJsonAsync<T>(string endpoint, T content) where T : ISyncable
+        public async Task<T> PutJsonAsync<T>(string endpoint, T content) where T : IData
             => await _client.PutJsonAsync<T>($"{ApiPrefix}{endpoint}/{content.Id}", content);
 
         public async Task<T> PostJsonAsync<T>(string endpoint, T content)

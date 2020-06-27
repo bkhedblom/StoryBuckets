@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace StoryBuckets.Client.Models
 {
-    public interface IBucketModel: ISyncable
+    public interface ISyncableBucket: ISyncable
     {
         void Add(Story story);
         IReadOnlyCollection<Story> Stories { get; }
-        Bucket NextBiggerBucket { get; set; }
+        SyncableBucket NextBiggerBucket { get; set; }
     }
 }

@@ -131,7 +131,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             var bucketReader = new Mock<IBucketReader>();
             bucketReader
                 .Setup(fake => fake.ReadLinkedBucketsAsync())
-                .ReturnsAsync(new Mock<ILinkedBucketModels>().Object);
+                .ReturnsAsync(new Mock<ILinkedSyncableBuckets>().Object);
 
             var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
 
@@ -208,7 +208,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             var bucketReader = new Mock<IBucketReader>();
             bucketReader
                 .Setup(fake => fake.ReadLinkedBucketsAsync())
-                .ReturnsAsync(new Mock<ILinkedBucketModels>().Object);
+                .ReturnsAsync(new Mock<ILinkedSyncableBuckets>().Object);
 
             var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
 
@@ -291,7 +291,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             var bucketReader = new Mock<IBucketReader>();
             bucketReader
                 .Setup(fake => fake.ReadLinkedBucketsAsync())
-                .ReturnsAsync(new Mock<ILinkedBucketModels>().Object);
+                .ReturnsAsync(new Mock<ILinkedSyncableBuckets>().Object);
 
             var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
 
@@ -315,7 +315,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
                 new Mock<SyncableBucket>().Object,
                 new Mock<SyncableBucket>().Object
             };
-            var linkedBuckets = new Mock<ILinkedBucketModels>();
+            var linkedBuckets = new Mock<ILinkedSyncableBuckets>();
             linkedBuckets
                 .Setup(fake => fake.GetEnumerator())
                 .Returns(() => buckets.GetEnumerator());
@@ -344,7 +344,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
                 .SetupGet(fake => fake.DataIsready)
                 .Returns(true);
 
-            var bucketTcs = new TaskCompletionSource<ILinkedBucketModels>();
+            var bucketTcs = new TaskCompletionSource<ILinkedSyncableBuckets>();
             var bucketReader = new Mock<IBucketReader>();
             bucketReader
                 .Setup(fake => fake.ReadLinkedBucketsAsync())
@@ -358,7 +358,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Assert
             Assert.IsFalse(vm.LoaderHidden);
-            bucketTcs.SetResult(new Mock<ILinkedBucketModels>().Object);
+            bucketTcs.SetResult(new Mock<ILinkedSyncableBuckets>().Object);
             Thread.Sleep(0); //make sure the code gets a chance to run
             Assert.IsTrue(vm.LoaderHidden);
             initialized.Wait();
@@ -373,7 +373,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
                 .SetupGet(fake => fake.DataIsready)
                 .Returns(true);
 
-            var bucketTcs = new TaskCompletionSource<ILinkedBucketModels>();
+            var bucketTcs = new TaskCompletionSource<ILinkedSyncableBuckets>();
             var bucketReader = new Mock<IBucketReader>();
             bucketReader
                 .Setup(fake => fake.ReadLinkedBucketsAsync())
@@ -387,7 +387,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Assert
             Assert.IsTrue(vm.BucketsHidden);
-            bucketTcs.SetResult(new Mock<ILinkedBucketModels>().Object);
+            bucketTcs.SetResult(new Mock<ILinkedSyncableBuckets>().Object);
             Thread.Sleep(0); //make sure the code gets a chance to run
             Assert.IsFalse(vm.BucketsHidden);
             initialized.Wait();
@@ -403,7 +403,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
                 .Returns(true);
 
             var bucketReader = new Mock<IBucketReader>();
-            var linkedBuckets = new Mock<ILinkedBucketModels>();
+            var linkedBuckets = new Mock<ILinkedSyncableBuckets>();
             bucketReader
                 .Setup(fake => fake.ReadLinkedBucketsAsync())
                 .ReturnsAsync(linkedBuckets.Object);
@@ -439,7 +439,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             Story addedStory = null;
 
-            var bucket = new Mock<IBucketModel>();
+            var bucket = new Mock<ISyncableBucket>();
             bucket
                 .Setup(mock => mock.Add(It.IsAny<Story>()))
                 .Callback((Story story) => addedStory = story);
@@ -464,7 +464,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
 
-            var bucket = new Mock<IBucketModel>();
+            var bucket = new Mock<ISyncableBucket>();
 
             //Act
             vm.OnBucketChosen(bucket.Object);

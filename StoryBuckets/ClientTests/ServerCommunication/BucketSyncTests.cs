@@ -17,36 +17,74 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
         private const string BUCKETS = "buckets";
 
         [TestMethod]
-        public void ReadAsync_fetches_and_returns_data_from_the_buckets_endpoint()
+        public async Task ReadAsync_fetches_Buckets_from_the_buckets_endpoint_and_returns_SyncableBuckets()
         {
             //Arrange
+            var story = new Story { Id = 278, Title = "Foobar", IsInBucket = true };
+            var stories = new[]
+            {
+                story
+            };
             var buckets = new[]
             {
-                new SyncableBucket()
+                new Bucket{Id = 1, Stories = stories}
             };
+
             var httpclient = new Mock<IHttpClient>();
             httpclient
-                .Setup(mock => mock.GetJsonAsync<SyncableBucket[]>(It.IsAny<string>()))
+                .Setup(mock => mock.GetJsonAsync<Bucket[]>(It.IsAny<string>()))
                 .ReturnsAsync(buckets);
 
             var reader = new BucketSync(httpclient.Object);
 
             //Act
-            var result = reader.ReadAsync().Result;
+            var result = await reader.ReadAsync();
 
             //Assert
-            httpclient.Verify(mock => mock.GetJsonAsync<SyncableBucket[]>(BUCKETS), Times.Once);
-            Assert.AreEqual(buckets.Single(), result.Single());
+            httpclient.Verify(mock => mock.GetJsonAsync<Bucket[]>(BUCKETS), Times.Once);
+            var singleBucketInResult = result.Single();
+            Assert.IsInstanceOfType(singleBucketInResult, typeof(SyncableBucket));
+            Assert.AreEqual(buckets.Single().Id, singleBucketInResult.Id);
         }
 
         [TestMethod]
-        public async Task CreateEmpty_creates_and_Returns_a_new_bucket()
+        public async Task ReadAsync_sets_the_NextBiggerBucket_on_SyncableBucket_based_on_NextBiggerBucketId_of_corresponding_Bucket()
+        {
+            //Arrange
+            var smallBucketId = 1;
+            var biggerBucketId = 278;
+            var buckets = new[]
+            {
+                new Bucket {Id = smallBucketId, NextBiggerBucketId = biggerBucketId},
+                new Bucket {Id = biggerBucketId}
+            };
+
+            var httpclient = new Mock<IHttpClient>();
+            httpclient
+                .Setup(mock => mock.GetJsonAsync<Bucket[]>(It.IsAny<string>()))
+                .ReturnsAsync(buckets);
+
+            var reader = new BucketSync(httpclient.Object);
+
+            //Act
+            var result = await reader.ReadAsync();
+
+            //Assert
+            var smallBucket = result.Single(bucket => bucket.Id == smallBucketId);
+            Assert.IsNotNull(smallBucket.NextBiggerBucket);
+            Assert.AreEqual(biggerBucketId, smallBucket.NextBiggerBucket.Id);
+            var biggerBucket = result.Single(bucket => bucket.Id == biggerBucketId);
+            Assert.IsNull(biggerBucket.NextBiggerBucket);
+        }
+
+        [TestMethod]
+        public async Task CreateEmpty_creates_a_new_Bucket_and_returns_a_SyncableBucket()
         {
             //Arrange
             var httpclient = new Mock<IHttpClient>();
             httpclient
-                .Setup(fake => fake.PostJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()))
-                .ReturnsAsync(new SyncableBucket { Id = 42 });
+                .Setup(fake => fake.PostJsonAsync(BUCKETS, It.IsAny<Bucket>()))
+                .ReturnsAsync(new Bucket { Id = 42 });
             var syncer = new BucketSync(httpclient.Object);
 
             //Act
@@ -62,15 +100,15 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
             //Arrange
             var httpclient = new Mock<IHttpClient>();
             httpclient
-                .Setup(fake => fake.PostJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()))
-                .ReturnsAsync(new SyncableBucket { Id = 42 });
+                .Setup(fake => fake.PostJsonAsync(BUCKETS, It.IsAny<Bucket>()))
+                .ReturnsAsync(new Bucket { Id = 42 });
             var syncer = new BucketSync(httpclient.Object);
 
             //Act
             _ = await syncer.CreateEmptyAsync();
 
             //Assert
-            httpclient.Verify(mock => mock.PostJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()), Times.Once);
+            httpclient.Verify(mock => mock.PostJsonAsync(BUCKETS, It.IsAny<Bucket>()), Times.Once);
         }
 
         [TestMethod]
@@ -80,8 +118,8 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
             var idForNew = 42;
             var httpclient = new Mock<IHttpClient>();
             httpclient
-                .Setup(fake => fake.PostJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()))
-                .ReturnsAsync(new SyncableBucket { Id = idForNew });
+                .Setup(fake => fake.PostJsonAsync(BUCKETS, It.IsAny<Bucket>()))
+                .ReturnsAsync(new Bucket { Id = idForNew });
             var syncer = new BucketSync(httpclient.Object);
 
             //Act
@@ -99,19 +137,19 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
             var id2 = 31415;
             var buckets = new[]
             {
-                new SyncableBucket { Id = id1 },
-                new SyncableBucket { Id = id2 }
+                new Bucket { Id = id1 },
+                new Bucket { Id = id2 }
             };
 
             var updatedIds = new List<int>();
 
             var httpclient = new Mock<IHttpClient>();
             httpclient
-                .Setup(fake => fake.GetJsonAsync<SyncableBucket[]>(It.IsAny<string>()))
+                .Setup(fake => fake.GetJsonAsync<Bucket[]>(It.IsAny<string>()))
                 .ReturnsAsync(buckets);
             httpclient
-                .Setup(mock => mock.PutJsonAsync<SyncableBucket>(It.IsAny<string>(), It.IsAny<SyncableBucket>()))
-                .Callback<string, SyncableBucket>((_, updatedBucket) => updatedIds.Add(updatedBucket.Id));
+                .Setup(mock => mock.PutJsonAsync(It.IsAny<string>(), It.IsAny<Bucket>()))
+                .Callback<string, Bucket>((_, updatedBucket) => updatedIds.Add(updatedBucket.Id));
 
 
             var reader = new BucketSync(httpclient.Object);
@@ -125,7 +163,7 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
             }
 
             //Assert
-            httpclient.Verify(mock => mock.PutJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()), Times.Exactly(buckets.Count()));
+            httpclient.Verify(mock => mock.PutJsonAsync(BUCKETS, It.IsAny<Bucket>()), Times.Exactly(buckets.Count()));
             foreach (var bucket in buckets)
             {
                 Assert.IsTrue(updatedIds.Contains(bucket.Id), $"Bucket Id {bucket.Id} was not updated!");
@@ -140,11 +178,11 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
 
             var httpclient = new Mock<IHttpClient>();
             httpclient
-                .Setup(fake => fake.PostJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()))
-                .ReturnsAsync(new SyncableBucket { Id = 42 });
+                .Setup(fake => fake.PostJsonAsync(BUCKETS, It.IsAny<Bucket>()))
+                .ReturnsAsync(new Bucket { Id = 42 });
             httpclient
-                .Setup(mock => mock.PutJsonAsync<SyncableBucket>(It.IsAny<string>(), It.IsAny<SyncableBucket>()))
-                .Callback<string, SyncableBucket>((_, updatedBucket) => updatedId = updatedBucket.Id);
+                .Setup(mock => mock.PutJsonAsync(It.IsAny<string>(), It.IsAny<Bucket>()))
+                .Callback<string, Bucket>((_, updatedBucket) => updatedId = updatedBucket.Id);
 
 
             var reader = new BucketSync(httpclient.Object);
@@ -154,7 +192,7 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
             createdBucket.Add(new Story());
 
             //Assert
-            httpclient.Verify(mock => mock.PutJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()), Times.Once);
+            httpclient.Verify(mock => mock.PutJsonAsync(BUCKETS, It.IsAny<Bucket>()), Times.Once);
             Assert.AreEqual(createdBucket.Id, updatedId);
         }
 
@@ -162,9 +200,9 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
         public async Task ReadLinkedBuckets_Returns_LinkedBucketModels_based_on_buckets_fetched_from_the_buckets_endpoint()
         {
             //Arrange
-            var bigBucket = new SyncableBucket { Id = 1337 };
-            var mediumBucket = new SyncableBucket { Id = 42, NextBiggerBucket = bigBucket };
-            var smallBucket = new SyncableBucket { Id = 8, NextBiggerBucket = mediumBucket };
+            var bigBucket = new Bucket { Id = 1337 };
+            var mediumBucket = new Bucket { Id = 42, NextBiggerBucketId = bigBucket.Id };
+            var smallBucket = new Bucket { Id = 8, NextBiggerBucketId = mediumBucket.Id };
             var buckets = new[]
             {
                 mediumBucket,
@@ -174,7 +212,7 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
 
             var httpclient = new Mock<IHttpClient>();
             httpclient
-                .Setup(mock => mock.GetJsonAsync<SyncableBucket[]>(It.IsAny<string>()))
+                .Setup(mock => mock.GetJsonAsync<Bucket[]>(It.IsAny<string>()))
                 .ReturnsAsync(buckets);
 
             var reader = new BucketSync(httpclient.Object);
@@ -183,7 +221,7 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
             var result = await reader.ReadLinkedBucketsAsync();
 
             //Assert
-            httpclient.Verify(mock => mock.GetJsonAsync<SyncableBucket[]>(BUCKETS), Times.Once);
+            httpclient.Verify(mock => mock.GetJsonAsync<Bucket[]>(BUCKETS), Times.Once);
             foreach (var bucket in result)
             {
                 Assert.IsTrue(buckets.Contains(bucket));
@@ -198,9 +236,9 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
         public async Task Read_LinkedBuckets_are_PUT_to_the_server_when_updated()
         {
             //Arrange
-            var bigBucket = new SyncableBucket { Id = 1337 };
-            var mediumBucket = new SyncableBucket { Id = 42, NextBiggerBucket = bigBucket };
-            var smallBucket = new SyncableBucket { Id = 8, NextBiggerBucket = mediumBucket };
+            var bigBucket = new Bucket { Id = 1337 };
+            var mediumBucket = new Bucket { Id = 42, NextBiggerBucketId = bigBucket.Id };
+            var smallBucket = new Bucket { Id = 8, NextBiggerBucketId = mediumBucket.Id };
             var buckets = new[]
             {
                 mediumBucket,
@@ -212,11 +250,11 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
 
             var httpclient = new Mock<IHttpClient>();
             httpclient
-                .Setup(fake => fake.GetJsonAsync<SyncableBucket[]>(It.IsAny<string>()))
+                .Setup(fake => fake.GetJsonAsync<Bucket[]>(It.IsAny<string>()))
                 .ReturnsAsync(buckets);
             httpclient
-                .Setup(mock => mock.PutJsonAsync<SyncableBucket>(It.IsAny<string>(), It.IsAny<SyncableBucket>()))
-                .Callback<string, SyncableBucket>((_, updatedBucket) => updatedIds.Add(updatedBucket.Id));
+                .Setup(mock => mock.PutJsonAsync(It.IsAny<string>(), It.IsAny<Bucket>()))
+                .Callback<string, Bucket>((_, updatedBucket) => updatedIds.Add(updatedBucket.Id));
 
 
             var reader = new BucketSync(httpclient.Object);
@@ -230,7 +268,7 @@ namespace StoryBuckets.Client.ServerCommunication.Tests
             }
 
             //Assert
-            httpclient.Verify(mock => mock.PutJsonAsync(BUCKETS, It.IsAny<SyncableBucket>()), Times.Exactly(buckets.Count()));
+            httpclient.Verify(mock => mock.PutJsonAsync(BUCKETS, It.IsAny<Bucket>()), Times.Exactly(buckets.Count()));
             foreach (var bucket in buckets)
             {
                 Assert.IsTrue(updatedIds.Contains(bucket.Id), $"Bucket Id {bucket.Id} was not updated!");

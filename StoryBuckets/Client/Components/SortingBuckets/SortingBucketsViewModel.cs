@@ -13,7 +13,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets
     {
         private readonly IStorylist _storylist;
         private readonly IBucketReader _bucketReader;
-        private ILinkedBucketModels _buckets;
+        private ILinkedSyncableBuckets _buckets;
 
         public SortingBucketsViewModel(IStorylist storylist, IBucketReader bucketReader)
         {
@@ -27,9 +27,9 @@ namespace StoryBuckets.Client.Components.SortingBuckets
         public bool BucketsHidden => Buckets == null;
         public bool DisableBucketChoosing => !_storylist.DataIsready || _storylist.NumberOfUnbucketedStories == 0;
 
-        public IEnumerable<IBucketModel> Buckets { get => _buckets; }
+        public IEnumerable<ISyncableBucket> Buckets { get => _buckets; }
 
-        public void OnBucketChosen(IBucketModel bucket)
+        public void OnBucketChosen(ISyncableBucket bucket)
         {
             if(_storylist.NextUnbucketedStory != null)
                 bucket.Add(_storylist.NextUnbucketedStory);
