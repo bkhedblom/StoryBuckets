@@ -41,7 +41,7 @@ namespace StoryBuckets.Client.Models
             _buckets = new HashSet<SyncableBucket>(buckets);
         }
 
-        public async Task CreateEmptyBiggerThan(SyncableBucket smallerBucket)
+        public async Task CreateEmptyBiggerThan(ISyncableBucket smallerBucket)
         {
             var newBucket = await _bucketcreator.CreateEmptyAsync();
             if (smallerBucket == null)

@@ -15,7 +15,8 @@ namespace StoryBuckets.Client.Components.SortingBuckets
         IEnumerable<ISyncableBucket> Buckets { get; }
 
         Task OnInitializedAsync();
-        Task OnClickCreateBucket();
+        Task OnClickCreateSmallestBucket();
         void OnBucketChosen(ISyncableBucket bucket);
+        Task OnCreateBiggerBucket(ISyncableBucket bucket);
     }
 }

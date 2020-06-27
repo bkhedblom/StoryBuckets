@@ -18,12 +18,12 @@
 @if (!vm.BucketsHidden)
 {
         <div class="col">
-            <button class="btn btn-outline-dark" title="Create a new bucket" @onclick="vm.OnClickCreateBucket">+ Add</button>
+            <button class="btn btn-outline-dark" title="Create a new bucket" @onclick="vm.OnClickCreateSmallestBucket">+ Add</button>
         </div>
         @foreach (var bucket in vm.Buckets)
         {
             <div class="col">
-                <BucketWrapper Bucket="@bucket" OnChosen="vm.OnBucketChosen" DisableChoosing="vm.DisableBucketChoosing"/>
+                <BucketWrapper Bucket="@bucket" OnChosen="vm.OnBucketChosen" DisableChoosing="vm.DisableBucketChoosing" OnCreateBiggerBucket="vm.OnCreateBiggerBucket"/>
             </div>
         }
 }

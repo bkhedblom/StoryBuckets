@@ -394,7 +394,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
         }
 
         [TestMethod()]
-        public async Task OnClickCreateBucket_creates_a_new_bucket()
+        public async Task OnClickCreateSmallestBucket_creates_a_new_bucket_that_is_not_bigger_than_any_bucket()
         {
             //Arrange
             var storylist = new Mock<IStorylist>();
@@ -412,19 +412,19 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
             await vm.OnInitializedAsync();
 
             //Act
-            await vm.OnClickCreateBucket();
+            await vm.OnClickCreateSmallestBucket();
 
             //Assert
-            linkedBuckets.Verify(mock => mock.CreateEmptyBiggerThan(It.IsAny<SyncableBucket>()), Times.Once);
+            linkedBuckets.Verify(mock => mock.CreateEmptyBiggerThan(null), Times.Once);
         }
 
         [TestMethod()]
         public void Choosing_a_bucket_adds_next_unbucketed_story_to_that_bucket()
         {
             //Arrange
-            var nextStory = new Story 
-            { 
-                Id = 123, 
+            var nextStory = new Story
+            {
+                Id = 123,
                 Title = "This is a test"
             };
             var storylist = new Mock<IStorylist>();
@@ -471,6 +471,34 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Assert
             bucket.Verify(mock => mock.Add(It.IsAny<Story>()), Times.Never);
+        }
+
+        [TestMethod()]
+        public async Task Create_bigger_bucket_creates_a_new_Bucket_bigger_than_supplied_bucketAsync()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.DataIsready)
+                .Returns(true);
+
+            var bucketReader = new Mock<IBucketReader>();
+            var linkedBuckets = new Mock<ILinkedSyncableBuckets>();
+            bucketReader
+                .Setup(fake => fake.ReadLinkedBucketsAsync())
+                .ReturnsAsync(linkedBuckets.Object);
+
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+            
+            await vm.OnInitializedAsync();
+
+            var bucket = new SyncableBucket { Id = 278 };
+
+            //Act
+            await vm.OnCreateBiggerBucket(bucket);
+
+            //Assert
+            linkedBuckets.Verify(mock => mock.CreateEmptyBiggerThan(bucket), Times.Once);
         }
     }
 }

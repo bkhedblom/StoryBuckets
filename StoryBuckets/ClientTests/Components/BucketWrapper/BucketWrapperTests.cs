@@ -52,5 +52,29 @@ namespace StoryBuckets.Client.Components.BucketWrapper.Tests
             //Assert
             Assert.AreEqual(bucket, bucketSentToEvent);
         }
+
+        [TestMethod()]
+        public async Task Clicking_AddBucket_sends_contained_bucket_to_CreateBiggerBucket_event_handler()
+        {
+            //Arrange
+            var component = new BucketWrapper();
+            var bucket = new Mock<ISyncableBucket>().Object;
+            ISyncableBucket bucketSentToEvent = null;
+            var eventhandler = new Mock<IHandleEvent>();
+            eventhandler
+                .Setup(mock => mock.HandleEventAsync(It.IsAny<EventCallbackWorkItem>(), It.IsAny<ISyncableBucket>()))
+                .Callback((EventCallbackWorkItem _, object b) => bucketSentToEvent = b as ISyncableBucket);
+
+#pragma warning disable BL0005 // Component parameter should not be set outside of its component.
+            component.Bucket = bucket;
+            component.OnCreateBiggerBucket = new EventCallback<ISyncableBucket>(eventhandler.Object, null);
+#pragma warning restore BL0005 // Component parameter should not be set outside of its component.
+
+            //Act
+            await component.OnClickCreateBiggerBucket();
+
+            //Assert
+            Assert.AreEqual(bucket, bucketSentToEvent);
+        }
     }
 }

@@ -35,9 +35,14 @@ namespace StoryBuckets.Client.Components.SortingBuckets
                 bucket.Add(_storylist.NextUnbucketedStory);
         }
 
-        public async Task OnClickCreateBucket()
+        public async Task OnClickCreateSmallestBucket()
         {
             await _buckets.CreateEmptyBiggerThan(null);
+        }
+
+        public async Task OnCreateBiggerBucket(ISyncableBucket bucket)
+        {
+            await _buckets.CreateEmptyBiggerThan(bucket);
         }
 
         public async Task OnInitializedAsync()

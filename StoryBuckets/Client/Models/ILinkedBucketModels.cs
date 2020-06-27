@@ -5,6 +5,6 @@ namespace StoryBuckets.Client.Models
 {
     public interface ILinkedSyncableBuckets : IEnumerable<SyncableBucket>
     {
-        Task CreateEmptyBiggerThan(SyncableBucket smallerBucket);
+        Task CreateEmptyBiggerThan(ISyncableBucket smallerBucket);
     }
 }

@@ -16,11 +16,15 @@ namespace StoryBuckets.Client.Components.BucketWrapper
         public EventCallback<ISyncableBucket> OnChosen { get; set; }
 
         [Parameter]
+        public EventCallback<ISyncableBucket> OnCreateBiggerBucket { get; set; }
+
+        [Parameter]
         public bool DisableChoosing { get; set; }
 
-        public async Task OnClickChoose()
-        {
-            await OnChosen.InvokeAsync(Bucket);
-        }
+        public async Task OnClickChoose() 
+            => await OnChosen.InvokeAsync(Bucket);
+
+        public async Task OnClickCreateBiggerBucket() 
+            => await OnCreateBiggerBucket.InvokeAsync(Bucket);
     }
 }
