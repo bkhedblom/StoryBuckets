@@ -1,8 +1,8 @@
 ﻿<div class="bucket">
+    <button @onclick="OnClickChoose" disabled="@DisableChoosing" class="btn btn-outline-primary symbol-btn icon-arrow-down"></button>
     @foreach (var story in Bucket.Stories)
     {
-        <p>@story</p>
+        <p class="story">@story</p>
     }
-    <button @onclick="OnClickChoose" disabled="@DisableChoosing" class="btn btn-outline-primary">Choose</button>
 </div>
-<button class="btn btn-outline-dark" title="Create a new bucket" @onclick="OnClickCreateBiggerBucket">+ Add</button>
+<button class="btn btn-outline-dark symbol-btn add-button" title="Create a new bucket" @onclick="OnClickCreateBiggerBucket">+</button>

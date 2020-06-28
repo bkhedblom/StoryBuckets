@@ -181,3 +181,48 @@ app {
         display: block;
     }
 }
+.symbol-btn{
+    font-size:xx-large;
+}
+button.icon-arrow-down{
+    width: 1.5em;
+    line-height:1;
+}
+.icon-arrow-down::before {
+    content: " \27A7 ";
+    writing-mode:vertical-rl;
+}
+
+.buckets > .col {
+    margin-bottom: 40px;
+    display: inline-flex;
+    align-items: flex-start;
+    flex-wrap:nowrap;
+    padding: 0;
+    flex-grow:0;
+}
+.bucket {
+    border: 2px #777;
+    border-style: none solid;
+    padding: 0 10px 50px 10px;
+    text-align:center;
+    margin-top:40px;
+    flex-grow:1;
+    box-shadow:inset rgba(0,0,0,0.3) 0 -4px 8px;
+    border-radius: 5px 5px 75px 75px;
+    background: #fefefe;    
+}
+.bucket button{
+    margin-top: -50px;
+}
+
+.bucket .story {
+    text-align: left;
+    background: #fcfcfc;
+    padding: 7px;
+    box-shadow: 0 0 5px #ccc;
+}
+
+.add-button{
+    margin: 40px 10px;
+}

@@ -14,11 +14,11 @@
         If you can read this, something might've gone wrong...
     </p>
 </div>
-    <div class="row justify-content-center mt-5 pt-5">
+    <div class="row justify-content-center mt-5 pt-5 buckets">
 @if (!vm.BucketsHidden)
 {
         <div class="col">
-            <button class="btn btn-outline-dark" title="Create a new bucket" @onclick="vm.OnClickCreateSmallestBucket">+ Add</button>
+            <button class="btn btn-outline-dark symbol-btn add-button" title="Create a new bucket" @onclick="vm.OnClickCreateSmallestBucket">+</button>
         </div>
         @foreach (var bucket in vm.Buckets)
         {
