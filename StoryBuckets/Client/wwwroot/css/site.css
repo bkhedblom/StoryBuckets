@@ -184,13 +184,9 @@ app {
 .symbol-btn{
     font-size:xx-large;
 }
-button.icon-arrow-down{
-    width: 1.5em;
-    line-height:1;
-}
+
 .icon-arrow-down::before {
-    content: " \27A7 ";
-    writing-mode:vertical-rl;
+    content: "\1F847";
 }
 
 .buckets > .col {
