@@ -10,11 +10,13 @@ namespace StoryBuckets.Client.Components.SortingBuckets
         bool StoryHidden { get; }
         bool AllDoneHidden { get; }
         bool LoaderHidden { get; }
-        bool BtnNextDisabled { get; }
+        bool DisableBucketChoosing { get; }
         bool BucketsHidden { get; }
-        IReadOnlyCollection<IBucketModel> Buckets { get; }
+        IEnumerable<ISyncableBucket> Buckets { get; }
 
         Task OnInitializedAsync();
-        void OnClickBtnNext();
+        Task OnClickCreateSmallestBucket();
+        void OnBucketChosen(ISyncableBucket bucket);
+        Task OnCreateBiggerBucket(ISyncableBucket bucket);
     }
 }

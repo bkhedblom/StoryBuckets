@@ -29,9 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "Utils\Utils.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Integrations.Tests", "StoryBuckets.Integrations.Tests\StoryBuckets.Integrations.Tests.csproj", "{22CDC347-2341-4DDB-B4A3-8C669610ACB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Options", "Options\StoryBuckets.Options.csproj", "{4C782411-9D2B-414A-BBC5-B70C32037516}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Options", "Options\StoryBuckets.Options.csproj", "{4C782411-9D2B-414A-BBC5-B70C32037516}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBuckets.Options.Tests", "StoryBuckets.Options.Tests\StoryBuckets.Options.Tests.csproj", "{7741FA54-46FB-4497-A491-78BAB1F70EB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoryBuckets.Options.Tests", "StoryBuckets.Options.Tests\StoryBuckets.Options.Tests.csproj", "{7741FA54-46FB-4497-A491-78BAB1F70EB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -102,5 +102,39 @@ namespace StoryBuckets.DataStores.Buckets.Model.Tests
             Assert.AreEqual(stories.First(), data.Stories.First());
             Assert.AreEqual(stories.Last(), data.Stories.Last());
         }
+
+        [TestMethod()]
+        public void MapFromData_maps_Id_from_NextBiggerBucket()
+        {
+            //Arrange
+            var biggerBucketId = 42;
+            var data = new Bucket
+            {
+                NextBiggerBucketId = biggerBucketId
+            };
+            var fileStored = new FileStoredBucket();
+
+            //Act
+            fileStored.MapFromData(data);
+
+            //Assert
+            Assert.AreEqual(biggerBucketId, fileStored.NextBiggerBucketId);
+        }
+
+        [TestMethod()]
+        public void ToData_maps_bigger_bucket_Id()
+        {
+            //Arrange
+            var fileStored = new FileStoredBucket
+            {
+                NextBiggerBucketId = 42
+            };
+
+            //Act
+            var data = fileStored.ToData();
+
+            //Assert
+            Assert.AreEqual(fileStored.NextBiggerBucketId, data.NextBiggerBucketId);
+        }
     }
 }

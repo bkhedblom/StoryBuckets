@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Utils;
 
@@ -12,6 +13,7 @@ namespace StoryBuckets.DataStores.FileStorage
     {
         private readonly string _path;
         private readonly IFilesystemIo _filesystem;
+        private static readonly SemaphoreSlim _fileProcessLock = new SemaphoreSlim(1);
 
         public StorageFolder(string folderpath, IFilesystemIo filesystem)
         {
@@ -19,14 +21,23 @@ namespace StoryBuckets.DataStores.FileStorage
             _filesystem = filesystem;
             filesystem.CreateDirectory(folderpath);
         }
+
         public async IAsyncEnumerable<T> GetStoredItemsAsync()
         {
             foreach (var filename in _filesystem.EnumerateFiles(_path))
             {
                 var fullPath = Path.Combine(_path, filename);
-                using (var fileStream = _filesystem.Open(fullPath, FileMode.Open, FileAccess.Read))
+                await _fileProcessLock.WaitAsync();
+                try
                 {
-                    yield return await JsonSerializer.DeserializeAsync<T>(fileStream);
+                    using (var fileStream = _filesystem.Open(fullPath, FileMode.Open, FileAccess.Read))
+                    {
+                        yield return await JsonSerializer.DeserializeAsync<T>(fileStream);
+                    }
+                }
+                finally
+                {
+                    _fileProcessLock.Release();
                 }
             }
         }
@@ -34,9 +45,17 @@ namespace StoryBuckets.DataStores.FileStorage
         public async Task CreateFileForItemAsync(T item, string filename)
         {
             var fullPath = Path.Combine(_path, filename);
-            using (var fileStream = _filesystem.Open(fullPath, FileMode.CreateNew, FileAccess.Write))
+            await _fileProcessLock.WaitAsync();
+            try
             {
-                await JsonSerializer.SerializeAsync<T>(fileStream, item);
+                using (var fileStream = _filesystem.Open(fullPath, FileMode.CreateNew, FileAccess.Write))
+                {
+                    await JsonSerializer.SerializeAsync(fileStream, item);
+                }
+            }
+            finally
+            {
+                _fileProcessLock.Release();
             }
         }
 
@@ -44,9 +63,17 @@ namespace StoryBuckets.DataStores.FileStorage
         public async Task ReplaceFileWithItemAsync(string filename, T item)
         {
             var fullPath = Path.Combine(_path, filename);
-            using (var fileStream = _filesystem.Open(fullPath, FileMode.Truncate, FileAccess.Write))
+            await _fileProcessLock.WaitAsync();
+            try
             {
-                await JsonSerializer.SerializeAsync<T>(fileStream, item);
+                using (var fileStream = _filesystem.Open(fullPath, FileMode.Truncate, FileAccess.Write))
+                {
+                    await JsonSerializer.SerializeAsync(fileStream, item);
+                }
+            }
+            finally
+            {
+                _fileProcessLock.Release();
             }
         }
     }

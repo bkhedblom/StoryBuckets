@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using StoryBuckets.Client.Components.Counter;
-using StoryBuckets.Client.Components.Bucket;
 using StoryBuckets.Client.Components.SortingBuckets;
 using StoryBuckets.Client.Models;
 using StoryBuckets.Client.ServerCommunication;
@@ -33,7 +29,8 @@ namespace StoryBuckets.Client
         {
             services.AddScoped<IHttpClient, StoryBucketsHttpClient>();
             services.AddScoped<IDataReader<SyncableStory>, StorySync>();
-            services.AddScoped<IDataReader<IBucketModel>, BucketReader>();
+            services.AddScoped<IDataReader<SyncableBucket>, BucketSync>();
+            services.AddScoped<IBucketReader, BucketSync>();
         }
 
         private static void AddModelInjection(IServiceCollection services)
@@ -44,7 +41,6 @@ namespace StoryBuckets.Client
         private static void AddViewModelInjection(IServiceCollection services)
         {
             services.AddScoped<ICounterViewModel, CounterViewModel>();
-            services.AddScoped<IBucketViewModel, BucketViewModel>();
             services.AddScoped<ISortingBucketsViewModel, SortingBucketsViewModel>();
         }
 

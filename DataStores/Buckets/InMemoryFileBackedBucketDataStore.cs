@@ -4,6 +4,8 @@ using StoryBuckets.DataStores.Generic;
 using StoryBuckets.Shared;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace StoryBuckets.DataStores.Buckets
@@ -18,21 +20,20 @@ namespace StoryBuckets.DataStores.Buckets
             _storyStore = storyStore;
         }
 
-        public override Task AddOrUpdateAsync(IEnumerable<Bucket> items)
-            => throw new NotImplementedException();
-
-        public override Task UpdateAsync(int id, Bucket item)
-            => throw new NotImplementedException();
+        public override async Task AddOrUpdateAsync(IEnumerable<Bucket> items)
+        {
+            var stories = items.SelectMany(bucket => bucket.Stories);
+            var addingStories = _storyStore.AddOrUpdateAsync(stories);
+            var addingItems = base.AddOrUpdateAsync(items);
+            await Task.WhenAll(addingStories, addingItems);
+        }        
 
         public override async Task InitializeAsync()
         {
-            var initializations = new List<Task>();
-            
             if(!_storyStore.IsInitialized)
-                initializations.Add(_storyStore.InitializeAsync());
-
-            initializations.Add(base.InitializeAsync());
-            await Task.WhenAll(initializations);
+                await _storyStore.InitializeAsync();
+        
+            await base.InitializeAsync();
         }
 
         protected override async Task<Bucket> ConvertStorageItemToData(FileStoredBucket storedItem)

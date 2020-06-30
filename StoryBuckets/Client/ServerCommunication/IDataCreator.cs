@@ -1,7 +1,9 @@
-﻿namespace StoryBuckets.Client.ServerCommunication
+﻿using System.Threading.Tasks;
+
+namespace StoryBuckets.Client.ServerCommunication
 {
     public interface IDataCreator<T> where T : ISyncable
     {
-        T CreateEmpty();
+        Task<T> CreateEmptyAsync();
     }
 }
