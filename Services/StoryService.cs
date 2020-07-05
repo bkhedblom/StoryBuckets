@@ -24,6 +24,8 @@ namespace StoryBuckets.Services
             await InitializeDataStoreIfNeeded();
             if (_dataStore.IsEmpty)
                 await FillDataStoreFromIntegration();
+            else
+                await UpdateDataStoreFromIntegration();
             
             return await _dataStore.GetAllAsync();
         }
@@ -43,12 +45,43 @@ namespace StoryBuckets.Services
         private async Task FillDataStoreFromIntegration()
         {
             var storiesFromIntegration = await _integration.FetchAsync();
+            await AddStoriesFromIntegrationToDataStore(storiesFromIntegration);
+        }
+
+        private async Task AddStoriesFromIntegrationToDataStore(IEnumerable<IStoryFromIntegration> storiesFromIntegration)
+        {
             var storiesToAdd = storiesFromIntegration.Select(integrationStory => new Story
             {
                 Id = integrationStory.Id,
                 Title = integrationStory.Title
             });
             await _dataStore.AddOrUpdateAsync(storiesToAdd);
+        }
+
+        private async Task UpdateDataStoreFromIntegration()
+        {
+            var fetchingFromIntegration = _integration.FetchAsync();
+            var fetchingExisting = _dataStore.GetAllAsync();
+            await Task.WhenAll(fetchingFromIntegration, fetchingExisting);
+
+            var storiesFromIntegration = fetchingFromIntegration.Result;
+            var idsInIntegration = storiesFromIntegration.Select(story => story.Id);
+
+            var existingStories = fetchingExisting.Result.ToList();
+
+            var storiesToUpdate = existingStories.Where(story => idsInIntegration.Contains(story.Id));            
+            foreach (var story in storiesToUpdate)
+            {
+                var storyFromIntegration = storiesFromIntegration.Single(integrationstory => integrationstory.Id == story.Id);
+                story.Title = storyFromIntegration.Title;
+            }
+
+            await _dataStore.AddOrUpdateAsync(storiesToUpdate);
+            
+            var existingIds = existingStories.Select(story => story.Id);
+            var storiesToAdd = storiesFromIntegration.Where(integrationStory => 
+                                        !existingIds.Contains(integrationStory.Id));
+            await AddStoriesFromIntegrationToDataStore(storiesToAdd);
         }
     }
 }
