@@ -197,19 +197,32 @@ app {
     padding: 0;
     flex-grow:0;
 }
+
 .bucket {
     border: 2px #777;
     border-style: none solid;
-    padding: 0 10px 50px 10px;
-    text-align:center;
-    margin-top:40px;
-    flex-grow:1;
-    box-shadow:inset rgba(0,0,0,0.3) 0 -4px 8px;
+    padding: 36px 10px 50px 10px;
+    text-align: center;
+    margin-top: 40px;
+    flex-grow: 1;
+    box-shadow: inset black 0 -4px 8px;
     border-radius: 5px 5px 75px 75px;
-    background: #fefefe;    
+    background: #fefefe;
+    display: flex;
+    flex-direction: column-reverse;
+    z-index: 1;
+    opacity: 0.8;
 }
-.bucket button{
-    margin-top: -50px;
+
+.choose-bucket-btn {
+    position: absolute;
+    width: calc(100% - 65px);
+    border-bottom: none;
+    top: -8px;
+}
+
+.choose-bucket-btn:hover + .bucket {
+    border-color: #007bff;
 }
 
 .bucket .story {
@@ -217,6 +230,7 @@ app {
     background: #fcfcfc;
     padding: 7px;
     box-shadow: 0 0 5px #ccc;
+    opacity: 1;
 }
 
 .add-button{
