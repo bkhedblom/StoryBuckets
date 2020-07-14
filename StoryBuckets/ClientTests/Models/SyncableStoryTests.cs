@@ -77,5 +77,70 @@ namespace StoryBuckets.Client.Models.Tests
             //Assert
             Assert.IsTrue(IsInBucketValue);
         }
+
+        [TestMethod()]
+        public void Updated_event_triggered_when_IsIrrelevant_is_changed()
+        {
+            //Arrange
+            var model = new SyncableStory();
+            var updatedTriggered = false;
+            model.Updated += (o, e) => updatedTriggered = true;
+
+            //Act
+            model.IsIrrelevant = !model.IsIrrelevant;
+
+            //Assert
+            Assert.IsTrue(updatedTriggered);
+        }
+
+        [TestMethod()]
+        public void Updated_event_not_triggered_when_IsIrrelevant_is_set_without_changing_value()
+        {
+            //Arrange
+            var model = new SyncableStory();
+            var updatedTriggered = false;
+            model.Updated += (o, e) => updatedTriggered = true;
+
+            //Act
+            model.IsIrrelevant = model.IsIrrelevant;
+
+            //Assert
+            Assert.IsFalse(updatedTriggered);
+        }
+
+        [TestMethod()]
+        public void IsIrrelevant_value_is_already_Set_when_Updated_event_is_triggered()
+        {
+            //Arrange
+            var model = new SyncableStory();
+            var IsIrrelevantValue = model.IsIrrelevant;
+            model.Updated += (o, e) => IsIrrelevantValue = (o as SyncableStory).IsIrrelevant;
+
+            //Act
+            model.IsIrrelevant = !model.IsIrrelevant;
+
+            //Assert
+            Assert.IsTrue(IsIrrelevantValue);
+        }
+
+        [TestMethod()]
+        public void Constructor_maps_IsIrrelevant()
+        {
+            //Arrange
+            var story = new Story
+            {
+                Id = 273,
+                IsInBucket = true,
+                Title = "foobar",
+                IsIrrelevant = true
+            };
+
+
+            //Act
+            var model = new SyncableStory(story);
+
+            //Assert
+            Assert.AreEqual(story.IsIrrelevant, model.IsIrrelevant);
+        }
     }
 }

@@ -108,5 +108,38 @@ namespace StoryBuckets.DataStores.Stories.Model.Tests
             //Assert
             Assert.AreEqual(fileStored.IsInBucket, data.IsInBucket);
         }
+
+        [TestMethod()]
+        public void MapFromData_maps_IsIrrelevant()
+        {
+            //Arrange
+            var data = new Story
+            {
+                IsIrrelevant = true
+            };
+            var fileStored = new FileStoredStory();
+
+            //Act
+            fileStored.MapFromData(data);
+
+            //Assert
+            Assert.AreEqual(data.IsIrrelevant, fileStored.IsIrrelevant);
+        }
+
+        [TestMethod()]
+        public void ToData_maps_IsIrrelevant()
+        {
+            //Arrange
+            var fileStored = new FileStoredStory
+            {
+                IsIrrelevant = true
+            };
+
+            //Act
+            var data = fileStored.ToData();
+
+            //Assert
+            Assert.AreEqual(fileStored.IsIrrelevant, data.IsIrrelevant);
+        }
     }
 }

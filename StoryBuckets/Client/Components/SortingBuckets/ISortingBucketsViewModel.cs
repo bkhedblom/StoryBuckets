@@ -18,5 +18,6 @@ namespace StoryBuckets.Client.Components.SortingBuckets
         Task OnClickCreateSmallestBucket();
         void OnBucketChosen(ISyncableBucket bucket);
         Task OnCreateBiggerBucket(ISyncableBucket bucket);
+        void OnClickSetIrrelevant();
     }
 }

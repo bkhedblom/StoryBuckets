@@ -11,19 +11,22 @@ namespace StoryBuckets.DataStores.Stories.Model
         public int Id { get; set; }
         public string Title { get; set; }
         public bool IsInBucket { get; set; }
+        public bool IsIrrelevant { get; set; }
 
         public void MapFromData(Story data)
         {
             Id = data.Id;
             Title = data.Title;
             IsInBucket = data.IsInBucket;
+            IsIrrelevant = data.IsIrrelevant;
         }
 
         public Story ToData() => new Story
         {
             Id = Id,
             Title = Title,
-            IsInBucket = IsInBucket
+            IsInBucket = IsInBucket,
+            IsIrrelevant = IsIrrelevant
         };
     }
 }

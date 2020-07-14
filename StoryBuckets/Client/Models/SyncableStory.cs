@@ -18,6 +18,7 @@ namespace StoryBuckets.Client.Models
             Id = story.Id;
             Title = story.Title;
             IsInBucket = story.IsInBucket;
+            IsIrrelevant = story.IsIrrelevant;
         }
 
         public override bool IsInBucket
@@ -31,6 +32,18 @@ namespace StoryBuckets.Client.Models
                 base.IsInBucket = value;
 
                 if (isUpdated)
+                    OnUpdated();
+            }
+        }
+
+        public override bool IsIrrelevant 
+        { 
+            get => base.IsIrrelevant; 
+            set
+            {
+                var isUpdated = value != base.IsIrrelevant;
+                base.IsIrrelevant = value;
+                if(isUpdated)
                     OnUpdated();
             }
         }

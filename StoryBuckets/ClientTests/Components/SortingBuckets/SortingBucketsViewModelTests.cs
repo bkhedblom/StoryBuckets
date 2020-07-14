@@ -489,7 +489,7 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
                 .ReturnsAsync(linkedBuckets.Object);
 
             var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
-            
+
             await vm.OnInitializedAsync();
 
             var bucket = new SyncableBucket { Id = 278 };
@@ -499,6 +499,52 @@ namespace StoryBuckets.Client.Components.SortingBuckets.Tests
 
             //Assert
             linkedBuckets.Verify(mock => mock.CreateEmptyBiggerThan(bucket), Times.Once);
+        }
+
+        [TestMethod()]
+        public void OnClickSetIrrelevant_Sets_next_story_as_irrelevant()
+        {
+            //Arrange
+            var nextStory = new Story
+            {
+                Id = 123,
+                Title = "This is a test",
+                IsIrrelevant = false
+            };
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.NextUnbucketedStory)
+                .Returns(nextStory);
+
+            var bucketReader = new Mock<IBucketReader>();
+
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+
+            //Act
+            vm.OnClickSetIrrelevant();
+
+            //Assert
+            Assert.IsTrue(nextStory.IsIrrelevant);
+        }
+
+        [TestMethod()]
+        public void OnClickSetIrrelevant_does_nothing_if_next_story_is_null()
+        {
+            //Arrange
+            var storylist = new Mock<IStorylist>();
+            storylist
+                .SetupGet(fake => fake.NextUnbucketedStory)
+                .Returns((Story)null);
+
+            var bucketReader = new Mock<IBucketReader>();
+
+            var vm = new SortingBucketsViewModel(storylist.Object, bucketReader.Object);
+
+            //Act
+            vm.OnClickSetIrrelevant();
+
+            //Assert
+            //success if no exception            
         }
     }
 }

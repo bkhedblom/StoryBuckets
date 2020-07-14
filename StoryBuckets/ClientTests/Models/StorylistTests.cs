@@ -3,6 +3,7 @@ using Moq;
 using StoryBuckets.Client.ServerCommunication;
 using StoryBuckets.Shared;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace StoryBuckets.Client.Models.Tests
 {
@@ -109,7 +110,7 @@ namespace StoryBuckets.Client.Models.Tests
         }
 
         [TestMethod()]
-        public void NextUnbucketedStory_returns_an_unbucketedStory()
+        public void NextUnbucketedStory_returns_an_unbucketedStory_that_is_not_irrelevant()
         {
             //Arrange
             var reader = new Mock<IDataReader<SyncableStory>>();
@@ -162,6 +163,50 @@ namespace StoryBuckets.Client.Models.Tests
 
             //Assert
             Assert.IsNull(storylist.NextUnbucketedStory);
+        }
+
+        [TestMethod()]
+        public async Task NextUnbucketedStory_does_not_return_an_irrelevant_story()
+        {
+            //Arrange
+            var reader = new Mock<IDataReader<SyncableStory>>();
+            var storyInBucket = new SyncableStory
+            {
+                Id = 273,
+                Title = "In Bucket",
+                IsInBucket = true
+            };
+
+            var irrelevantStory = new SyncableStory
+            {
+                Id = 314,
+                Title = "Irrelevant",
+                IsInBucket = false,
+                IsIrrelevant = true
+            };
+
+            var unbucketedStory = new SyncableStory
+            {
+                Id = 42,
+                Title = "Unbucketed",
+                IsInBucket = false
+            };
+
+            reader
+                .Setup(fake => fake.ReadAsync())
+                .ReturnsAsync(new[] {
+                    storyInBucket,
+                    irrelevantStory,
+                    unbucketedStory
+                });
+
+            var storylist = new Storylist(reader.Object);
+
+            //Act
+            await storylist.InitializeAsync();
+
+            //Assert
+            Assert.AreEqual(unbucketedStory, storylist.NextUnbucketedStory);
         }
     }
 }

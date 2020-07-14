@@ -17,7 +17,7 @@ namespace StoryBuckets.Client.Models
             _datareader = datareader;
         }
 
-        public Story NextUnbucketedStory => _stories?.FirstOrDefault(story => !story.IsInBucket);
+        public Story NextUnbucketedStory => _stories?.FirstOrDefault(story => !story.IsInBucket && !story.IsIrrelevant);
 
         public bool DataIsready => _stories != null;
 

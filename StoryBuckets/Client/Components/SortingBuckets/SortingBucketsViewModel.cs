@@ -40,6 +40,12 @@ namespace StoryBuckets.Client.Components.SortingBuckets
             await _buckets.CreateEmptyBiggerThan(null);
         }
 
+        public void OnClickSetIrrelevant()
+        {
+            if(_storylist.NextUnbucketedStory != null)
+                _storylist.NextUnbucketedStory.IsIrrelevant = true;
+        }
+
         public async Task OnCreateBiggerBucket(ISyncableBucket bucket)
         {
             await _buckets.CreateEmptyBiggerThan(bucket);
